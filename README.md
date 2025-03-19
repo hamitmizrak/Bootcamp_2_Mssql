@@ -1082,6 +1082,385 @@ DQL, SQL’in **veriyi sadece okumaya** yönelik kullanılan alt dilidir. **SELE
 
 **DQL öğrenmek, verileri verimli şekilde analiz etmek ve SQL sorgularını optimize etmek için çok önemlidir.** Özellikle veri bilimi, yazılım geliştirme ve raporlama süreçlerinde DQL en çok kullanılan SQL bileşenlerinden biridir.
 
+## WHERE 
+```sh
+
+```
+---
+### **MSSQL WHERE Koşulu ile İlgili Örnekler**
+`WHERE` koşulu, SQL'de belirli bir kriteri karşılayan verileri filtrelemek için kullanılır. **MSSQL'de `WHERE` koşulu, `SELECT`, `UPDATE`, `DELETE` gibi sorgularla birlikte kullanılabilir.**
+
+---
+
+## **1. Temel WHERE Kullanımı**
+Belirli bir departmanda çalışanları listeleyelim:
+
+```sql
+SELECT * FROM Employees WHERE Department = 'IT';
+```
+- `Employees` tablosundan **yalnızca IT departmanındaki** çalışanları getirir.
+
+---
+
+## **2. Sayısal Değer ile Filtreleme**
+Maaşı 50.000'den büyük olan çalışanları listeleyelim:
+
+```sql
+SELECT * FROM Employees WHERE Salary > 50000;
+```
+- **Maaşı 50.000’den fazla olan** çalışanları getirir.
+
+---
+
+## **3. Birden Fazla Koşul Kullanımı (`AND` ve `OR`)**
+### **3.1 AND Kullanımı**
+Hem IT departmanında olup hem de maaşı 60.000’den fazla olanları getirir:
+
+```sql
+SELECT * FROM Employees WHERE Department = 'IT' AND Salary > 60000;
+```
+- **IT departmanındaki ve maaşı 60.000’den fazla olan çalışanları** listeler.
+
+### **3.2 OR Kullanımı**
+IT veya HR departmanında çalışanları getirir:
+
+```sql
+SELECT * FROM Employees WHERE Department = 'IT' OR Department = 'HR';
+```
+- **IT veya HR departmanındaki tüm çalışanları** listeler.
+
+---
+
+## **4. BETWEEN ile Aralık Belirleme**
+Maaşı **40.000 ile 70.000 arasında** olan çalışanları getirir:
+
+```sql
+SELECT * FROM Employees WHERE Salary BETWEEN 40000 AND 70000;
+```
+- `BETWEEN` operatörü, **alt ve üst sınır dahil olmak üzere** belirtilen aralıktaki değerleri seçer.
+
+Tarih aralığında sorgu yapalım:
+
+```sql
+SELECT * FROM Employees WHERE HireDate BETWEEN '2020-01-01' AND '2023-12-31';
+```
+- **2020 ile 2023 yılları arasında işe alınan çalışanları** listeler.
+
+---
+
+## **5. IN ile Belirli Değerleri Filtreleme**
+IT, HR ve Finance departmanındaki çalışanları listeleyelim:
+
+```sql
+SELECT * FROM Employees WHERE Department IN ('IT', 'HR', 'Finance');
+```
+- `IN` operatörü, **belirtilen değerlerden herhangi birine eşit olan** satırları getirir.
+
+---
+
+## **6. LIKE ile Metinsel Desen Filtreleme**
+`LIKE` operatörü, belirli **metin kalıplarını** aramak için kullanılır.
+
+| **Joker Karakter** | **Anlamı** |
+|--------------------|------------|
+| `%` | **Herhangi bir karakter dizisini** temsil eder (sıfır veya daha fazla karakter). |
+| `_` | **Tek bir karakter** yerine geçer. |
+
+### **6.1 Belirli Harfle Başlayan Veriler**
+Soyadı 'A' harfi ile başlayan çalışanları getirir:
+
+```sql
+SELECT * FROM Employees WHERE LastName LIKE 'A%';
+```
+- `A%` → "A" harfiyle başlayan tüm kayıtları listeler.
+
+### **6.2 Belirli Harfle Biten Veriler**
+Soyadı 'n' harfi ile biten çalışanları getirir:
+
+```sql
+SELECT * FROM Employees WHERE LastName LIKE '%n';
+```
+- `%n` → "n" harfi ile biten tüm kayıtları listeler.
+
+### **6.3 Belirli Bir Kelimeyi İçeren Veriler**
+İçinde "Tech" kelimesi geçen pozisyonları getirir:
+
+```sql
+SELECT * FROM Employees WHERE Position LIKE '%Tech%';
+```
+- **Pozisyon adı içinde "Tech" geçen tüm çalışanları** getirir.
+
+### **6.4 Belirli Uzunluktaki Kelimeleri Getirme**
+İlk harfi "J", ikinci harfi rastgele ve üçüncü harfi "n" olan çalışanları getirir:
+
+```sql
+SELECT * FROM Employees WHERE FirstName LIKE 'J_n%';
+```
+- `J_n%` → **İlk harfi "J", üçüncü harfi "n" olan adları** getirir (örn: "Jon", "Jan", "Jim").
+
+---
+
+## **7. NULL Değerleri Filtreleme (`IS NULL` ve `IS NOT NULL`)**
+### **7.1 NULL Olan Kayıtları Getirme**
+E-posta adresi olmayan çalışanları getirir:
+
+```sql
+SELECT * FROM Employees WHERE Email IS NULL;
+```
+- `NULL` olan satırları seçer.
+
+### **7.2 NULL Olmayan Kayıtları Getirme**
+E-posta adresi kayıtlı olan çalışanları getirir:
+
+```sql
+SELECT * FROM Employees WHERE Email IS NOT NULL;
+```
+- `NULL` **olmayan** satırları seçer.
+
+---
+
+## **8. NOT ile Koşulu Tersine Çevirme**
+Belirli bir departmanda olmayan çalışanları getirir:
+
+```sql
+SELECT * FROM Employees WHERE NOT Department = 'HR';
+```
+- `HR` departmanında **çalışmayanları** getirir.
+
+Baş harfi "A" olmayan çalışanları getirir:
+
+```sql
+SELECT * FROM Employees WHERE FirstName NOT LIKE 'A%';
+```
+- İsmi "A" ile başlamayanları getirir.
+
+---
+
+## **9. EXISTS ile Alt Sorgular Kullanma**
+**EXISTS**, **alt sorgunun en az bir satır döndürmesi durumunda** TRUE döndürür.
+
+Örneğin, en az bir siparişi olan müşterileri listeleyelim:
+
+```sql
+SELECT * FROM Customers WHERE EXISTS (
+    SELECT 1 FROM Orders WHERE Orders.CustomerID = Customers.CustomerID
+);
+```
+- `Customers` tablosunda, **en az bir siparişi olan müşterileri** listeler.
+
+---
+
+## **10. Subquery (Alt Sorgu) ile Koşul Kullanma**
+Maaşı, şirket ortalama maaşından yüksek olan çalışanları getirir:
+
+```sql
+SELECT * FROM Employees WHERE Salary > (
+    SELECT AVG(Salary) FROM Employees
+);
+```
+- **Ortalama maaşın üzerinde maaş alan çalışanları** listeler.
+
+---
+
+## **Sonuç**
+- `WHERE` **koşulu**, **MSSQL'de verileri filtrelemek** için en temel ve güçlü araçlardan biridir.
+- **Farklı operatörler** ile (AND, OR, BETWEEN, LIKE, IN, IS NULL vb.) daha karmaşık sorgular oluşturulabilir.
+- **JOIN, EXISTS ve Subquery** kullanarak daha **gelişmiş ve dinamik** filtreleme işlemleri yapılabilir.
+
+**MSSQL'de WHERE ile verileri daha iyi yönetmek için yukarıdaki örnekleri farklı veri kümeleriyle denemenizi öneririm!** 🚀
+
+
+## between yerine and veya or kullansam hangisi daha performanslı
+```sh
+
+```
+---
+## **`BETWEEN` vs. `AND` vs. `OR` Performans Karşılaştırması (MS SQL Server)**
+
+MS SQL Server'da **`BETWEEN`** ve **`AND`** operatörleri genellikle aynı işlevi görür, ancak **performans açısından bazı farklılıklar** vardır. **`OR`** operatörü ise genellikle performans açısından daha düşük verimli olabilir.
+
+---
+
+### **1. `BETWEEN` ve `AND` Karşılaştırması**
+**Temel olarak `BETWEEN`, `AND` kullanımı ile eşdeğerdir.** Ancak, `BETWEEN` ifadesi genellikle daha okunaklıdır ve **sorgu optimizasyonu açısından indekslerle daha iyi çalışabilir.**
+
+📌 **Örnek 1: `BETWEEN` Kullanımı**
+```sql
+SELECT * FROM Orders WHERE OrderDate BETWEEN '2024-01-01' AND '2024-12-31';
+```
+Bu komut, **OrderDate değerleri 1 Ocak 2024 ile 31 Aralık 2024 arasında olan siparişleri getirir.**
+
+📌 **Örnek 2: `AND` Kullanımı**
+```sql
+SELECT * FROM Orders WHERE OrderDate >= '2024-01-01' AND OrderDate <= '2024-12-31';
+```
+Bu komut, **mantıksal olarak `BETWEEN` ile aynıdır.** SQL Server **bu iki sorguyu genellikle aynı şekilde çalıştırır.**
+
+### ✅ **Performans Karşılaştırması**
+- **MS SQL Server Query Optimizer (`BETWEEN` ve `AND` ifadelerini aynı şekilde işler)**. Ancak, `BETWEEN` ifadesi daha **okunaklı** olduğu için tercih edilir.
+- **İndeks kullanımında fark yoktur.** **Bunun nedeni `BETWEEN` operatörünün, SQL Server’ın sorgu planında `>=` ve `<=` şeklinde çalışmasıdır.**
+- **Genellikle `BETWEEN`, `AND` kullanımıyla birebir aynı performansa sahiptir.**
+
+---
+
+### **2. `OR` Kullanımı ve Performans Sorunları**
+📌 **Örnek 3: `OR` Kullanımı**
+```sql
+SELECT * FROM Orders WHERE OrderDate >= '2024-01-01' OR OrderDate <= '2024-12-31';
+```
+Bu sorgunun mantıksal hatası var çünkü:
+- `OrderDate >= '2024-01-01'` tüm tarihleri kapsar.
+- `OrderDate <= '2024-12-31'` tüm tarihleri kapsar.
+- Bu nedenle, **bütün kayıtlar döner** ve anlamlı bir filtreleme yapılmaz.
+
+📌 **Gerçekçi Bir `OR` Kullanımı**
+```sql
+SELECT * FROM Orders WHERE OrderDate < '2024-01-01' OR OrderDate > '2024-12-31';
+```
+Bu komut, **2024 yılına dahil olmayan siparişleri getirir.**
+
+### ❌ **Performans Açısından `OR` Kullanımı Dezavantajlıdır**
+- **İndeks kullanımı verimsiz olabilir.**
+- **SQL Server `OR` ile iki ayrı filtreleme yapar** ve her iki durumu da ayrı ayrı kontrol eder.
+- **Index Seek yerine genellikle Index Scan çalıştırır**, bu da büyük tablolar için performans düşüşüne neden olabilir.
+
+**Genellikle `BETWEEN` ve `AND` daha hızlıdır, `OR` kullanımı daha yavaş olabilir.** Eğer `OR` kullanımı kaçınılmazsa, **`UNION ALL` veya `IN` kullanımı daha verimli olabilir**.
+
+📌 **Performans için `OR` Yerine `UNION ALL` Kullanımı**
+```sql
+SELECT * FROM Orders WHERE OrderDate < '2024-01-01'
+UNION ALL
+SELECT * FROM Orders WHERE OrderDate > '2024-12-31';
+```
+- **`UNION ALL`, `OR` yerine kullanıldığında genellikle daha hızlı çalışır.**
+- **Eğer iki farklı index varsa, her sorgu kendi index’i üzerinden çalışabilir.**
+- **`OR` yerine `UNION ALL` tercih edilirse, SQL Server’ın sorgu optimizasyonu daha verimli olabilir.**
+
+---
+
+## **3. Sonuç: Hangisi Daha Performanslı?**
+| Kullanım | Performans | Açıklama |
+|----------|-----------|----------|
+| `BETWEEN` | ✅ **En iyi performans** | SQL Server tarafından `>=` ve `<=` şeklinde optimize edilir. |
+| `AND` | ✅ **Aynı performans** | `BETWEEN` ile eşdeğerdir, ancak daha uzun yazım gerektirir. |
+| `OR` | ❌ **Düşük performans** | Index Scan ihtimali yüksek, büyük veri kümelerinde yavaş çalışır. |
+| `UNION ALL` | ✅ **Daha iyi performans (Bazı durumlarda)** | Eğer iki ayrı index varsa, `OR` yerine kullanılması daha verimli olabilir. |
+
+📌 **Genel Tavsiye:**
+- **Sıralı veri (tarih, sayısal) filtrelemesi yaparken `BETWEEN` veya `AND` kullanın.**
+- **Eğer `OR` kullanmanız gerekiyorsa, mümkünse `UNION ALL` veya `IN` kullanarak performansı artırabilirsiniz.**
+- **Eğer indeksleme uygunsa, SQL Server genellikle `BETWEEN` ve `AND` kullanımlarını daha hızlı çalıştırır.** 🚀
+
+
+## ORDER BY 
+```sh
+
+```
+---
+# **MS SQL’de ORDER BY Nedir?**
+`ORDER BY` komutu, **verileri belirli bir sütuna göre sıralamak** için kullanılır. **Artan (ASC)** veya **Azalan (DESC)** sırayla sıralama işlemi gerçekleştirebilir.
+
+## **ORDER BY Temel Kullanımı**
+```sql
+SELECT * FROM Category ORDER BY CategoryName ASC;
+```
+Bu sorgu, **Category** tablosundaki tüm verileri **CategoryName sütununa göre alfabetik (artan - A’dan Z’ye) sıralar**.
+
+```sql
+SELECT * FROM Category ORDER BY CategoryName DESC;
+```
+Bu sorgu, **CategoryName sütununa göre azalan (Z’den A’ya) sıralar**.
+
+---
+
+## **Northwind Veritabanındaki `Category` Tablosunda ORDER BY Kullanımı**
+
+### **1. Kategori Adını Artan ve Azalan Şekilde Sıralama**
+```sql
+SELECT CategoryID, CategoryName FROM Category ORDER BY CategoryName ASC;
+```
+- **Kategori adlarını alfabetik olarak sıralar (A’dan Z’ye).**
+
+```sql
+SELECT CategoryID, CategoryName FROM Category ORDER BY CategoryName DESC;
+```
+- **Kategori adlarını ters alfabetik sırayla sıralar (Z’den A’ya).**
+
+---
+
+### **2. `CategoryID` Değerine Göre Sıralama**
+```sql
+SELECT * FROM Category ORDER BY CategoryID ASC;
+```
+- **Kategori ID’sine göre küçükten büyüğe sıralar.**
+
+```sql
+SELECT * FROM Category ORDER BY CategoryID DESC;
+```
+- **Kategori ID’sine göre büyükten küçüğe sıralar.**
+
+---
+
+### **3. Birden Fazla Sütuna Göre Sıralama**
+Eğer birden fazla sütuna göre sıralama yapmak istiyorsak, **öncelik sırasına göre ORDER BY kullanabiliriz**.
+
+```sql
+SELECT * FROM Category ORDER BY CategoryName ASC, CategoryID DESC;
+```
+- **Önce CategoryName alfabetik sıralanır.**
+- **Aynı isimdeki kategoriler varsa, bunlar CategoryID’ye göre büyükten küçüğe sıralanır.**
+
+---
+
+### **4. `ORDER BY` ve `WHERE` Kullanımı**
+```sql
+SELECT * FROM Category WHERE CategoryID > 3 ORDER BY CategoryName ASC;
+```
+- **CategoryID’si 3’ten büyük olan kategorileri alır.**
+- **Kategori adlarını alfabetik sıralar.**
+
+---
+
+### **5. `ORDER BY` ile `TOP` Kullanımı**
+**En yüksek veya en düşük değerleri almak için `TOP` ifadesi ile `ORDER BY` kullanılabilir.**
+```sql
+SELECT TOP 3 * FROM Category ORDER BY CategoryID ASC;
+```
+- **CategoryID’ye göre en küçük 3 kategoriyi getirir.**
+
+```sql
+SELECT TOP 3 * FROM Category ORDER BY CategoryID DESC;
+```
+- **CategoryID’ye göre en büyük 3 kategoriyi getirir.**
+
+---
+
+### **6. `ORDER BY` ile `CASE` Kullanımı (Özel Sıralama)**
+Eğer belirli kategorilerin öncelikli gelmesini istiyorsak, **CASE ifadesiyle özel sıralamalar** yapabiliriz.
+
+```sql
+SELECT * FROM Category 
+ORDER BY 
+    CASE 
+        WHEN CategoryName = 'Beverages' THEN 1
+        WHEN CategoryName = 'Condiments' THEN 2
+        ELSE 3 
+    END, CategoryName ASC;
+```
+- **"Beverages" en üstte olur.**
+- **"Condiments" ikinci sırada olur.**
+- **Diğer kategoriler alfabetik sırayla gelir.**
+
+---
+
+### **Sonuç**
+- `ORDER BY`, **verileri belirli sütunlara göre sıralamak için kullanılır.**
+- `ASC` → **Artan sırayla sıralar (küçükten büyüğe, A’dan Z’ye).**
+- `DESC` → **Azalan sırayla sıralar (büyükten küçüğe, Z’den A’ya).**
+- `ORDER BY` **birden fazla sütun ile kullanılabilir.**
+- **`TOP`, `WHERE`, `CASE` gibi ifadelerle birlikte kullanılarak özelleştirilmiş sıralamalar yapılabilir.**
+
+📌 **Northwind veritabanındaki Category tablosu ile ORDER BY komutlarını kullanarak sıralama işlemlerini rahatça yapabilirsiniz!** 🚀
 
 ## DML
 ```sh
