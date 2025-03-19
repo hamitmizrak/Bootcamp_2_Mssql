@@ -46,7 +46,7 @@ select Picture,Description,CategoryName,CategoryID FROM nortwind.dbo.Categories;
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
 -- AS
--- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden CategoryID, [CategoryName]  verileri gösteriniz ?
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden [CategoryID], [CategoryName]  verileri gösteriniz ?
 -- 1.YOL
 select CategoryID,CategoryName FROM nortwind.dbo.Categories;
 -- 2.YOL(alias: Takma ad anlamına gelmektedir)
@@ -62,7 +62,17 @@ FROM nortwind.dbo.Categories cate;
 
 -- ----------------------------------------
 -- ----------------------------------------
--- SIRALAMA: 
+-- SIRALAMA (ORDER BY)
+-- Belirli sutunlara göre sırlamak için kullanıyoruz ARTAN(ASC), AZALAN(DESC)
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden [CategoryID]'a göre küçükten büyüğe verileri gösteriniz ?
+-- 1.YOL
+SELECT *
+FROM nortwind.dbo.Categories cate;
+
+-- 2.YOL
+SELECT *
+FROM nortwind.dbo.Categories cate 
+ORDER BY cate.CategoryID ;
 
 -- ----------------------------------------
 -- ----------------------------------------
