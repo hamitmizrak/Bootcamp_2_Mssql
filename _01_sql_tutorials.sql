@@ -32,7 +32,7 @@ USE nortwind;
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
 -- DQL (Data Query Language)
---  SORU-1) nortwind veritabanından `Categories` tablosundaki verileri gösteriniz ?
+-- SORU-1) nortwind veritabanından `Categories` tablosundaki verileri gösteriniz ?
 -- 1.YOL
 SELECT * FROM Categories; 
 -- 2.YOL (Eğer birden fazla database varsa)
@@ -45,7 +45,7 @@ select Picture,Description,CategoryName,CategoryID FROM nortwind.dbo.Categories;
 
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
--- AS
+-- ***AS***
 -- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden [CategoryID], [CategoryName]  verileri gösteriniz ?
 -- 1.YOL
 select CategoryID,CategoryName FROM nortwind.dbo.Categories;
@@ -62,8 +62,10 @@ FROM nortwind.dbo.Categories cate;
 
 -- ----------------------------------------
 -- ----------------------------------------
+-- ***ORDER BY***
 -- SIRALAMA (ORDER BY)
 -- Belirli sutunlara göre sırlamak için kullanıyoruz ARTAN(ASC), AZALAN(DESC)
+
 -- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden [CategoryID]'a göre küçükten büyüğe verileri gösteriniz ?
 -- 1.YOL
 SELECT *
@@ -72,10 +74,41 @@ FROM nortwind.dbo.Categories cate;
 -- 2.YOL
 SELECT *
 FROM nortwind.dbo.Categories cate 
-ORDER BY cate.CategoryID ;
+ORDER BY cate.CategoryID ASC ;
+
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden [CategoryID]'a göre büyükten küçüğe doğru verileri gösteriniz ?
+SELECT *
+FROM nortwind.dbo.Categories cate 
+ORDER BY cate.CategoryID DESC;
+
+-- Birden Fazla Sütuna Göre Sıralama
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden
+-- [CategoryID]'a göre büyükten küçüğe, ve CategoryName Küçükten büyüğe  doğru verileri gösteriniz ?
+SELECT *
+FROM nortwind.dbo.Categories cate 
+ORDER BY cate.CategoryID DESC, cate.CategoryName ASC;
 
 -- ----------------------------------------
 -- ----------------------------------------
+-- ***TOP***
+-- TOP (Değerleri sağlayan verileri göster)
+
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden
+-- [CategoryID]'a göre büyükten küçüğe, ve CategoryName Küçükten büyüğe  doğru, sağlayan 6 tane bütün verileri gösteriniz ?
+SELECT TOP 6 *
+FROM nortwind.dbo.Categories cate 
+ORDER BY cate.CategoryID DESC, cate.CategoryName ASC;
+
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden
+-- [CategoryID]'a göre büyükten küçüğe, ve CategoryName Küçükten büyüğe  doğru, sağlayan 6 tane sadece CategoryID ve CategoryName
+-- verileri gösteriniz ?
+SELECT TOP 6 cate.CategoryID, cate.CategoryName
+FROM nortwind.dbo.Categories cate 
+ORDER BY cate.CategoryID DESC, cate.CategoryName ASC;
+
+-- ----------------------------------------
+-- ----------------------------------------
+-- ***WHERE***
 -- WHERE: Şart(Belirli şartları sağlayan durumlarda filtreleme yapmak içindir.)
 /*
 WHERE, SELECT, UPDATE, DELETE gibi sorgularla birlikte kullanılır.
@@ -110,14 +143,13 @@ FROM nortwind.dbo.Categories as cate
 WHERE cate.CategoryName='java' AND cate.CategoryID>=10;
 
 
-
-
-
 -- BIL
--- BETWEEN
--- In
+-- BETWEEN (AND, OR)
+-- IN
 -- LIKE
-SELECT * FROM Categories; 
+
+-- ***BETWEEN***
+-- BETWEEN Arasındaki değerleri göstermek için
 -- SORU-4) nortwind veritabanından `Categories` tablosundaki verilerden CategoryID 3 ile 5 arasındaki(dahil)  verileri gösteriniz ?
 SELECT 
 	cate.CategoryID,
@@ -127,6 +159,9 @@ FROM
 WHERE 
 	cate.CategoryID 
 BETWEEN 3 AND 5;
+
+-- ***LIKE***
+-- LIKE:
 
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
