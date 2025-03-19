@@ -31,7 +31,7 @@ USE nortwind;
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
--- DQL
+-- DQL (Data Query Language)
 --  SORU-1) nortwind veritabanından `Categories` tablosundaki verileri gösteriniz ?
 -- 1.YOL
 SELECT * FROM Categories; 
@@ -62,18 +62,25 @@ FROM nortwind.dbo.Categories cate;
 
 -- ----------------------------------------
 -- ----------------------------------------
+-- SIRALAMA: 
+
+-- ----------------------------------------
+-- ----------------------------------------
 -- WHERE: Şart(Belirli şartları sağlayan durumlarda filtreleme yapmak içindir.)
 /*
 WHERE, SELECT, UPDATE, DELETE gibi sorgularla birlikte kullanılır.
 */
 
 -- SORU-3) nortwind veritabanından `Categories` tablosundaki verilerden CategoryID 3 ve yukarısındaki verileri gösteriniz ?
+-- Sayısal Değer ile Filtreleme
 SELECT 
 cate.CategoryID,
 cate.CategoryName 
 FROM nortwind.dbo.Categories as cate
 WHERE cate.CategoryID>=3;
 
+-- Birden Fazla Koşul Kullanımı (AND ve OR)
+-- VEYA (OR)
 -- SORU-4) nortwind veritabanından `Categories` tablosundaki verilerden CategoryID 3 ve yukarısındaki veya [CategoryName]  `Produce` olan verileri gösteriniz ?
 SELECT *
 FROM nortwind.dbo.Categories as cate
@@ -86,25 +93,30 @@ FROM nortwind.dbo.Categories as cate
 WHERE cate.CategoryID>=3 OR cate.CategoryName='java';
 
 
--- SORU-5) nortwind veritabanından `Categories` tablosundaki kolonlarda [CategoryName]  `java` olan  ve [Description]  `interpreter`verileri gösteriniz ?
+-- VE (AND)
+-- SORU-5) nortwind veritabanından `Categories` tablosundaki kolonlarda [CategoryName]  `java` olan  ve [CategoryID]>=10 verileri gösteriniz ?
 SELECT *
 FROM nortwind.dbo.Categories as cate
-WHERE cate.CategoryName="java"
-
-
+WHERE cate.CategoryName='java' AND cate.CategoryID>=10;
 
 
 
 
 
 -- BIL
+-- BETWEEN
+-- In
+-- LIKE
 SELECT * FROM Categories; 
 -- SORU-4) nortwind veritabanından `Categories` tablosundaki verilerden CategoryID 3 ile 5 arasındaki(dahil)  verileri gösteriniz ?
 SELECT 
-cate.CategoryID,
-cate.CategoryName 
-FROM nortwind.dbo.Categories as cate
-WHERE cate.CategoryID>=3;
+	cate.CategoryID,
+	cate.CategoryName 
+FROM 
+	nortwind.dbo.Categories as cate
+WHERE 
+	cate.CategoryID 
+BETWEEN 3 AND 5;
 
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
@@ -131,3 +143,21 @@ WHERE cate.CategoryID>=3;
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
+
+
+-- --------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------
+-- DCL
+
+
+-- --------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------
+-- TCL
