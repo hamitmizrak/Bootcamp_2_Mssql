@@ -62,9 +62,36 @@ FROM nortwind.dbo.Categories cate;
 
 -- ----------------------------------------
 -- ----------------------------------------
+-- ***TOP***
+-- TOP (Değerleri sağlayan verileri göster)
+
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden
+-- [CategoryID]'a göre büyükten küçüğe, ve CategoryName Küçükten büyüğe  doğru, sağlayan 6 tane bütün verileri gösteriniz ?
+SELECT TOP 6 *
+FROM nortwind.dbo.Categories cate 
+ORDER BY cate.CategoryID DESC, cate.CategoryName ASC;
+
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden
+-- [CategoryID]'a göre büyükten küçüğe, ve CategoryName Küçükten büyüğe  doğru, sağlayan 6 tane sadece CategoryID ve CategoryName
+-- verileri gösteriniz ?
+SELECT TOP 6 cate.CategoryID, cate.CategoryName
+FROM nortwind.dbo.Categories cate 
+ORDER BY cate.CategoryID DESC, cate.CategoryName ASC;
+
+-- ----------------------------------------
+-- ----------------------------------------
+-- ***DISTINCT***
+-- DISTINCT bu fonksiyon tekrarlanan verileri bir kez göstermeye yarar.
+
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden tekrar eden verilerden CategoryName'lerini kaldırınız sonrasında listeleyiniz?
+SELECT DISTINCT cate.CategoryName
+FROM nortwind.dbo.Categories cate;
+
+-- ----------------------------------------
+-- ----------------------------------------
 -- ***ORDER BY***
 -- SIRALAMA (ORDER BY)
--- Belirli sutunlara göre sırlamak için kullanıyoruz ARTAN(ASC), AZALAN(DESC)
+-- Belirli sutunlara göre sıralamak için kullanıyoruz ARTAN(ASC), AZALAN(DESC)
 
 -- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden [CategoryID]'a göre küçükten büyüğe verileri gösteriniz ?
 -- 1.YOL
@@ -88,23 +115,7 @@ SELECT *
 FROM nortwind.dbo.Categories cate 
 ORDER BY cate.CategoryID DESC, cate.CategoryName ASC;
 
--- ----------------------------------------
--- ----------------------------------------
--- ***TOP***
--- TOP (Değerleri sağlayan verileri göster)
 
--- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden
--- [CategoryID]'a göre büyükten küçüğe, ve CategoryName Küçükten büyüğe  doğru, sağlayan 6 tane bütün verileri gösteriniz ?
-SELECT TOP 6 *
-FROM nortwind.dbo.Categories cate 
-ORDER BY cate.CategoryID DESC, cate.CategoryName ASC;
-
--- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden
--- [CategoryID]'a göre büyükten küçüğe, ve CategoryName Küçükten büyüğe  doğru, sağlayan 6 tane sadece CategoryID ve CategoryName
--- verileri gösteriniz ?
-SELECT TOP 6 cate.CategoryID, cate.CategoryName
-FROM nortwind.dbo.Categories cate 
-ORDER BY cate.CategoryID DESC, cate.CategoryName ASC;
 
 -- ----------------------------------------
 -- ----------------------------------------
@@ -152,12 +163,12 @@ WHERE cate.CategoryName='java' AND cate.CategoryID>=10;
 -- BETWEEN Arasındaki değerleri göstermek için
 -- SORU-4) nortwind veritabanından `Categories` tablosundaki verilerden CategoryID 3 ile 5 arasındaki(dahil)  verileri gösteriniz ?
 SELECT 
-	cate.CategoryID,
-	cate.CategoryName 
+cate.CategoryID,
+cate.CategoryName 
 FROM 
-	nortwind.dbo.Categories as cate
+nortwind.dbo.Categories as cate
 WHERE 
-	cate.CategoryID 
+cate.CategoryID 
 BETWEEN 3 AND 5;
 
 -- ***LIKE***
