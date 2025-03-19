@@ -83,9 +83,22 @@ ORDER BY cate.CategoryID DESC, cate.CategoryName ASC;
 -- ***DISTINCT***
 -- DISTINCT bu fonksiyon tekrarlanan verileri bir kez göstermeye yarar.
 
--- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden tekrar eden verilerden CategoryName'lerini kaldırınız sonrasında listeleyiniz?
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki  CategoryName'lerini tekrarsız verileri listeleyiniz?
 SELECT DISTINCT cate.CategoryName
 FROM nortwind.dbo.Categories cate;
+
+
+-- ----------------------------------------
+-- ----------------------------------------
+-- ***COUNT***
+-- COUNT fonksiyonu tekrar eden verileri gösterir
+
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki kaç tane veri vardır ?
+SELECT * FROM  nortwind.dbo.Categories cate;
+SELECT COUNT(*) AS SAYI FROM  nortwind.dbo.Categories cate;
+SELECT COUNT(*) AS 'KAÇ TANE SAYI' FROM  nortwind.dbo.Categories cate;
+SELECT COUNT(*)  'KAÇ TANE SAYI' FROM  nortwind.dbo.Categories cate;
+
 
 -- ----------------------------------------
 -- ----------------------------------------
@@ -153,7 +166,24 @@ SELECT *
 FROM nortwind.dbo.Categories as cate
 WHERE cate.CategoryName='java' AND cate.CategoryID>=10;
 
+-- ----------------------------------------
+-- ----------------------------------------
+-- ***IS NULL / IS NOT NULL***  => WHERE
+-- IS NULL: Null olan verileri gösterir
+-- IS NOT NULL: Null olmayan verileri gösterir
 
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki picture kolonunda null olan verileri gösteriniz ?
+SELECT *
+FROM  nortwind.dbo.Categories cate WHERE cate.Picture IS NULL;
+
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki picture kolonunda null olmayan verileri gösteriniz ?
+SELECT *
+FROM  nortwind.dbo.Categories cate WHERE cate.Picture IS NOT NULL;
+
+
+-- ----------------------------------------
+-- ----------------------------------------
+-- ***BIL***  =>  WHERE
 -- BIL
 -- BETWEEN (AND, OR)
 -- IN
