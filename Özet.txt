@@ -1,0 +1,216 @@
+Veritabanları genellikle 
+1-) ilişkisel (RDBMS) ve 
+2-) NoSQL (Not Only SQL) olmak üzere iki ana kategoriye ayrılır
+---------------------------------------------------
+
+İlişkisel Veritabanı
+İlişkisel veritabanları (MSSQL, MySQL, PostgreSQL, Oracle, SQLite vb.) tablolar kullanarak verileri saklar.
+---------------------------------------------------
+
+
+NoSQL veritabanları (MongoDB, Cassandra, Redis vb.) ise verileri esnek yapılar (JSON, key-value, doküman, grafik vb.) şeklinde saklar.
+
+---------------------------------------------------
+📌 Veritabanı Türleri
+Veritabanları farklı mimari ve kullanım senaryolarına göre çeşitli türlere ayrılır:
+---------------------------------------------------
+
+1️- İlişkisel Veritabanları (RDBMS - Relational Database Management System)
+Verileri tablolar (rows & columns) halinde saklar.
+SQL (Structured Query Language) kullanılarak yönetilir.
+Anahtarlar (Primary Key, Foreign Key) ve ilişkiler kullanılır.
+ACID (Atomicity, Consistency, Isolation, Durability) ilkelerine bağlıdır.
+Örnekler: Microsoft SQL Server (MSSQL), MySQL, PostgreSQL, Oracle, IBM Db2.
+
+---------------------------------------------------
+2- NoSQL (Not Only SQL) Veritabanları
+Verileri esnek formatlarda (JSON, Key-Value, Column-Family, Graph) saklar.
+Genellikle büyük ölçekli veri işleme (Big Data) için uygundur.
+Yüksek esneklik ve ölçeklenebilirlik sunar.
+Örnekler: MongoDB (Doküman tabanlı), Redis (Key-Value), Cassandra (Column-Family), Neo4j (Graf tabanlı).
+
+
+---------------------------------------------------
+3- Dağıtık (Distributed) Veritabanları
+Veriler birden fazla fiziksel veya sanal sunucuya dağıtılır.
+Genellikle büyük veri sistemlerinde kullanılır.
+Örnekler: Apache Hadoop, Google Bigtable, Amazon DynamoDB.
+
+---------------------------------------------------
+4- Bellek İçi (In-Memory) Veritabanları
+Veriler RAM’de saklanarak ultra hızlı erişim sağlanır.
+Genellikle önbellekleme (Caching) ve gerçek zamanlı analizler için kullanılır.
+Örnekler: Redis, Memcached.
+
+---------------------------------------------------
+5- Veri Ambarları (Data Warehouses)
+Tarihsel ve büyük ölçekli verileri analiz etmek için kullanılır.
+Örnekler: Amazon Redshift, Google BigQuery, Snowflake.
+
+---------------------------------------------------
+📌 Veritabanı ile İlgili Sık Kullanılan Terimler
+1. Veri (Data)
+Veritabanında saklanan en küçük bilgi birimidir.
+
+
+---------------------------------------------------
+📌 SQL'in Temel Kullanım Alanları
+SQL, veritabanı işlemlerini yönetmek için kullanılan evrensel bir dil olup aşağıdaki işlemleri gerçekleştirmek için kullanılır:
+
+Veri Tanımlama (DDL - Data Definition Language)
+
+Tablo, şema, indeks oluşturma ve değiştirme işlemleri için kullanılır.
+Örnek komutlar: CREATE, ALTER, DROP, TRUNCATE
+Veri Manipülasyonu (DML - Data Manipulation Language)
+
+Verilere ekleme, güncelleme ve silme işlemleri yapmak için kullanılır.
+Örnek komutlar: INSERT, UPDATE, DELETE
+Veri Sorgulama (DQL - Data Query Language)
+
+Verileri okumak ve filtrelemek için kullanılır.
+Örnek komutlar: SELECT
+Veri Kontrolü (DCL - Data Control Language)
+
+Veritabanı kullanıcı izinlerini yönetir.
+Örnek komutlar: GRANT, REVOKE
+Veri İşleme (TCL - Transaction Control Language)
+
+Veritabanı işlemlerini yönetir (Commit, Rollback).
+Örnek komutlar: COMMIT, ROLLBACK, SAVEPOINT
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------
+
+
+---------------------------------------------------

@@ -50,7 +50,7 @@ Server name: local
 Power Shelling(Yönetici) veya CMD(Yönetici) Modda açarak devam ediniz 
 > Step-1 Firewall kapat
 
-> Step-2 1433 ve 1434 portunu ekle
+> Step-2 1433 ve 1434 portunu ekle (Yönetici Mod Powershell)
 netsh advfirewall firewall add rule name="SQL Server TCP" dir=in action=allow protocol=TCP localport=1433
 netsh advfirewall firewall add rule name="SQL Server UDP" dir=in action=allow protocol=UDP localport=1434
 
@@ -137,7 +137,7 @@ Bir veritabanı sistemini anlamak için **bazı temel kavramları bilmek gerekir
 - **Veritabanında saklanan en küçük bilgi birimidir**.
 - Örneğin:
   ```
-  "Ahmet Yılmaz", "ahmet@example.com", "0543 123 4567"
+  "Hamit Mızrak", "hamitmizrak@gmail.com", "0543 111 1111"
   ```
   Yukarıdaki her bir bilgi **bir veri öğesidir**.
 
@@ -152,7 +152,7 @@ Bir veritabanı sistemini anlamak için **bazı temel kavramları bilmek gerekir
 
   | CustomerID | FirstName | LastName | Email |
     |-----------|----------|----------|--------------------|
-  | 1         | Ahmet    | Yılmaz   | ahmet@example.com |
+  | 1         | Hamit    | Mızrak   | Hamit@example.com |
   | 2         | Ayşe     | Demir    | ayse@example.com  |
 
 ### **🔹 4. Satır (Row) / Kayıt (Record)**
@@ -214,7 +214,7 @@ Veritabanı sistemlerinde veri bütünlüğünü sağlamak için **ACID prensipl
 - **Örnek SQL Sorguları:**
 
   ```sql
-  SELECT * FROM Customers WHERE FirstName = 'Ahmet';
+  SELECT * FROM Customers WHERE FirstName = 'Hamit';
   ```
 
 ### **🔹 12. CRUD İşlemleri**
@@ -335,7 +335,7 @@ DML, **veri ekleme, güncelleme ve silme işlemleri için kullanılır**.
 #### **📌 `INSERT INTO` - Veri Ekleme**
 ```sql
 INSERT INTO Customers (CustomerID, FirstName, LastName, Email)
-VALUES (1, 'Ahmet', 'Yılmaz', 'ahmet@example.com');
+VALUES (1, 'Hamit', 'Mızrak', 'Hamit@example.com');
 ```
 
 #### **📌 `UPDATE` - Veri Güncelleme**
@@ -362,7 +362,7 @@ SELECT * FROM Customers;
 
 #### **📌 `SELECT WHERE` - Koşula Göre Filtreleme**
 ```sql
-SELECT * FROM Customers WHERE FirstName = 'Ahmet';
+SELECT * FROM Customers WHERE FirstName = 'Hamit';
 ```
 
 #### **📌 `JOIN` - Tabloları Birleştirme**
@@ -544,7 +544,7 @@ CREATE TABLE Customers (
 ### **3️⃣ Veri Ekleme**
 ```sql
 INSERT INTO Customers (CustomerID, FirstName, LastName, Email)
-VALUES (1, 'Ahmet', 'Yılmaz', 'ahmet@example.com');
+VALUES (1, 'Hamit', 'Mızrak', 'hamitmizrak@gmail.com');
 ```
 
 ### **4️⃣ Veri Okuma (SELECT)**
