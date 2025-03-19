@@ -723,12 +723,364 @@ SEQUEL: Structured English QUery Language
 
 
 
+## SQL NEdir ? Devam
+```sh
+
+```
+---
+### **SQL Nedir? (Detaylı Açıklama)**
+
+#### **1. SQL'in Tanımı**
+SQL (Structured Query Language - Yapılandırılmış Sorgu Dili), ilişkisel veritabanlarını yönetmek, sorgulamak, veri eklemek, güncellemek ve silmek için kullanılan standart bir dildir. SQL, özellikle **ilişkisel veritabanı yönetim sistemleri (RDBMS - Relational Database Management Systems)** ile birlikte çalışmak üzere tasarlanmıştır ve verilerin işlenmesi için güçlü bir dizi komut içerir.
+
+SQL, 1970'lerin başında IBM tarafından geliştirilmiş olup, daha sonra ANSI (American National Standards Institute) ve ISO (International Organization for Standardization) tarafından bir standart haline getirilmiştir. Günümüzde MySQL, PostgreSQL, Microsoft SQL Server, Oracle, SQLite gibi birçok veritabanı yönetim sisteminde yaygın olarak kullanılmaktadır.
+
+---
+
+#### **2. SQL'in Kullanım Alanları**
+SQL, geniş bir kullanım alanına sahiptir ve aşağıdaki gibi çeşitli görevleri yerine getirmek için kullanılır:
+
+1. **Veri Tabanı Oluşturma ve Yönetme**
+    - Yeni bir veritabanı oluşturma
+    - Tablo, dizin (index) ve ilişkileri yönetme
+
+2. **Veri Manipülasyonu**
+    - Veri ekleme (`INSERT`)
+    - Veri güncelleme (`UPDATE`)
+    - Veri silme (`DELETE`)
+
+3. **Veri Sorgulama ve Analiz**
+    - Verileri filtreleme ve seçme (`SELECT`)
+    - Veri gruplama (`GROUP BY`)
+    - Koşullu sorgular (`WHERE`, `HAVING`)
+    - Verileri sıralama (`ORDER BY`)
+    - İleri seviye analizler için birleşimler (`JOIN`)
+
+4. **Kullanıcı ve Yetkilendirme Yönetimi**
+    - Kullanıcı oluşturma ve yetkilendirme (`GRANT`, `REVOKE`)
+    - Güvenlik politikaları belirleme
+
+5. **Veri Yedekleme ve Geri Yükleme**
+    - Veritabanı yedekleme (`BACKUP DATABASE`)
+    - Verileri kurtarma (`RESTORE`)
+
+---
+
+#### **3. SQL'in Temel Bileşenleri**
+SQL birçok alt bölüme ayrılabilir. Bunların başlıcaları:
+
+1. **DDL (Data Definition Language - Veri Tanımlama Dili)**  
+   Veritabanı ve tablo yapısını oluşturan ve yöneten komutlardan oluşur.
+    - `CREATE` – Yeni bir veritabanı veya tablo oluşturur.
+    - `ALTER` – Var olan tabloları değiştirmek için kullanılır.
+    - `DROP` – Bir veritabanını veya tablosunu tamamen siler.
+    - `TRUNCATE` – Tablodaki tüm verileri hızlıca siler ancak tablo yapısını korur.
+
+2. **DML (Data Manipulation Language - Veri İşleme Dili)**  
+   Veriler üzerinde değişiklik yapmaya olanak tanır.
+    - `INSERT` – Yeni veri ekler.
+    - `UPDATE` – Mevcut veriyi günceller.
+    - `DELETE` – Verileri siler.
+
+3. **DQL (Data Query Language - Veri Sorgulama Dili)**  
+   Veritabanındaki verileri sorgulamak için kullanılır.
+    - `SELECT` – Verileri almak için kullanılır.
+    - `WHERE` – Şartlı sorgular oluşturur.
+    - `GROUP BY` – Verileri gruplandırır.
+    - `ORDER BY` – Verileri belirli bir sıraya göre sıralar.
+
+4. **DCL (Data Control Language - Veri Kontrol Dili)**  
+   Kullanıcı yetkilendirmeleri ve erişim kontrolleri ile ilgilidir.
+    - `GRANT` – Kullanıcılara yetki verir.
+    - `REVOKE` – Kullanıcılardan yetki alır.
+
+5. **TCL (Transaction Control Language - İşlem Kontrol Dili)**  
+   Veritabanı işlemlerini yönetmek için kullanılır.
+    - `COMMIT` – Yapılan değişiklikleri kalıcı hale getirir.
+    - `ROLLBACK` – Yapılan değişiklikleri geri alır.
+    - `SAVEPOINT` – Belirli bir noktada işlem kaydeder.
+
+---
+
+#### **4. SQL Komutlarına Detaylı Bakış**
+Aşağıda yaygın olarak kullanılan SQL komutları detaylandırılmıştır.
+
+##### **Veri Tabanı Oluşturma ve Yönetme**
+```sql
+CREATE DATABASE ornek_veritabani;
+USE ornek_veritabani;
+```
+Yukarıdaki komut, `ornek_veritabani` adlı yeni bir veritabanı oluşturur ve onu kullanmaya başlar.
+
+##### **Tablo Oluşturma**
+```sql
+CREATE TABLE Musteriler (
+    MusteriID INT PRIMARY KEY AUTO_INCREMENT,
+    Ad VARCHAR(50),
+    Soyad VARCHAR(50),
+    Email VARCHAR(100) UNIQUE
+);
+```
+Bu SQL ifadesi, `Musteriler` adında bir tablo oluşturur. `MusteriID` otomatik artan birincil anahtar olarak belirlenmiştir.
+
+##### **Veri Ekleme (INSERT)**
+```sql
+INSERT INTO Musteriler (Ad, Soyad, Email) 
+VALUES ('Ali', 'Yılmaz', 'ali@example.com');
+```
+Bu komut, `Musteriler` tablosuna yeni bir müşteri ekler.
+
+##### **Veri Sorgulama (SELECT)**
+```sql
+SELECT * FROM Musteriler WHERE Ad = 'Ali';
+```
+Bu komut, adı "Ali" olan müşterileri getirir.
+
+##### **Veri Güncelleme (UPDATE)**
+```sql
+UPDATE Musteriler SET Email = 'ali.yeni@example.com' WHERE MusteriID = 1;
+```
+Belirli bir müşterinin e-posta adresini günceller.
+
+##### **Veri Silme (DELETE)**
+```sql
+DELETE FROM Musteriler WHERE MusteriID = 1;
+```
+Belirli bir müşteriyi siler.
+
+##### **Tabloları Birleştirme (JOIN)**
+```sql
+SELECT Musteriler.Ad, Siparisler.Tutar 
+FROM Musteriler 
+INNER JOIN Siparisler ON Musteriler.MusteriID = Siparisler.MusteriID;
+```
+Bu sorgu, müşterilerle siparişleri birleştirerek her müşterinin yaptığı alışverişleri gösterir.
+
+##### **Gruplama ve Sıralama**
+```sql
+SELECT Ad, COUNT(*) AS SiparisSayisi 
+FROM Musteriler 
+JOIN Siparisler ON Musteriler.MusteriID = Siparisler.MusteriID
+GROUP BY Ad
+ORDER BY SiparisSayisi DESC;
+```
+Bu komut, müşterilerin sipariş sayılarını gruplar ve en çok sipariş verenleri sıralar.
+
+---
+
+#### **5. SQL'in Avantajları**
+- **Kolay Öğrenilir:** SQL, İngilizceye benzeyen bir sözdizimine sahiptir.
+- **Esneklik:** Farklı veritabanı yönetim sistemlerinde çalışabilir.
+- **Hızlı ve Verimli:** Büyük veri kümeleri üzerinde hızlı işlemler gerçekleştirebilir.
+- **Güvenlik:** Yetkilendirme ve erişim kontrolleri sağlar.
+- **Standardizasyon:** ANSI ve ISO tarafından desteklenmektedir.
+
+---
+
+#### **6. SQL Kullanılan Popüler Veritabanı Yönetim Sistemleri**
+- **MySQL:** Açık kaynak kodlu ve yaygın kullanılan bir RDBMS.
+- **PostgreSQL:** Gelişmiş özelliklere sahip, açık kaynaklı bir veritabanı.
+- **Microsoft SQL Server:** Kurumsal çözümler için güçlü bir seçenek.
+- **Oracle Database:** Büyük ölçekli veri yönetimi için yaygın kullanılan bir sistem.
+- **SQLite:** Hafif ve gömülü veritabanı çözümleri için ideal.
+
+---
+
+### **Sonuç**
+SQL, veri yönetimi için vazgeçilmez bir araçtır. Kullanımı kolay, güçlü ve ölçeklenebilir yapısıyla hem küçük projeler hem de büyük kurumsal sistemlerde kullanılabilir. Verileri yönetmek, analiz etmek ve sorgulamak için SQL bilgisi, yazılım geliştirme ve veri bilimi gibi birçok alanda kritik bir beceridir.
+
+DQL (Data Query Language)	Veriyi sorgulamak ve getirmek (SELECT)
+DML (Data Manipulation Language)	Veri ekleme, güncelleme, silme (INSERT, UPDATE, DELETE)
+DDL (Data Definition Language)	Tabloları, şemaları tanımlama (CREATE, ALTER, DROP)
+DCL (Data Control Language)	Kullanıcı yetkilendirmeleri (GRANT, REVOKE)
+TCL (Transaction Control Language)	İşlemleri yönetme (COMMIT, ROLLBACK, SAVEPOINT)
+
 ## DQL
 ```sh
 
 ```
 ---
+## **SQL DQL (Data Query Language) Nedir?**
 
+### **DQL (Data Query Language - Veri Sorgulama Dili) Tanımı**
+DQL, **veritabanında kayıtlı verileri sorgulamak ve almak** için kullanılan SQL alt kümesidir. Diğer SQL alt dilleri gibi, DQL de **veriyle etkileşimi sağlamak** için kritik bir rol oynar. Ancak, DQL’in diğer SQL alt dillerinden (DDL, DML, DCL, TCL) farkı, **veri üzerinde değişiklik yapmadan yalnızca veri çekmesi** ve kullanıcıya sunmasıdır.
+
+DQL'in temel amacı **SELECT** ifadesi ile veri tabanından **veri getirmek ve raporlar oluşturmak** üzerinedir.
+
+---
+
+
+## **DQL Komutları**
+DQL, aslında tek bir temel komuttan oluşur:
+
+- **SELECT** → Veritabanından belirli verileri almak için kullanılır.
+
+Ancak, SELECT komutu çok güçlüdür ve çeşitli operasyonlarla genişletilebilir:
+1. **Belli sütunları seçme**
+2. **Filtreleme (WHERE)**
+3. **Gruplama (GROUP BY, HAVING)**
+4. **Sıralama (ORDER BY)**
+5. **Birleştirme (JOIN)**
+6. **Alt sorgular (Subqueries)**
+7. **TOP, DISTINCT gibi kısıtlamalar**
+
+---
+
+## **DQL Komutlarının Kullanımı ve Örnekler**
+Aşağıda **Microsoft SQL Server (MSSQL)** kullanılarak gerçekleştirilen çeşitli DQL işlemlerine dair örnekler verilmiştir.
+
+---
+
+### **1. Tüm Kayıtları Çekme**
+Bir tablodaki **tüm verileri almak** için kullanılır.
+
+```sql
+SELECT * FROM Employees;
+```
+- `Employees` tablosundaki tüm sütunlar ve tüm satırlar döndürülür.
+
+---
+
+### **2. Belirli Sütunları Seçme**
+Tablodaki **tüm sütunları değil, yalnızca belirli sütunları almak** için kullanılır.
+
+```sql
+SELECT FirstName, LastName, Email FROM Employees;
+```
+- `Employees` tablosundan sadece `FirstName`, `LastName` ve `Email` sütunları çekilir.
+
+---
+
+### **3. Koşul ile Veri Getirme (WHERE)**
+Belirli koşulları sağlayan verileri almak için kullanılır.
+
+```sql
+SELECT * FROM Employees WHERE Department = 'IT';
+```
+- Sadece **IT departmanında** çalışanların bilgileri döndürülür.
+
+```sql
+SELECT * FROM Employees WHERE Salary > 50000;
+```
+- **Maaşı 50.000’den büyük olan** çalışanlar getirilir.
+
+---
+
+### **4. Tekrarlanan Kayıtları Engelleme (DISTINCT)**
+DISTINCT, tekrarlanan verileri **bir kez göstermek** için kullanılır.
+
+```sql
+SELECT DISTINCT Department FROM Employees;
+```
+- `Employees` tablosundaki **farklı departmanları** getirir.
+
+---
+
+### **5. Sonuçları Sıralama (ORDER BY)**
+ORDER BY, sonuçları belirli bir **düzen** içinde sıralamak için kullanılır.
+
+```sql
+SELECT * FROM Employees ORDER BY LastName ASC;
+```
+- `LastName` sütununa göre **artan** sırayla sıralanır.
+
+```sql
+SELECT * FROM Employees ORDER BY Salary DESC;
+```
+- `Salary` sütununa göre **azalan** sırayla sıralanır.
+
+---
+
+### **6. Belirli Sayıda Kayıt Getirme (TOP & LIMIT)**
+**En fazla belirli sayıda kayıt almak** için kullanılır.
+
+```sql
+SELECT TOP 5 * FROM Employees ORDER BY Salary DESC;
+```
+- En yüksek maaşı alan **ilk 5 çalışanı** getirir.
+
+---
+
+### **7. Gruplama ve Koşullu Gruplama (GROUP BY & HAVING)**
+**Benzer verileri gruplamak** ve gruplar üzerinde işlemler yapmak için kullanılır.
+
+```sql
+SELECT Department, COUNT(*) AS EmployeeCount
+FROM Employees
+GROUP BY Department;
+```
+- Her **departmanda kaç çalışan** olduğunu gösterir.
+
+```sql
+SELECT Department, AVG(Salary) AS AvgSalary
+FROM Employees
+GROUP BY Department
+HAVING AVG(Salary) > 50000;
+```
+- **Maaş ortalaması 50.000’den büyük olan** departmanları getirir.
+
+---
+
+### **8. Birden Fazla Tabloyu Birleştirme (JOIN)**
+Farklı tablolardaki verileri birleştirmek için **JOIN** kullanılır.
+
+```sql
+SELECT Employees.FirstName, Employees.LastName, Departments.DepartmentName
+FROM Employees
+INNER JOIN Departments ON Employees.DepartmentID = Departments.DepartmentID;
+```
+- `Employees` ve `Departments` tabloları birleştirilerek **çalışanların isimleri ve çalıştıkları departmanlar** gösterilir.
+
+---
+
+### **9. Alt Sorgular (Subqueries)**
+Bir sorgunun içinde başka bir sorgu çalıştırmak için kullanılır.
+
+```sql
+SELECT FirstName, LastName FROM Employees
+WHERE Salary > (SELECT AVG(Salary) FROM Employees);
+```
+- **Maaşı, tüm çalışanların ortalama maaşından yüksek olan çalışanları** getirir.
+
+---
+
+### **10. BETWEEN, IN, LIKE Kullanımı**
+- **BETWEEN** → Belirli bir aralıkta değerleri seçmek için
+- **IN** → Belirli bir listedeki değerleri seçmek için
+- **LIKE** → Belirli bir desene uyan verileri almak için
+
+```sql
+SELECT * FROM Employees WHERE Salary BETWEEN 40000 AND 60000;
+```
+- **Maaşı 40.000 ile 60.000 arasında** olanları getirir.
+
+```sql
+SELECT * FROM Employees WHERE Department IN ('IT', 'HR', 'Finance');
+```
+- **IT, HR veya Finance departmanındaki çalışanları** getirir.
+
+```sql
+SELECT * FROM Employees WHERE LastName LIKE 'A%';
+```
+- **Soyadı "A" harfi ile başlayan çalışanları** getirir.
+
+---
+
+## **DQL ve Diğer SQL Alt Dilleri Arasındaki Fark**
+| **SQL Alt Dili**  | **Amaç** |
+|-------------------|----------|
+| **DQL (Data Query Language)** | Veriyi sorgulamak ve getirmek (SELECT) |
+| **DML (Data Manipulation Language)** | Veri ekleme, güncelleme, silme (INSERT, UPDATE, DELETE) |
+| **DDL (Data Definition Language)** | Tabloları, şemaları tanımlama (CREATE, ALTER, DROP) |
+| **DCL (Data Control Language)** | Kullanıcı yetkilendirmeleri (GRANT, REVOKE) |
+| **TCL (Transaction Control Language)** | İşlemleri yönetme (COMMIT, ROLLBACK, SAVEPOINT) |
+
+---
+
+## **Sonuç**
+DQL, SQL’in **veriyi sadece okumaya** yönelik kullanılan alt dilidir. **SELECT** komutu sayesinde, tablolar arasındaki ilişkileri kullanarak, gelişmiş sorgular yazılabilir ve istenen veriler farklı kriterlere göre listelenebilir.
+
+**DQL öğrenmek, verileri verimli şekilde analiz etmek ve SQL sorgularını optimize etmek için çok önemlidir.** Özellikle veri bilimi, yazılım geliştirme ve raporlama süreçlerinde DQL en çok kullanılan SQL bileşenlerinden biridir.
 
 
 ## DML
@@ -736,6 +1088,193 @@ SEQUEL: Structured English QUery Language
 
 ```
 ---
+# **MS SQL (RDBMS) DML (Data Manipulation Language - Veri İşleme Dili) Nedir? (Detaylı Anlatım ve Örnekler)**
+
+## **1. DML (Data Manipulation Language) Nedir?**
+**DML (Veri İşleme Dili - Data Manipulation Language)**, SQL'de veritabanındaki **mevcut verileri değiştirmek, eklemek, silmek ve güncellemek** için kullanılan bir alt dildir. **DML, doğrudan veritabanındaki verileri etkiler ve genellikle DQL (SELECT) ile birlikte kullanılır**.
+
+DML, **MS SQL Server gibi İlişkisel Veritabanı Yönetim Sistemleri (RDBMS - Relational Database Management Systems)** için oldukça önemli bir bileşendir. Veritabanında veriler **DML komutları** ile dinamik olarak işlenir.
+
+---
+
+DQL (Data Query Language)	Veriyi sorgulamak ve getirmek (SELECT)
+DML (Data Manipulation Language)	Veri ekleme, güncelleme, silme (INSERT, UPDATE, DELETE)
+DDL (Data Definition Language)	Tabloları, şemaları tanımlama (CREATE, ALTER, DROP)
+DCL (Data Control Language)	Kullanıcı yetkilendirmeleri (GRANT, REVOKE)
+TCL (Transaction Control Language)	İşlemleri yönetme (COMMIT, ROLLBACK, SAVEPOINT)
+
+## **2. DML Komutları**
+MS SQL Server'da DML, **veritabanındaki verileri değiştirmek için kullanılan dört temel komuttan** oluşur:
+
+| **DML Komutu** | **Açıklama** |
+|--------------|-----------------------------|
+| **`INSERT`** | Yeni kayıt ekler |
+| **`UPDATE`** | Mevcut kayıtları günceller |
+| **`DELETE`** | Kayıtları siler |
+| **`MERGE`** | Bir tabloya yeni kayıt ekleyebilir, mevcut kayıtları güncelleyebilir veya silebilir |
+
+---
+
+## **3. DML Komutlarının Kullanımı**
+Aşağıda her DML komutunu detaylı bir şekilde ele alacağız.
+
+---
+
+## **3.1. `INSERT` ile Veri Ekleme**
+**INSERT**, bir tabloya yeni bir satır eklemek için kullanılır.
+
+### **Temel Kullanım**
+```sql
+INSERT INTO Musteriler (MusteriID, Ad, Soyad, Sehir, Telefon) 
+VALUES (1, 'Ali', 'Yılmaz', 'İstanbul', '05555555555');
+```
+Bu komut, **Musteriler** tablosuna yeni bir müşteri ekler.
+
+---
+
+### **Tüm Sütunlara Değer Eklemek**
+```sql
+INSERT INTO Musteriler 
+VALUES (2, 'Ayşe', 'Kaya', 'Ankara', '05444444444');
+```
+Burada **tüm sütunlara değer atanmalıdır**. Eğer bir sütunu boş bırakmak istiyorsak, **NULL veya DEFAULT değerini kullanmalıyız**.
+
+---
+
+### **Birden Fazla Kayıt Ekleme**
+```sql
+INSERT INTO Musteriler (MusteriID, Ad, Soyad, Sehir, Telefon)
+VALUES 
+(3, 'Mehmet', 'Demir', 'İzmir', '05333333333'),
+(4, 'Zeynep', 'Arslan', 'Bursa', '05222222222');
+```
+Bu komut **Musteriler** tablosuna **birden fazla kayıt ekler**.
+
+---
+
+### **SELECT ile Veri Ekleyerek Kopyalama**
+```sql
+INSERT INTO MusteriYedek (MusteriID, Ad, Soyad, Sehir, Telefon)
+SELECT MusteriID, Ad, Soyad, Sehir, Telefon FROM Musteriler;
+```
+Bu komut, **Musteriler tablosundaki verileri MusteriYedek tablosuna kopyalar**.
+
+---
+
+## **3.2. `UPDATE` ile Veri Güncelleme**
+**UPDATE**, mevcut kayıtları değiştirmek için kullanılır.
+
+### **Temel Kullanım**
+```sql
+UPDATE Musteriler 
+SET Sehir = 'İzmir' 
+WHERE MusteriID = 1;
+```
+Bu komut, **MusteriID = 1 olan müşterinin şehrini "İzmir" olarak değiştirir**.
+
+---
+
+### **Birden Fazla Sütunu Güncelleme**
+```sql
+UPDATE Musteriler 
+SET Sehir = 'Antalya', Telefon = '05000000000' 
+WHERE Ad = 'Ayşe' AND Soyad = 'Kaya';
+```
+Bu komut, **adı "Ayşe" ve soyadı "Kaya" olan müşterinin şehrini "Antalya", telefonunu "05000000000" olarak günceller**.
+
+---
+
+### **Tüm Kayıtları Güncelleme**
+```sql
+UPDATE Musteriler 
+SET Sehir = 'Türkiye';
+```
+**DİKKAT:** `WHERE` kullanmazsanız, **tablodaki tüm kayıtlar güncellenir**. Bu komut, **tüm müşterilerin "Sehir" sütununu "Türkiye" olarak değiştirir**.
+
+---
+
+## **3.3. `DELETE` ile Veri Silme**
+**DELETE**, belirli bir kriteri sağlayan verileri silmek için kullanılır.
+
+### **Temel Kullanım**
+```sql
+DELETE FROM Musteriler WHERE MusteriID = 3;
+```
+Bu komut, **MusteriID = 3 olan müşteriyi siler**.
+
+---
+
+### **Koşullu Silme**
+```sql
+DELETE FROM Musteriler WHERE Sehir = 'Ankara';
+```
+Bu komut, **Ankara'da bulunan tüm müşterileri siler**.
+
+---
+
+### **Tüm Kayıtları Silme (`TRUNCATE` Alternatif)**
+```sql
+DELETE FROM Musteriler;
+```
+Bu komut, **Musteriler tablosundaki tüm verileri siler** ama tablo yapısını korur.
+
+> **Not:** Eğer tüm verileri hızla silmek istiyorsanız, `TRUNCATE TABLE Musteriler;` kullanabilirsiniz. Ancak `TRUNCATE`, `DELETE` komutundan farklı olarak **geri alınamaz (ROLLBACK çalışmaz).**
+
+---
+
+## **3.4. `MERGE` ile Birleştirme ve Koşullu Veri İşleme**
+`MERGE` komutu, bir tabloya veri eklemek, güncellemek veya silmek için kullanılır.
+
+### **MERGE Kullanımı**
+```sql
+MERGE INTO Musteriler AS hedef
+USING MusteriGuncel AS kaynak
+ON hedef.MusteriID = kaynak.MusteriID
+WHEN MATCHED THEN
+    UPDATE SET hedef.Telefon = kaynak.Telefon
+WHEN NOT MATCHED THEN
+    INSERT (MusteriID, Ad, Soyad, Sehir, Telefon)
+    VALUES (kaynak.MusteriID, kaynak.Ad, kaynak.Soyad, kaynak.Sehir, kaynak.Telefon)
+WHEN NOT MATCHED BY SOURCE THEN
+    DELETE;
+```
+- Eğer `MusteriGuncel` tablosundaki `MusteriID` **Musteriler** tablosunda varsa, `Telefon` sütununu günceller.
+- Eğer `MusteriGuncel` tablosundaki bir müşteri **Musteriler** tablosunda yoksa, onu ekler.
+- Eğer `Musteriler` tablosunda ama `MusteriGuncel` tablosunda olmayan kayıtlar varsa, onları siler.
+
+---
+
+## **4. DML Komutlarında Transaction (İşlem Kontrolü)**
+DML komutları doğrudan **veritabanında değişiklik yapar**, ancak **bazı durumlarda hatalı işlemleri geri almak (rollback) için transaction kullanmak gerekir**.
+
+### **Transaction Kullanımı**
+```sql
+BEGIN TRANSACTION;
+
+UPDATE Musteriler 
+SET Sehir = 'Eskişehir' 
+WHERE MusteriID = 2;
+
+-- Eğer hatasızsa işlemi kaydet
+COMMIT;
+
+-- Eğer hata olursa geri al
+-- ROLLBACK;
+```
+Bu komut, eğer güncelleme işlemi sorunsuz gerçekleşirse `COMMIT` ile değişiklikleri kalıcı hale getirir. Bir hata olursa, `ROLLBACK` ile işlemi geri alır.
+
+---
+
+## **5. Sonuç**
+- **DML (Data Manipulation Language)**, SQL’de verileri değiştirmek için kullanılan bir alt dildir.
+- **INSERT** → Yeni veri ekler.
+- **UPDATE** → Mevcut verileri değiştirir.
+- **DELETE** → Verileri siler.
+- **MERGE** → Birden fazla işlemi tek seferde gerçekleştirir.
+- **DML işlemleri ROLLBACK ve COMMIT ile yönetilebilir.**
+- **MS SQL Server gibi RDBMS sistemlerinde veri işleme işlemleri için kritik öneme sahiptir.**
+
+📌 **DML komutlarını etkin kullanmak, veritabanı yönetimi için hayati önem taşır!** 🚀
 
 
 
@@ -744,6 +1283,12 @@ SEQUEL: Structured English QUery Language
 
 ```
 ---
+DQL (Data Query Language)	Veriyi sorgulamak ve getirmek (SELECT)
+DML (Data Manipulation Language)	Veri ekleme, güncelleme, silme (INSERT, UPDATE, DELETE)
+DDL (Data Definition Language)	Tabloları, şemaları tanımlama (CREATE, ALTER, DROP)
+DCL (Data Control Language)	Kullanıcı yetkilendirmeleri (GRANT, REVOKE)
+TCL (Transaction Control Language)	İşlemleri yönetme (COMMIT, ROLLBACK, SAVEPOINT)
+
 
 
 
