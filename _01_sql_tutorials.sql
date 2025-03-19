@@ -161,10 +161,22 @@ WHERE cate.CategoryID>=3 OR cate.CategoryName='java';
 
 
 -- VE (AND)
--- SORU-5) nortwind veritabanından `Categories` tablosundaki kolonlarda [CategoryName]  `java` olan  ve [CategoryID]>=10 verileri gösteriniz ?
+-- SORU-5) nortwind veritabanından `Categories` tablosundaki kolonlarda [CategoryName]=`java` olan  ve [CategoryID]>=10 olan verileri gösteriniz ?
 SELECT *
 FROM nortwind.dbo.Categories as cate
 WHERE cate.CategoryName='java' AND cate.CategoryID>=10;
+
+-- DEĞİL (NOT)
+-- SORU-5) nortwind veritabanından `Categories` tablosundaki kolonlarda [CategoryName]=`java` olan  ve [CategoryID]>=10 olmayan verileri gösteriniz ?
+-- 1.YOL(NOT)
+SELECT * 
+FROM nortwind.dbo.Categories as cate
+WHERE NOT cate.CategoryName='java' AND cate.CategoryID>=10;
+
+-- 2.YOL (<>)
+SELECT * 
+FROM nortwind.dbo.Categories as cate
+WHERE  cate.CategoryName <> 'java' AND cate.CategoryID>=10;
 
 -- ----------------------------------------
 -- ----------------------------------------
