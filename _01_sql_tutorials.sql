@@ -20,6 +20,10 @@ ORDER BY (Sıralama)
 1- kolon değerini verirken çift tırnak yerine tek tırnak kullanmalısınız.  categoryName='java'
 */
 
+/*
+2- Keyword
+USE, SELECT, FROM, AS, ORDER BY, ASC, DESC, TOP, DISTINCT, WHERE, AND, OR, NOT, COUNT, IS NULL, IS NOT NULL,BETWEEN  ,  ,  
+*/
 
 -- --------------------------------------------------------------------------
 -- Eğer birden fazla database varsa istediğimiz database seçmek
@@ -62,46 +66,6 @@ FROM nortwind.dbo.Categories cate;
 
 -- ----------------------------------------
 -- ----------------------------------------
--- ***TOP***
--- TOP (Değerleri sağlayan verileri göster)
-
--- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden
--- [CategoryID]'a göre büyükten küçüğe, ve CategoryName Küçükten büyüğe  doğru, sağlayan 6 tane bütün verileri gösteriniz ?
-SELECT TOP 6 *
-FROM nortwind.dbo.Categories cate 
-ORDER BY cate.CategoryID DESC, cate.CategoryName ASC;
-
--- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden
--- [CategoryID]'a göre büyükten küçüğe, ve CategoryName Küçükten büyüğe  doğru, sağlayan 6 tane sadece CategoryID ve CategoryName
--- verileri gösteriniz ?
-SELECT TOP 6 cate.CategoryID, cate.CategoryName
-FROM nortwind.dbo.Categories cate 
-ORDER BY cate.CategoryID DESC, cate.CategoryName ASC;
-
--- ----------------------------------------
--- ----------------------------------------
--- ***DISTINCT***
--- DISTINCT bu fonksiyon tekrarlanan verileri bir kez göstermeye yarar.
-
--- SORU-2) nortwind veritabanından `Categories` tablosundaki  CategoryName'lerini tekrarsız verileri listeleyiniz?
-SELECT DISTINCT cate.CategoryName
-FROM nortwind.dbo.Categories cate;
-
-
--- ----------------------------------------
--- ----------------------------------------
--- ***COUNT***
--- COUNT fonksiyonu tekrar eden verileri gösterir
-
--- SORU-2) nortwind veritabanından `Categories` tablosundaki kaç tane veri vardır ?
-SELECT * FROM  nortwind.dbo.Categories cate;
-SELECT COUNT(*) AS SAYI FROM  nortwind.dbo.Categories cate;
-SELECT COUNT(*) AS 'KAÇ TANE SAYI' FROM  nortwind.dbo.Categories cate;
-SELECT COUNT(*)  'KAÇ TANE SAYI' FROM  nortwind.dbo.Categories cate;
-
-
--- ----------------------------------------
--- ----------------------------------------
 -- ***ORDER BY***
 -- SIRALAMA (ORDER BY)
 -- Belirli sutunlara göre sıralamak için kullanıyoruz ARTAN(ASC), AZALAN(DESC)
@@ -128,6 +92,33 @@ SELECT *
 FROM nortwind.dbo.Categories cate 
 ORDER BY cate.CategoryID DESC, cate.CategoryName ASC;
 
+
+-- ----------------------------------------
+-- ----------------------------------------
+-- ***TOP***
+-- TOP (Değerleri sağlayan verileri göster)
+
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden
+-- [CategoryID]'a göre büyükten küçüğe, ve CategoryName Küçükten büyüğe  doğru, sağlayan 6 tane bütün verileri gösteriniz ?
+SELECT TOP 6 *
+FROM nortwind.dbo.Categories cate 
+ORDER BY cate.CategoryID DESC, cate.CategoryName ASC;
+
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki verilerden
+-- [CategoryID]'a göre büyükten küçüğe, ve CategoryName Küçükten büyüğe  doğru, sağlayan 6 tane sadece CategoryID ve CategoryName
+-- verileri gösteriniz ?
+SELECT TOP 6 cate.CategoryID, cate.CategoryName
+FROM nortwind.dbo.Categories cate 
+ORDER BY cate.CategoryID DESC, cate.CategoryName ASC;
+
+-- ----------------------------------------
+-- ----------------------------------------
+-- ***DISTINCT***
+-- DISTINCT bu fonksiyon tekrarlanan verileri bir kez göstermeye yarar.
+
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki  CategoryName'lerini tekrarsız verileri listeleyiniz?
+SELECT DISTINCT cate.CategoryName
+FROM nortwind.dbo.Categories cate;
 
 
 -- ----------------------------------------
@@ -177,6 +168,24 @@ WHERE NOT cate.CategoryName='java' AND cate.CategoryID>=10;
 SELECT * 
 FROM nortwind.dbo.Categories as cate
 WHERE  cate.CategoryName <> 'java' AND cate.CategoryID>=10;
+
+
+-- ----------------------------------------
+-- ----------------------------------------
+-- ***COUNT***
+-- COUNT fonksiyonu tekrar eden verileri gösterir
+
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki kaç tane veri vardır ?
+SELECT * FROM  nortwind.dbo.Categories cate;
+SELECT COUNT(*) AS SAYI FROM  nortwind.dbo.Categories cate;
+SELECT COUNT(*) AS 'KAÇ TANE SAYI' FROM  nortwind.dbo.Categories cate;
+SELECT COUNT(*)  'KAÇ TANE SAYI' FROM  nortwind.dbo.Categories cate;
+
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki Picture kolonunda kaç tane  null veri vardır ?
+-- 1.YOL
+SELECT COUNT(*) AS 'Kaçtane Null olan var ?' FROM  nortwind.dbo.Categories cate WHERE cate.Picture IS NULL; 
+-- 2.YOL
+SELECT COUNT(*) 'Kaçtane Null olan var ?' FROM  nortwind.dbo.Categories cate WHERE cate.Picture IS NULL; 
 
 -- ----------------------------------------
 -- ----------------------------------------
