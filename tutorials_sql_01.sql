@@ -1,3 +1,5 @@
+-- SQL Server(Mssql)
+
 -- single comment
 /* multiple comment */
 
@@ -254,6 +256,77 @@ SUM(cate.CategoryID) as 'Toplam',
 COUNT(cate.CategoryID) as 'Kaç tane',
 (SUM(cate.CategoryID)*1.0/COUNT(cate.CategoryID)) as 'Ortalama: Toplam/Kaçtane'
 FROM nortwind.dbo.Categories as cate;
+
+-- ----------------------------------------
+-- ----------------------------------------
+-- ***MATHEMATICS***
+-- SQL Server(Mssql): Matematikseş fonksiyonlarımızı yani (Math Functions) veriler üzerinde çeşitlik matematikse işlmeler yapmak için kullanırız.
+
+-- 1-) PI SAYISI
+SELECT PI() AS 'PI SAYISI';
+SELECT EXP(1) AS 'E'
+
+-- 1-) ABS(Mutlak)
+SELECT ABS(-44) AS MutlakDeğer;
+
+-- 1-) SQRT(Karekök)
+SELECT SQRT(16) AS KareKök;
+
+-- NOT: Math fonksiyonları iç içe yazabilirsiniz.
+SELECT SQRT(ABS(-16)) AS KareKök;
+
+-- 1-) POWER(Üslü Sayılar)
+SELECT POWER(2,5) AS 'Üslü Sayı';
+
+--  1-) SQUARE(Karesi)
+SELECT SQUARE(6) AS 'Karesi'
+
+--  1-) CEILING (Yukarı Yuvarlar)
+SELECT CEILING(2.1) AS 'Üste Yuvarla';
+SELECT CEILING(2.01) AS 'Üste Yuvarla';
+SELECT CEILING(2.001) AS 'Üste Yuvarla';
+SELECT CEILING(2.0001) AS 'Üste Yuvarla';
+
+
+--  1-) FLOOR (Aşağı Yuvarlar)
+SELECT FLOOR(2.9) AS 'Üste Yuvarla';
+
+
+-- 1-) ROUND (Aşağı Veya Yukarı Yuvarla)
+SELECT ROUND(12.3456789, 1) AS 'Yuvarla'; -- 1= Virgülden sonra 1 haneyi göster
+SELECT ROUND(12.3456789, 2) AS 'Yuvarla'; -- 2= Virgülden sonra 2 haneyi göster
+SELECT ROUND(12.3456789, 3) AS 'Yuvarla'; -- 3= Virgülden sonra 3 haneyi göster
+SELECT ROUND(12.3456789, 4) AS 'Yuvarla'; -- 4= Virgülden sonra 4 haneyi göster
+
+-- 1-) RANDOM (Rastgele)
+SELECT RAND() AS 'Rastgele Sayı';   -- 0<X<1
+SELECT RAND(100) AS 'Rastgele Sayı'; -- ÖDEV
+
+-- 1-) LOGARITMA ()
+SELECT LOG(10) AS 'Logaritma'; 
+SELECT LOG10(1000) AS 'Logaritma'; 
+
+-- 1-) RADIANS() : Dereceyi, radyana çevir
+-- D/360= R/2PI = G/400
+SELECT RADIANS(180) AS Radyan;
+SELECT SIN(RADIANS(30)) AS Radyan;
+SELECT SIN(RADIANS(60)) AS Radyan;
+SELECT SIN(RADIANS(45)) AS Radyan;
+
+SELECT SIN(30) AS Radyan;
+SELECT COS(30) AS Radyan;
+
+-- 1-) DEGREES() : RadyanıDerece çevir
+-- D/360= R/2PI = G/400
+SELECT DEGREES(PI()) AS Derece;
+
+-- 1-) SIGN() : İşaret Fonksiyonu
+-- Pozitif : +1
+-- Negatif : -1
+-- Sıfır   : 0
+SELECT SIGN(10) AS 'Pozitif';
+SELECT SIGN(-10) AS 'Negatif';
+SELECT SIGN(0) AS 'Negatif';
 
 -- ----------------------------------------
 -- ----------------------------------------

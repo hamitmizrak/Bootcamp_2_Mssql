@@ -1876,6 +1876,236 @@ SELECT MAX(KategoriToplami) FROM (
 
 ---
 
+## Math
+```sh
+
+```
+---
+
+SQL Server (MSSQL) içinde yer alan **matematiksel fonksiyonlar (Math Functions)**, veriler üzerinde çeşitli matematiksel işlemler yapmak için kullanılır. Bu fonksiyonlar; sayısal verileri yuvarlamak, mutlak değer almak, trigonometrik işlemler yapmak ve logaritmalar, üs alma, kök alma gibi hesaplamalar yapmak için kullanılır.
+
+Aşağıda **çok detaylı** şekilde tüm yerleşik matematiksel fonksiyonları açıklamaları, sözdizimi ve örnekleriyle birlikte paylaşıyorum:
+
+---
+
+## 🔢 MSSQL Matematiksel Fonksiyonlar
+
+| Fonksiyon        | Açıklama                                 |
+|------------------|-------------------------------------------|
+| `ABS()`          | Mutlak değer                              |
+| `CEILING()`      | Yukarıya yuvarlama                        |
+| `FLOOR()`        | Aşağıya yuvarlama                         |
+| `ROUND()`        | Belirli basamağa yuvarlama                |
+| `POWER()`        | Üs alma                                   |
+| `SQRT()`         | Karekök alma                              |
+| `SQUARE()`       | Sayının karesi                            |
+| `LOG()`          | Logaritma (doğal log, e tabanlı)          |
+| `LOG10()`        | Logaritma (10 tabanlı)                    |
+| `EXP()`          | e sayısının belirtilen kuvveti            |
+| `PI()`           | Pi sayısı                                 |
+| `RAND()`         | 0 ile 1 arasında rastgele sayı            |
+| `SIGN()`         | Sayının işareti (-1, 0, 1)                |
+| `DEGREES()`      | Radyanı dereceye çevirir                  |
+| `RADIANS()`      | Dereceyi radyana çevirir                  |
+| `TRIGONOMETRİ`   | `SIN()`, `COS()`, `TAN()` ve tersleri     |
+
+---
+
+## 📘 Fonksiyonların Açıklamaları ve Örnekleri
+
+### 1. `ABS()` – Mutlak Değer
+Negatif sayıyı pozitife çevirir.
+
+```sql
+SELECT ABS(-15) AS MutlakDeger;  -- Çıktı: 15
+```
+
+---
+
+### 2. `CEILING()` – Yukarı Yuvarlama
+Ondalıklı sayıyı yukarı yuvarlar (kesinlikle daha büyük tamsayıya).
+
+```sql
+SELECT CEILING(12.3) AS Yukari;  -- Çıktı: 13
+```
+
+---
+
+### 3. `FLOOR()` – Aşağı Yuvarlama
+Ondalıklı sayıyı aşağı yuvarlar (kesinlikle daha küçük tamsayıya).
+
+```sql
+SELECT FLOOR(12.9) AS Asagi;  -- Çıktı: 12
+```
+
+---
+
+### 4. `ROUND()` – Ondalık Basamağa Yuvarlama
+İkinci parametreyle istediğin basamak sayısına yuvarlar.
+
+```sql
+SELECT ROUND(12.3456, 2) AS Yuvarlanmis;  -- Çıktı: 12.35
+SELECT ROUND(12.3456, 0) AS Tamsayi;      -- Çıktı: 12
+```
+
+---
+
+### 5. `POWER(x, y)` – x^y
+Belirtilen sayının kuvvetini alır.
+
+```sql
+SELECT POWER(2, 3) AS Us;  -- Çıktı: 8 (2^3)
+```
+
+---
+
+### 6. `SQRT()` – Karekök
+Pozitif sayının karekökünü döndürür.
+
+```sql
+SELECT SQRT(49) AS Karekoku;  -- Çıktı: 7
+```
+
+---
+
+### 7. `SQUARE()` – Karesini Alır
+Sayının karesini alır (aynı şey: `POWER(x, 2)`)
+
+```sql
+SELECT SQUARE(5) AS Kare;  -- Çıktı: 25
+```
+
+---
+
+### 8. `LOG()` – Doğal Logaritma (e tabanlı)
+Sayının e tabanına göre logaritmasını verir.
+
+```sql
+SELECT LOG(10) AS ELog;  -- Çıktı: 2.30258...
+```
+
+---
+
+### 9. `LOG10()` – 10 Tabanlı Logaritma
+Sayının 10 tabanına göre logaritmasını verir.
+
+```sql
+SELECT LOG10(1000) AS Log10;  -- Çıktı: 3
+```
+
+---
+
+### 10. `EXP()` – e^x
+e sayısının belirtilen kuvvetini alır.
+
+```sql
+SELECT EXP(1) AS E_Us_1;  -- Çıktı: 2.7182818
+```
+
+---
+
+### 11. `PI()` – Pi Sabiti
+Pi sayısını verir (yaklaşık 3.14159).
+
+```sql
+SELECT PI() AS PiDegeri;
+```
+
+---
+
+### 12. `RAND()` – Rastgele Sayı (0-1 arası)
+0 ile 1 arasında rastgele sayı üretir.
+
+```sql
+SELECT RAND() AS Rastgele;
+SELECT RAND(100) AS SabitRastgele; -- Aynı seed, aynı sonuç
+```
+
+---
+
+### 13. `SIGN()` – İşaret Fonksiyonu
+Sayının işaretini verir:
+- Pozitif → 1
+- Negatif → -1
+- Sıfır → 0
+
+```sql
+SELECT SIGN(10) AS Pozitif, SIGN(-8) AS Negatif, SIGN(0) AS Sifir;
+```
+
+---
+
+### 14. `DEGREES()` – Radyanı dereceye çevirir
+```sql
+SELECT DEGREES(PI()) AS Derece;  -- Çıktı: 180
+```
+
+---
+
+### 15. `RADIANS()` – Dereceyi radyana çevirir
+```sql
+SELECT RADIANS(180) AS Radyan;  -- Çıktı: 3.14159...
+```
+
+---
+
+### 16. 📐 Trigonometri Fonksiyonları
+
+| Fonksiyon | Açıklama               |
+|-----------|------------------------|
+| `SIN(x)`  | Sinüs                  |
+| `COS(x)`  | Kosinüs                |
+| `TAN(x)`  | Tanjant                |
+| `ASIN(x)` | Ark sinüs              |
+| `ACOS(x)` | Ark kosinüs            |
+| `ATAN(x)` | Ark tanjant            |
+| `ATN2(y, x)` | İki eksenli tanjant |
+
+#### Örnek:
+```sql
+SELECT 
+    SIN(RADIANS(30)) AS Sinus_30,
+    COS(RADIANS(60)) AS Cosinus_60,
+    TAN(RADIANS(45)) AS Tanjant_45;
+```
+
+---
+
+## 📌 Bonus: Sıfıra Bölmeyi Önleme (NULL yerine 0 gösterme)
+
+```sql
+SELECT 
+    CASE 
+        WHEN divisor = 0 THEN 0
+        ELSE numerator * 1.0 / divisor 
+    END AS SafeDivision
+FROM TableName;
+```
+
+---
+
+## 🧪 İleri Seviye: Matematiksel Fonksiyonlarla Sorgu
+
+```sql
+SELECT 
+    ProductName,
+    ROUND(Amount * 1.18, 2) AS PriceWithTax,
+    POWER(Amount, 2) AS Square,
+    SQRT(Amount) AS Root
+FROM Sales;
+```
+
+---
+
+## 🔚 Özet
+
+- Sayı işlemleri: `ABS`, `SIGN`, `ROUND`, `CEILING`, `FLOOR`
+- Logaritmalar: `LOG`, `LOG10`, `EXP`
+- Üs, kare, karekök: `POWER`, `SQUARE`, `SQRT`
+- Trigonometrik: `SIN`, `COS`, `TAN`, `DEGREES`, `RADIANS`
+- Sabitler: `PI`, `RAND`
+
+---
 
 
 ## DML
