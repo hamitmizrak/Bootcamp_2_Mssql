@@ -1468,11 +1468,415 @@ ORDER BY
 ```
 ---
 
+MSSQL'de **Operatörler**, SQL ifadelerinde **veriler üzerinde işlem yapmak** için kullanılan özel semboller veya anahtar kelimelerdir. Operatörler sayesinde karşılaştırma yapılabilir, matematiksel işlemler gerçekleştirilebilir, mantıksal koşullar kontrol edilebilir veya bit düzeyinde işlemler yapılabilir. MSSQL'deki operatörler farklı kategorilere ayrılır ve her biri farklı işlemleri yerine getirir.
+
+Aşağıda tüm detaylarıyla MSSQL'deki operatörler kategorilere ayrılarak açıklanmıştır:
+
+---
+
+## 🔹 1. Aritmetik Operatörler
+Veri üzerinde temel matematiksel işlemleri yapar.
+
+| Operatör | Açıklama              | Örnek                             | Açıklama |
+|----------|------------------------|-----------------------------------|----------|
+| `+`      | Toplama                | `SELECT 5 + 3 AS Toplam`          | 8        |
+| `-`      | Çıkarma                | `SELECT 10 - 4 AS Fark`           | 6        |
+| `*`      | Çarpma                 | `SELECT 7 * 2 AS Carpim`          | 14       |
+| `/`      | Bölme                  | `SELECT 20 / 5 AS Bolum`          | 4        |
+| `%`      | Mod (kalanı bulma)     | `SELECT 10 % 3 AS Kalan`          | 1        |
+
+> Not: Integer bölme işleminde tam sayı döner. Eğer ondalık bekleniyorsa float ya da decimal ile çevirme yapılmalıdır.
+
+---
+
+## 🔹 2. Karşılaştırma (Comparison) Operatörleri
+İki değeri karşılaştırmak için kullanılır. Genellikle `WHERE`, `CASE`, `IF`, `HAVING` gibi yapılarla birlikte kullanılır.
+
+| Operatör | Açıklama                              | Örnek                                      |
+|----------|----------------------------------------|--------------------------------------------|
+| `=`      | Eşittir                               | `WHERE yas = 18`                           |
+| `!=`     | Eşit değildir                          | `WHERE yas != 18`                          |
+| `<>`     | Eşit değildir (alternatif)             | `WHERE yas <> 18`                          |
+| `>`      | Büyüktür                              | `WHERE yas > 18`                           |
+| `<`      | Küçüktür                              | `WHERE yas < 18`                           |
+| `>=`     | Büyük veya eşittir                    | `WHERE yas >= 18`                          |
+| `<=`     | Küçük veya eşittir                    | `WHERE yas <= 18`                          |
+| `BETWEEN`| Arasında                              | `WHERE yas BETWEEN 18 AND 30`              |
+| `LIKE`   | Benzerlik (karakter eşleşmeleri)      | `WHERE ad LIKE 'A%'`                       |
+| `IN`     | Belirli bir kümede var mı             | `WHERE sehir IN ('Ankara', 'İstanbul')`    |
+| `IS NULL`| Null kontrolü                         | `WHERE soyad IS NULL`                      |
+| `IS NOT NULL` | Null değil kontrolü              | `WHERE soyad IS NOT NULL`                  |
+
+---
+
+## 🔹 3. Mantıksal (Logical) Operatörler
+Koşullu ifadeleri birleştirmek veya mantıksal sonuçlar üretmek için kullanılır.
+
+| Operatör | Açıklama                                    | Örnek                                                      |
+|----------|----------------------------------------------|-------------------------------------------------------------|
+| `AND`    | Her iki koşul da doğruysa `TRUE`            | `WHERE yas > 18 AND sehir = 'İstanbul'`                    |
+| `OR`     | En az bir koşul doğruysa `TRUE`             | `WHERE yas > 18 OR sehir = 'İstanbul'`                     |
+| `NOT`    | Koşulu tersine çevirir                      | `WHERE NOT (sehir = 'İstanbul')`                           |
+| `ALL`    | Tüm sonuçlarla karşılaştırma                | `SELECT * FROM tablo WHERE yas > ALL (SELECT yas FROM ...)`|
+| `ANY`    | Herhangi biriyle karşılaştırma              | `SELECT * FROM tablo WHERE yas = ANY (SELECT yas FROM ...)`|
+| `EXISTS` | Alt sorguda kayıt var mı kontrol eder       | `WHERE EXISTS (SELECT * FROM ...)`                         |
+
+---
+
+## 🔹 4. Bit Düzeyinde (Bitwise) Operatörler
+Verilerin bit düzeyinde işlem yapılmasını sağlar.
+
+| Operatör | Açıklama                            | Örnek                           |
+|----------|--------------------------------------|---------------------------------|
+| `&`      | AND işlemi (bit düzeyinde)           | `SELECT 5 & 3` (0101 & 0011 = 0001 = 1) |
+| `|`      | OR işlemi (bit düzeyinde)            | `SELECT 5 | 3` (0101 | 0011 = 0111 = 7) |
+| `^`      | XOR işlemi (bit düzeyinde)           | `SELECT 5 ^ 3` (0101 ^ 0011 = 0110 = 6) |
+| `~`      | NOT işlemi (bit düzeyinde tersleme)  | `SELECT ~5` (yani -6, çünkü 2'nin tamamlayanı) |
+
+---
+
+## 🔹 5. Atama Operatörleri
+Değişkenlere veya kolonlara değer atamak için kullanılır.
+
+| Operatör | Açıklama                       | Örnek                                   |
+|----------|---------------------------------|-----------------------------------------|
+| `=`      | Değer atamak için               | `SET @yas = 25`                         |
+| `+=`     | Mevcut değere ekleme yapar      | `SET @yas += 1`                         |
+| `-=`     | Mevcut değerden çıkarma         | `SET @yas -= 1`                         |
+| `*=`     | Çarpma                          | `SET @maas *= 2`                        |
+| `/=`     | Bölme                           | `SET @puan /= 2`                        |
+| `%=`     | Mod alma ve atama               | `SET @puan %= 3`                        |
+
+> Not: Bu tür atamalar genelde `DECLARE` ve `SET` ifadeleriyle kullanılır.
+
+---
+
+## 🔹 6. String (Metin) Operatörleri
+String ifadelerle işlem yapılmasını sağlar.
+
+| Operatör | Açıklama                       | Örnek                                   |
+|----------|--------------------------------|-----------------------------------------|
+| `+`      | String birleştirme             | `SELECT 'Ad' + ' ' + 'Soyad' AS TamAd` |
+| `LIKE`   | Pattern eşleştirme             | `WHERE ad LIKE 'A%'`                    |
+| `PATINDEX` | Patternin indexini verir     | `SELECT PATINDEX('%a%', 'Merhaba')`    |
+| `CHARINDEX` | Belirli karakterin pozisyonu | `SELECT CHARINDEX('e', 'Merhaba')`     |
+
+---
+
+## 🔹 7. Özel SQL Operatörleri
+
+### `IS`
+`NULL` değerler için kullanılır.
+
+```sql
+SELECT * FROM personel WHERE soyad IS NULL;
+```
+
+### `CASE`
+Koşullu durumlar için bir operatördür.
+
+```sql
+SELECT ad, 
+       CASE 
+            WHEN yas >= 18 THEN 'Yetişkin'
+            ELSE 'Çocuk'
+       END AS Durum
+FROM personel;
+```
+
+---
+
+## 🔹 Kullanım Senaryoları
+
+### 1. Aritmetik + Karşılaştırma + Mantıksal
+```sql
+SELECT * 
+FROM personel 
+WHERE maas + prim > 10000 AND sehir = 'İzmir';
+```
+
+### 2. LIKE + OR
+```sql
+SELECT * 
+FROM ogrenciler 
+WHERE ad LIKE 'A%' OR soyad LIKE '%z';
+```
+
+### 3. Bitwise Kullanım
+Yetki sistemi gibi yapılarda kullanılır:
+```sql
+-- Örnek: Kullanıcının yazma yetkisi var mı kontrolü (bit düzeyinde)
+SELECT * 
+FROM kullanicilar 
+WHERE yetki & 2 = 2;
+```
+
+---
+
+## 🔹 Önemli Notlar
+
+- MSSQL operatörleri, **SQL Server’ın execution engine** tarafından optimize edilir.
+- Özellikle `IN`, `EXISTS`, `BETWEEN`, `LIKE` gibi operatörler, performans açısından farklı davranışlar gösterebilir.
+- Bit düzeyinde operatörler daha çok **low-level logic** gerektiren sistemlerde tercih edilir (örneğin yetkilendirme sistemleri, bayrak kontrolleri vs).
+
+---
+
+
 ## Aggreagate
 ```sh
 
 ```
 ---
+Microsoft SQL Server (MSSQL) üzerindeki **Aggregate Functions** (Toplama Fonksiyonları), bir grup satırdan tek bir özet değer döndürmek için kullanılan fonksiyonlardır. Genellikle `GROUP BY` ile birlikte kullanılırlar ama tek başlarına da çalışabilirler. Şimdi çok detaylı şekilde tüm yönleriyle açıklayalım.
+
+---
+
+## 📌 Aggregate Function Nedir?
+
+Birden fazla veriden bir özet değer üretmek için kullanılan fonksiyonlardır. Bu özet değer genellikle:
+
+- Toplam (sum)
+- Ortalama (average)
+- En küçük (min)
+- En büyük (max)
+- Sayı (count)
+
+gibi istatistiksel bilgi sağlar.
+
+---
+
+## 🎯 Temel Aggregate Function'lar (Toplama Fonksiyonları)
+
+### 1. **`SUM()`**
+> Sayısal sütunların toplamını verir.
+
+**Sözdizimi:**
+```sql
+SELECT SUM(column_name) FROM table_name;
+```
+
+**Örnek:**
+```sql
+SELECT SUM(Tutar) AS ToplamTutar FROM Satislar;
+```
+
+### 2. **`AVG()`**
+> Sayısal bir sütunun ortalamasını verir.
+
+**Sözdizimi:**
+```sql
+SELECT AVG(column_name) FROM table_name;
+```
+
+**Örnek:**
+```sql
+SELECT AVG(Maas) AS OrtalamaMaas FROM Calisanlar;
+```
+
+### 3. **`COUNT()`**
+> Satır sayısını ya da belirli bir sütundaki dolu hücre sayısını verir.
+
+**Sözdizimi:**
+```sql
+SELECT COUNT(*) FROM table_name;             -- Tüm satırları sayar
+SELECT COUNT(column_name) FROM table_name;   -- NULL olmayan satırları sayar
+```
+
+**Örnek:**
+```sql
+SELECT COUNT(*) AS ToplamCalisan FROM Calisanlar;
+SELECT COUNT(Maas) AS MaasGirenCalisan FROM Calisanlar;
+```
+
+### 4. **`MIN()`**
+> En küçük değeri döndürür.
+
+**Sözdizimi:**
+```sql
+SELECT MIN(column_name) FROM table_name;
+```
+
+**Örnek:**
+```sql
+SELECT MIN(Maas) AS EnDusukMaas FROM Calisanlar;
+```
+
+### 5. **`MAX()`**
+> En büyük değeri döndürür.
+
+**Sözdizimi:**
+```sql
+SELECT MAX(column_name) FROM table_name;
+```
+
+**Örnek:**
+```sql
+SELECT MAX(Maas) AS EnYuksekMaas FROM Calisanlar;
+```
+
+---
+
+## 🧠 GROUP BY ile Kullanım
+
+`GROUP BY` ifadesiyle birlikte aggregate fonksiyonlar çok daha anlamlı hale gelir. Aynı gruba ait verileri tek bir özet satırda toplar.
+
+**Örnek Senaryo: Her departmandaki çalışan sayısını öğrenmek**
+```sql
+SELECT DepartmanID, COUNT(*) AS CalisanSayisi
+FROM Calisanlar
+GROUP BY DepartmanID;
+```
+
+**Örnek Senaryo: Ürün bazında toplam satış tutarı**
+```sql
+SELECT UrunID, SUM(Tutar) AS ToplamSatis
+FROM Satislar
+GROUP BY UrunID;
+```
+
+---
+
+## ⚠️ NULL ile Aggregate Function Kullanımı
+
+- `SUM`, `AVG`, `MIN`, `MAX` gibi fonksiyonlar **NULL değerleri yoksayar.**
+- `COUNT(*)` tüm satırları sayar.
+- `COUNT(column_name)` sadece NULL olmayanları sayar.
+
+**Örnek:**
+```sql
+SELECT COUNT(*) AS TumSatirlar,
+       COUNT(Maas) AS MaasGirenler
+FROM Calisanlar;
+```
+
+---
+
+## 🔍 HAVING ile Kullanımı
+
+`WHERE` ifadesi bireysel satırları filtrelerken, `HAVING` ifadesi **aggregate edilen gruplar üzerinde koşul koymak için** kullanılır.
+
+**Örnek: Ortalama maaşı 10.000'in üzerinde olan departmanlar**
+```sql
+SELECT DepartmanID, AVG(Maas) AS OrtalamaMaas
+FROM Calisanlar
+GROUP BY DepartmanID
+HAVING AVG(Maas) > 10000;
+```
+
+---
+
+## 👨‍💻 Örnek Tablo ile Uygulama
+
+**Tablo Adı:** `Satislar`
+
+| SatisID | UrunAdi    | Kategori   | Tutar |
+|---------|------------|------------|-------|
+| 1       | Laptop     | Teknoloji  | 15000 |
+| 2       | Telefon    | Teknoloji  | 8000  |
+| 3       | Kitap      | Kırtasiye  | 120   |
+| 4       | Defter     | Kırtasiye  | 30    |
+| 5       | Tablet     | Teknoloji  | 6000  |
+
+### a. Tüm satışların toplamı:
+```sql
+SELECT SUM(Tutar) AS ToplamSatis FROM Satislar;
+```
+
+### b. Kategori bazında toplam satış:
+```sql
+SELECT Kategori, SUM(Tutar) AS KategoriToplami
+FROM Satislar
+GROUP BY Kategori;
+```
+
+### c. En pahalı ürünün tutarı:
+```sql
+SELECT MAX(Tutar) AS EnPahali FROM Satislar;
+```
+
+### d. Ortalama satış tutarı:
+```sql
+SELECT AVG(Tutar) AS OrtalamaTutar FROM Satislar;
+```
+
+### e. Kategorilerde ortalama satış tutarı 5000’in üstünde olanlar:
+```sql
+SELECT Kategori, AVG(Tutar) AS Ortalama
+FROM Satislar
+GROUP BY Kategori
+HAVING AVG(Tutar) > 5000;
+```
+
+---
+
+## 🔄 Aggregate Function + CASE WHEN
+
+Koşullu toplama gibi işlemler yapılabilir.
+
+**Örnek: Kadın ve erkek çalışan sayılarını ayrı ayrı sayma**
+```sql
+SELECT 
+    COUNT(CASE WHEN Cinsiyet = 'Erkek' THEN 1 END) AS ErkekSayisi,
+    COUNT(CASE WHEN Cinsiyet = 'Kadin' THEN 1 END) AS KadinSayisi
+FROM Calisanlar;
+```
+
+---
+
+## 🚀 Performans Notları
+
+- `COUNT(*)` performanslıdır çünkü index’ler üzerinden hızlı sayım yapar.
+- `GROUP BY` kullanırken çok fazla grup ve satır varsa performans düşebilir, bu yüzden `WHERE` ile ön filtreleme önerilir.
+- `HAVING` ile filtreleme, `GROUP BY` sonrası gerçekleştiği için daha maliyetlidir.
+
+---
+
+## 📚 MSSQL Özel Aggregate Fonksiyonlar
+
+### 1. `STRING_AGG()`
+> MSSQL 2017+ ile geldi. Satırları tek bir string olarak birleştirir.
+
+**Örnek:**
+```sql
+SELECT STRING_AGG(UrunAdi, ', ') AS Urunler
+FROM Satislar;
+```
+
+### 2. `GROUPING()`, `GROUPING_ID()`
+> `ROLLUP` ve `CUBE` gibi gelişmiş gruplamalarda hangi satırın toplama ait olduğunu gösterir.
+
+---
+
+## 🔄 Nested Aggregate
+
+> MSSQL doğrudan iç içe aggregate fonksiyonları desteklemez. Ama alt sorgu (subquery) ile bu sağlanabilir.
+
+**Örnek:**
+En çok satış yapan kategorinin toplam satışı:
+```sql
+SELECT MAX(KategoriToplami) FROM (
+    SELECT Kategori, SUM(Tutar) AS KategoriToplami
+    FROM Satislar
+    GROUP BY Kategori
+) AS AltSorgu;
+```
+
+---
+
+## 🧾 Özet
+
+| Fonksiyon | Açıklama |
+|-----------|----------|
+| `SUM()`   | Toplam |
+| `AVG()`   | Ortalama |
+| `COUNT()` | Sayı |
+| `MIN()`   | En küçük değer |
+| `MAX()`   | En büyük değer |
+| `STRING_AGG()` | Metinleri birleştirir |
+
+---
+
+
 
 ## DML
 ```sh

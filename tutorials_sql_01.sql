@@ -150,7 +150,64 @@ FROM nortwind.dbo.Categories as cate;
 -- ----------------------------------------
 -- ----------------------------------------
 -- ***OPERATOR***
--- Operator
+-- Operatörler(Operator) SQL ifadeleri üzerinden işlem yapmaya yarayan özel sembollerdir.
+
+-- Matematiksel işlemler, mantık birimleri
+-- 1.Matematiksel Operatörler (+ - * / %)
+-- Aritmetiksel Operatörler
+SELECT 7+3 AS 'Toplam';
+SELECT (7-3) AS 'Çıkar';
+SELECT 7*3 AS 'Çarp';
+SELECT (7/3) AS 'Böl';
+SELECT (7%3) AS 'Kalan';
+
+-- 2.Karşılaştırma(Comparison) Operatörler
+/*
+=  (Eşittir)					EXAM: WHERE categoryID=3;
+!= (Eşit değil)					EXAM: WHERE categoryID!=3;
+>  (Büyüktür)					EXAM: WHERE categoryID > 3;
+>= (Büyük eşit)					EXAM: WHERE categoryID >= 3;
+<  (Küçüktür)					EXAM: WHERE categoryID < 3;
+<=  (Küçük eşit)				EXAM: WHERE categoryID <= 3;
+BETWEEN (Arasında)				EXAM: WHERE categoryID BETWEEN 3 AND 5;
+IN (Şart)						EXAM: WHERE categoryName IN ('java','C#');
+LIKE (Benzer)					EXAM: WHERE categoryName LIKE 'M%';
+IS NULL (Null kontrolünü)       EXAM: WHERE picture IS NULL;
+IS NOT NULL (Null olmayan kontrolünü)        EXAM: WHERE picture IS NOT NULL;
+*/
+
+-- 3. Mantıksal (Logic) Operatörler
+/*
+AND		(Her iki koşulu sağlayan)				 EXAM: WHERE categoryID=3 AND categoryName='java';
+OR		(Her iki koşuldan en az birini sağlayan) EXAM: WHERE categoryID=3 OR categoryName='java';
+NOT		(Koşulun tersi)							 EXAM: WHERE NOT categoryID=3 OR categoryName='java';
+ALL     (Tüm sonuçları karşılaştırma)			 EXAM: SELECT * FROM category as c1 WHERE c1.categoryNAME > ALL (SELECT * FROM c1.categoryNAME )
+ANY     (Tüm sonuçları karşılaştırma)			 EXAM: SELECT * FROM category as c1 WHERE c1.categoryNAME > ANY (SELECT * FROM c1.categoryNAME ) 
+EXISTS  (Alt sorgularda kayıt var mı ?)			 EXAM: WHERE EXISTS (SELECT * FROM database)
+*/
+
+-- 4. Bit Düzeyinde (Bitwise:[yani 0 ve 1]) Operatörler
+/*
+&     AND (bit düzeyinde)   EXAM: SELECT 5 & 3  (0101) & (0011)=(0001)
+`     OR  (bit düzeyinde)   EXAM: 
+^     XOR (bit düzeyinde)   EXAM: SELECT 5 ^ 3  (0101) & (0011)=(0110)=4+2=6
+~     NOT (bit düzeyinde)   EXAM: SELECT -5;
+*/
+-- Sorgu: İlgili kullanıcını yazma yetkisi var mı yok mu ? 
+-- SELECT * FROM Users as u1 WHERE u1.permission & 2 =2; 
+
+-- 5.Atama Operatörler
+/* 
+=        Değer vermek     EXAM: SET @yas=35
++=       Değer eklemek    EXAM: SET @yas+=35
+-=       Değer çıkarmak   EXAM: SET @yas-=35
+*=       Değer çarpmak    EXAM: SET @yas*=35
+/=       Değer bölmek     EXAM: SET @yas/=35
+%=       Değer mod        EXAM: SET @yas=35
+*/
+
+-- 6. String Operatörler
+-- 7. Special Operatörler (IS NULL, CASE gibi)
 
 
 -- ----------------------------------------
@@ -178,18 +235,14 @@ WHERE cate.CategoryID>=3;
 -- `CategoryID` kolonunu baz alarak büyükten küçüğe doğru sıralayınız ve şartı sağlayan varsa 6 veriyi gösteriniz ?
 -- Sayısal Değer ile Filtreleme
 -- 1.YOL
-SELECT TOP 6 *
-cate.CategoryID,
-cate.CategoryName
+SELECT TOP 6 cate.CategoryID, cate.CategoryName
 FROM nortwind.dbo.Categories as cate
 WHERE cate.CategoryID>=3
 ORDER BY cate.CategoryID;
 
 -- 2.YOL
 -- Okunabilinirliği artırmak için parantezi içinde de kullanabilirsiniz.
-SELECT TOP (6) *
-cate.CategoryID,
-cate.CategoryName
+SELECT TOP (6) cate.CategoryID,cate.CategoryName
 FROM nortwind.dbo.Categories as cate
 WHERE cate.CategoryID>=3
 ORDER BY cate.CategoryID;
