@@ -2335,12 +2335,420 @@ SELECT
 
 ```
 ---
+SQL Server (MSSQL) veri türleri (data types), **bir sütunun hangi türde veri tutacağını** tanımlayan temel yapı taşlarıdır. Doğru veri türünü seçmek, performans, bellek kullanımı, veri bütünlüğü ve doğru sonuçlar açısından hayati öneme sahiptir.
+
+Bu açıklamada tüm **MSSQL veri türlerini kategorilere ayırarak**, **örneklerle**, **açıklamalı**, **derinlemesine** anlatıyorum. Tam bir başvuru kaynağı gibi düşünebilirsin. 📘
+
+---
+
+# 🔢 1. Sayısal Veri Türleri (Numeric Data Types)
+
+| Veri Türü     | Açıklama                              | Bellek (Byte) | Aralık / Detay                       |
+|---------------|----------------------------------------|----------------|--------------------------------------|
+| `INT`         | Tamsayı                                | 4              | -2,147,483,648 → 2,147,483,647       |
+| `BIGINT`      | Çok büyük tamsayı                      | 8              | ±9 katrilyon civarı                  |
+| `SMALLINT`    | Küçük tamsayı                          | 2              | -32,768 → 32,767                     |
+| `TINYINT`     | En küçük tamsayı (yalnızca pozitif)   | 1              | 0 → 255                              |
+| `BIT`         | Boolean değeri (0 / 1)                 | 1              | 0 (false), 1 (true)                  |
+| `DECIMAL(p,s)`| Ondalıklı, hassas değerler             | 5-17           | p: toplam basamak, s: ondalık basamak |
+| `NUMERIC(p,s)`| DECIMAL ile aynı                      | 5-17           | Aynı                                 |
+| `FLOAT(n)`    | Kayan noktalı, yaklaşık değer         | 4 veya 8       | Yaklaşık 15-17 basamak hassasiyet    |
+| `REAL`        | FLOAT'un düşük hassasiyetli hali      | 4              | Yaklaşık 7 basamak                   |
+| `MONEY`       | Finansal veri türü                    | 8              | ±922 trilyon (4 ondalıklı basamak)   |
+| `SMALLMONEY`  | Daha küçük parasal değerler           | 4              | ±214 bin                             |
+
+### 🧪 Örnek:
+```sql
+DECLARE @x DECIMAL(8,2) = 12345.67;  -- Maksimum 8 basamak, 2’si ondalıklı
+```
+
+---
+
+# 🔤 2. Karakter ve Metin Veri Türleri (Character and String Data Types)
+
+| Veri Türü       | Açıklama                            | Maks. Uzunluk         | Unicode |
+|------------------|--------------------------------------|------------------------|---------|
+| `CHAR(n)`        | Sabit uzunluklu karakter dizisi     | 1 → 8000               | ❌      |
+| `VARCHAR(n)`     | Değişken uzunluklu metin            | 1 → 8000 (ya da MAX)   | ❌      |
+| `VARCHAR(MAX)`   | 2 GB’ye kadar metin                 | 2^31 -1 karakter       | ❌      |
+| `NCHAR(n)`       | Unicode, sabit uzunluklu metin      | 1 → 4000               | ✅      |
+| `NVARCHAR(n)`    | Unicode, değişken uzunluklu         | 1 → 4000 (ya da MAX)   | ✅      |
+| `NVARCHAR(MAX)`  | 2 GB’ye kadar Unicode metin         | 2^30 karakter          | ✅      |
+| `TEXT` (eski)     | Büyük metin alanı                   | 2 GB                   | ❌      |
+| `NTEXT` (eski)    | Unicode büyük metin                 | 2 GB                   | ✅      |
+
+⚠️ `TEXT` ve `NTEXT` artık **kullanımdan kaldırılmıştır**, yerine `VARCHAR(MAX)` ve `NVARCHAR(MAX)` kullanılır.
+
+### 🧪 Örnek:
+```sql
+DECLARE @ad NVARCHAR(50) = N'Ahmet Yılmaz';
+```
+
+---
+
+# 📅 3. Tarih ve Saat Veri Türleri (Date and Time Data Types)
+
+| Veri Türü         | Açıklama                         | Kapsam/Tarih Aralığı                       |
+|--------------------|-----------------------------------|--------------------------------------------|
+| `DATE`             | Yalnızca tarih (YYYY-MM-DD)      | 0001-01-01 → 9999-12-31                     |
+| `TIME(p)`          | Yalnızca saat                    | 00:00:00.0000000 → 23:59:59.9999999         |
+| `DATETIME`         | Tarih + Saat (standart)          | 1753-01-01 → 9999-12-31 (ms hassasiyet)     |
+| `SMALLDATETIME`    | Daha düşük hassasiyetli          | 1900-01-01 → 2079-06-06 (1 dakika hassas)   |
+| `DATETIME2(p)`     | Yeni nesil DATETIME              | 0001-01-01 → 9999-12-31 (100 ns hassas)     |
+| `DATETIMEOFFSET(p)`| Zaman dilimi içerir              | +00:00 / -14:00 arası UTC offset desteği    |
+
+### 🧪 Örnek:
+```sql
+DECLARE @tarih DATETIME = GETDATE();
+DECLARE @saat TIME = SYSDATETIME();
+```
+
+---
+
+# 🧮 4. Binary (İkili) Veri Türleri
+
+| Veri Türü        | Açıklama                              |
+|------------------|----------------------------------------|
+| `BINARY(n)`      | Sabit uzunlukta ikili veri (n byte)   |
+| `VARBINARY(n)`   | Değişken uzunlukta ikili veri         |
+| `VARBINARY(MAX)` | Büyük dosya, resim, belge tutabilir   |
+| `IMAGE`          | Eskiden resim için kullanılırdı (eski) |
+
+⚠️ `IMAGE` artık `VARBINARY(MAX)` ile değiştirilmiştir.
+
+### 🧪 Örnek:
+```sql
+DECLARE @dosya VARBINARY(MAX);
+```
+
+---
+
+# ✅ 5. Diğer Özel Veri Türleri
+
+### 📛 ID / Unik Tanımlayıcılar
+
+| Veri Türü   | Açıklama                            |
+|-------------|--------------------------------------|
+| `UNIQUEIDENTIFIER` | GUID değeri (36 karakterlik benzersiz id) |
+
+```sql
+DECLARE @id UNIQUEIDENTIFIER = NEWID();
+```
+
+---
+
+### 💾 CURSOR
+
+| Veri Türü   | Açıklama                       |
+|-------------|-------------------------------|
+| `CURSOR`    | Teker teker satır gezmek için |
+
+---
+
+### 🎛️ TABLE (Değişken Tablolar)
+
+```sql
+DECLARE @MyTable TABLE (
+  ID INT,
+  Name NVARCHAR(100)
+);
+```
+
+---
+
+### 📦 SQL_VARIANT
+
+| Veri Türü     | Açıklama                          |
+|---------------|------------------------------------|
+| `SQL_VARIANT` | Aynı sütunda farklı türlerde veri |
+
+---
+
+### 🔢 HIERARCHYID
+
+| Veri Türü   | Açıklama                          |
+|-------------|------------------------------------|
+| `HIERARCHYID` | Ağaç yapıları, hiyerarşik veri için |
+
+---
+
+### 🌐 GEOGRAPHY / GEOMETRY
+
+| Veri Türü   | Açıklama                                 |
+|-------------|-------------------------------------------|
+| `GEOGRAPHY` | Dünya üzerindeki koordinatlarla çalışır  |
+| `GEOMETRY`  | 2B düzlemde noktalar, çizgiler, şekiller |
+
+---
+
+# 🔁 Dönüştürülebilirlik ve Uyum
+
+- Bazı veri türleri birbiriyle **uyumlu** çalışır (örneğin `INT` ↔ `DECIMAL`)
+- Bazı dönüşümler **veri kaybına** neden olabilir (örn: `FLOAT → INT`)
+- `CAST()` ve `CONVERT()` bu dönüşümler için kullanılır
+
+---
+
+## 🎯 Hangi Durumda Hangi Veri Tipi Seçilmeli?
+
+| Durum                              | En Uygun Veri Tipi           |
+|------------------------------------|-------------------------------|
+| Sayısal ID                         | `INT` (küçük veri için `SMALLINT`) |
+| Yüksek performanslı büyük sayı     | `BIGINT`                      |
+| Finansal hesaplama                 | `DECIMAL(18,2)` veya `MONEY`  |
+| Uzun metin (makale, açıklama vb.) | `VARCHAR(MAX)` / `NVARCHAR(MAX)` |
+| Kısa metin (isim, e-posta)        | `VARCHAR(50)`                 |
+| Tarih + saat bilgisi               | `DATETIME2`                   |
+| Saat bilgisi                       | `TIME`                        |
+| Yalnızca tarih                     | `DATE`                        |
+| Benzersiz kimlik                  | `UNIQUEIDENTIFIER`            |
+
+---
+
+# 📚 MSSQL Veri Türleri Özet Tablosu
+
+| Kategori         | Örnek Veri Tipleri                              |
+|------------------|--------------------------------------------------|
+| Sayısal          | `INT`, `BIGINT`, `DECIMAL`, `FLOAT`, `BIT`     |
+| Metin            | `CHAR`, `VARCHAR`, `NVARCHAR`, `TEXT`           |
+| Tarih/Zaman      | `DATE`, `TIME`, `DATETIME`, `DATETIME2`         |
+| Binary           | `VARBINARY`, `IMAGE`                            |
+| Özel             | `UNIQUEIDENTIFIER`, `SQL_VARIANT`, `TABLE`     |
+| Coğrafi          | `GEOGRAPHY`, `GEOMETRY`, `HIERARCHYID`          |
+
+---
 
 
-## DATE
+
+## DATE (TARIH)
 ```sh
 
 ```
+---
+SQL Server'da (MSSQL) tarih işlemleri veri yönetiminin kalbidir. Gerek finansal işlemler, gerekse kullanıcı aktiviteleri, kayıt tarihleri veya raporlamalar gibi konuların tamamında **tarih (date/time) işlemleri** kaçınılmazdır.
+
+Bu cevapta, MSSQL'de **DATE** veri türünü ve genel olarak **tarih-saat veri türlerini**, bu türlerle yapılabilecek işlemleri, fonksiyonları, dönüşümleri ve pratik örnekleri **çok detaylı** şekilde açıklayacağım. 🚀
+
+---
+
+# 📅 1. MSSQL'de DATE Nedir?
+
+`DATE`, SQL Server’da sadece **tarih bilgisini (gün/ay/yıl)** saklayan veri türüdür. Saat bilgisi içermez.
+
+---
+
+## 🔍 Sözdizimi (Syntax)
+```sql
+DATE
+```
+
+---
+
+## 📌 Özellikler
+
+| Özellik            | Değer                                  |
+|--------------------|-----------------------------------------|
+| Biçim (format)     | `YYYY-MM-DD` (ISO 8601)                |
+| Sakladığı veri     | Sadece **tarih** (saat içermez)        |
+| Tarih aralığı      | `0001-01-01` → `9999-12-31`            |
+| Bellek kullanımı   | 3 byte                                 |
+| Saat bilgisi       | ❌ Yok (sadece tarih)                   |
+
+---
+
+## 🧪 Örnek Kullanım
+```sql
+DECLARE @dogumTarihi DATE = '1995-06-15';
+SELECT @dogumTarihi;
+```
+
+---
+
+# 🧭 2. MSSQL Tarih Veri Türlerinin Karşılaştırması
+
+| Veri Türü         | Açıklama                        | Tarih | Saat | Hassasiyet |
+|--------------------|----------------------------------|-------|------|-------------|
+| `DATE`             | Sadece tarih                    | ✅    | ❌   | Gün         |
+| `TIME`             | Sadece saat                     | ❌    | ✅   | 100ns       |
+| `DATETIME`         | Tarih + saat                    | ✅    | ✅   | ~3ms        |
+| `SMALLDATETIME`    | Kısıtlı tarih + saat            | ✅    | ✅   | 1 dakika    |
+| `DATETIME2`        | Gelişmiş tarih + saat           | ✅    | ✅   | 100ns       |
+| `DATETIMEOFFSET`   | Saat dilimi içeren timestamp    | ✅    | ✅   | 100ns       |
+
+---
+
+# 🧩 3. DATE Veri Türü Nerede Kullanılır?
+
+- Doğum tarihi, işe başlama tarihi gibi **yalnızca tarihin** önemli olduğu alanlarda
+- Zaman diliminin ya da saat hassasiyetinin **önemli olmadığı** sistemlerde
+- Raporlama, filtreleme, grup bazlı tarih işlemlerinde
+
+---
+
+# ⏱️ 4. MSSQL'de Tarih Fonksiyonları
+
+Aşağıdaki fonksiyonların çoğu `DATE`, `DATETIME`, `DATETIME2` gibi tüm zamanlı veri türlerinde çalışır.
+
+---
+
+## 🎯 a. GETDATE() – Şu anki tarih + saat
+```sql
+SELECT GETDATE() AS TarihSaat;  -- Örnek: 2025-03-21 15:42:00.777
+```
+
+## 🕰️ b. CAST GETDATE() AS DATE → Sadece tarihi al
+```sql
+SELECT CAST(GETDATE() AS DATE) AS SadeceTarih;  -- Çıktı: 2025-03-21
+```
+
+## 📆 c. CURRENT_TIMESTAMP – GETDATE() ile aynıdır
+```sql
+SELECT CURRENT_TIMESTAMP;
+```
+
+## 📅 d. SYSDATETIME() – Daha hassas timestamp
+```sql
+SELECT SYSDATETIME();  -- Nanosecond hassasiyet
+```
+
+---
+
+# 📚 5. Sık Kullanılan Tarih Fonksiyonları
+
+| Fonksiyon           | Açıklama                                |
+|---------------------|------------------------------------------|
+| `GETDATE()`         | Sunucu saatine göre tarih + saat         |
+| `SYSDATETIME()`     | Yüksek hassasiyetli tarih + saat         |
+| `CAST(... AS DATE)` | Sadece tarih kısmını alır                |
+| `YEAR()`, `MONTH()`, `DAY()` | Yıl, ay, gün ayrıştırır       |
+| `DATEPART(part, tarih)` | Belirli kısmı (örn: yıl, hafta)      |
+| `DATEDIFF(part, başlangıç, bitiş)` | İki tarih arası fark     |
+| `EOMONTH(tarih)`    | Ayın son gününü verir                    |
+| `DATEADD(part, sayı, tarih)` | Tarihe zaman ekler/çıkarır     |
+| `FORMAT(tarih, 'yyyy-MM-dd')` | Tarihi biçimlendirir          |
+
+---
+
+## 🧪 Örneklerle
+
+### 🎯 Yıl, Ay, Gün alma
+```sql
+SELECT 
+    YEAR(GETDATE()) AS Yil,
+    MONTH(GETDATE()) AS Ay,
+    DAY(GETDATE()) AS Gun;
+```
+
+### 📆 Tarihe gün/ay/yıl ekleme
+```sql
+SELECT 
+    DATEADD(DAY, 5, GETDATE()) AS BesGunSonra,
+    DATEADD(YEAR, -1, GETDATE()) AS GecenYil;
+```
+
+### 🔁 İki tarih arasındaki fark
+```sql
+SELECT DATEDIFF(DAY, '2023-01-01', '2025-01-01') AS GunFarki;
+```
+
+### 📅 Ayın son günü
+```sql
+SELECT EOMONTH(GETDATE()) AS AyinSonu;
+```
+
+---
+
+# 🔍 6. DATE ile Filtreleme Örnekleri
+
+### 🔸 Belirli tarihten büyük kayıtları seç
+```sql
+SELECT * FROM Orders
+WHERE OrderDate > '2024-01-01';
+```
+
+### 🔸 Aynı güne ait kayıtları çek (saat bilgisi yok sayılarak)
+```sql
+-- OrderDate bir DATETIME ise:
+SELECT * FROM Orders
+WHERE CAST(OrderDate AS DATE) = '2025-03-21';
+```
+
+---
+
+# 🧮 7. DATE ile Formatlama
+
+SQL Server 2012 ve sonrasında `FORMAT()` fonksiyonu ile özelleştirme yapılabilir:
+
+```sql
+SELECT FORMAT(GETDATE(), 'dd.MM.yyyy') AS TurkiyeFormat;
+SELECT FORMAT(GETDATE(), 'yyyy/MM/dd') AS ISOFormat;
+```
+
+---
+
+# 🚨 8. Dikkat Edilmesi Gerekenler
+
+| Durum                                    | Açıklama                                           |
+|------------------------------------------|----------------------------------------------------|
+| Saat bilgisi yoktur                      | Sadece yıl, ay ve gün içerir                      |
+| Saatli değerle karşılaştırırken dikkat   | `DATETIME` ile karşılaştırmalarda `CAST` gerekebilir |
+| `VARCHAR` dönüşümlerinde format önemli   | `CAST()` veya `CONVERT()` ile doğru format sağlanmalı |
+| Performans                               | `DATE` alanı küçük boyutludur, indeks dostudur     |
+
+---
+
+# 📌 9. Gerçek Hayat Kullanım Senaryoları
+
+### 🔹 Doğum tarihi saklama
+```sql
+CREATE TABLE Users (
+    UserID INT PRIMARY KEY,
+    FullName NVARCHAR(100),
+    BirthDate DATE
+);
+```
+
+### 🔹 Raporlama: Son 7 gün
+```sql
+SELECT * FROM Logs
+WHERE LogDate >= DATEADD(DAY, -7, CAST(GETDATE() AS DATE));
+```
+
+### 🔹 Yıllık raporlama
+```sql
+SELECT 
+    YEAR(OrderDate) AS Yil, 
+    COUNT(*) AS SiparisSayisi
+FROM Orders
+GROUP BY YEAR(OrderDate);
+```
+
+---
+
+# 📚 10. SQL Server'da Tarih Format Kodları (`CONVERT`)
+
+| Style | Format            | Açıklama         |
+|-------|-------------------|------------------|
+| 101   | mm/dd/yyyy        | ABD formatı      |
+| 103   | dd/mm/yyyy        | İngiltere formatı |
+| 104   | dd.mm.yyyy        | Alman formatı    |
+| 112   | yyyymmdd          | ISO formatı      |
+
+```sql
+SELECT CONVERT(VARCHAR, GETDATE(), 104) AS AlmancaFormat;
+```
+
+---
+
+# 🔚 Özet
+
+- `DATE`, MSSQL'de sadece tarihi tutmak için kullanılır (saat içermez).
+- `GETDATE()` ve `SYSDATETIME()` fonksiyonlarıyla birlikte kullanılır.
+- `CAST()` ile saatten ayrıştırılabilir.
+- `DATEADD`, `DATEDIFF`, `FORMAT`, `YEAR`, `MONTH`, `DAY` gibi fonksiyonlarla birlikte kullanılarak tarih işlemleri yapılabilir.
+- Performans açısından çok uygundur.
+- Raporlamalarda, kayıt filtrelemelerinde, zaman aralığı analizlerinde çok sık kullanılır.
+
 ---
 
 
@@ -2349,6 +2757,274 @@ SELECT
 
 ```
 ---
+ **MSSQL'de (Microsoft SQL Server) String (Metin) Veri Tipi ve String işlemleri** hakkında **çok detaylı, kapsamlı ve örnekli** bir açıklama bulacaksınız. Hiçbir kelime kısıtlaması olmadan, temel tanımdan ileri seviye fonksiyonlara kadar her şeyi içerecek şekilde hazırlanmıştır.
+
+---
+
+# 📌 MSSQL’de **String (Metin)** Nedir?
+
+MSSQL’de **String (metin)**; harf, rakam, sembol veya özel karakterlerden oluşan veri tipidir. İsim, adres, açıklama, e-posta gibi karakter tabanlı bilgiler **string** olarak saklanır. SQL Server, string ifadeler için çeşitli **veri tipleri** ve **fonksiyonlar** sağlar.
+
+---
+
+## 🔹 MSSQL String Veri Tipleri
+
+MSSQL’de string’ler farklı türlerde tanımlanabilir. İşte en yaygın kullanılan string veri tipleri:
+
+| Veri Tipi | Açıklama |
+|-----------|----------|
+| `CHAR(n)` | Sabit uzunluklu string. Her zaman `n` karakterlik yer kaplar. Eksik kalan boşluklarla doldurulur. Performans açısından hızlıdır ama yer israfı olabilir. |
+| `VARCHAR(n)` | Değişken uzunluklu string. Maksimum `n` karaktere kadar saklar. Boş karakterleri saklamaz, alan tasarrufu sağlar. |
+| `TEXT` | Büyük metin verilerini saklamak için kullanılır (maksimum 2 GB’a kadar). **Deprecated** (kaldırılacak), artık yerine `VARCHAR(MAX)` kullanılır. |
+| `NCHAR(n)` | Unicode sabit uzunluklu string. Her karakter için 2 byte yer kullanır. |
+| `NVARCHAR(n)` | Unicode değişken uzunluklu string. Çok dilli sistemlerde önerilir. `VARCHAR`’dan farkı Unicode desteğidir. |
+| `NVARCHAR(MAX)` / `VARCHAR(MAX)` | 2 GB’a kadar değişken uzunluklu veri saklayabilir. Büyük metin verileri için idealdir. |
+
+### Örnek:
+```sql
+CREATE TABLE Kullanici (
+    id INT,
+    ad VARCHAR(50),
+    soyad NVARCHAR(50),
+    aciklama TEXT
+);
+```
+
+---
+
+## 🔹 MSSQL’de String Literalleri
+
+Metin değerleri tek tırnak `'` içinde tanımlanır.
+
+```sql
+SELECT 'Merhaba Dünya' AS Mesaj;
+```
+
+Unicode metin için `N` öneki kullanılır:
+
+```sql
+SELECT N'İstanbul' AS Sehir;
+```
+
+---
+
+## 🔹 MSSQL String Fonksiyonları (ÇOK DETAYLI)
+
+Aşağıda MSSQL'deki en sık kullanılan string fonksiyonları ve açıklamaları yer alır.
+
+---
+
+### 🔸 1. `LEN(string)`
+String’in karakter uzunluğunu döner. **Boşlukları saymaz.**
+
+```sql
+SELECT LEN('Merhaba') AS Uzunluk; -- 7
+```
+
+---
+
+### 🔸 2. `DATALENGTH(string)`
+Verinin **bayt** olarak uzunluğunu verir. Boşluklar dahil edilir.
+
+```sql
+SELECT DATALENGTH('Merhaba') AS BaytUzunlugu; -- 7
+SELECT DATALENGTH(N'Merhaba') AS BaytUzunlugu; -- 14
+```
+
+---
+
+### 🔸 3. `LEFT(string, n)` ve `RIGHT(string, n)`
+Metnin solundan veya sağından `n` karakter alır.
+
+```sql
+SELECT LEFT('Merhaba', 3);  -- 'Mer'
+SELECT RIGHT('Merhaba', 2); -- 'ba'
+```
+
+---
+
+### 🔸 4. `SUBSTRING(string, start, length)`
+Metnin belirli bir konumundan itibaren `length` kadar karakter alır.
+
+```sql
+SELECT SUBSTRING('Merhaba Dünya', 9, 5); -- 'Dünya'
+```
+
+---
+
+### 🔸 5. `CHARINDEX(substring, string)`
+Bir alt string’in başlangıç konumunu verir.
+
+```sql
+SELECT CHARINDEX('a', 'Merhaba'); -- 4
+```
+
+---
+
+### 🔸 6. `PATINDEX('%pattern%', string)`
+Pattern’in başladığı yeri döner. `LIKE` ile benzerlik gösterir.
+
+```sql
+SELECT PATINDEX('%ba%', 'Merhaba'); -- 6
+```
+
+---
+
+### 🔸 7. `REPLACE(string, eski, yeni)`
+Belirli bir alt string’i başka bir string ile değiştirir.
+
+```sql
+SELECT REPLACE('Merhaba Dünya', 'a', '*'); -- 'Merh*b* Düny*'
+```
+
+---
+
+### 🔸 8. `REPLICATE(string, n)`
+Bir string’i `n` kadar tekrar eder.
+
+```sql
+SELECT REPLICATE('*', 5); -- '*****'
+```
+
+---
+
+### 🔸 9. `REVERSE(string)`
+String’i tersine çevirir.
+
+```sql
+SELECT REVERSE('Merhaba'); -- 'abahreM'
+```
+
+---
+
+### 🔸 10. `LTRIM(string)` ve `RTRIM(string)`
+Başındaki (`LTRIM`) veya sonundaki (`RTRIM`) boşlukları siler.
+
+```sql
+SELECT LTRIM('   Merhaba'); -- 'Merhaba'
+SELECT RTRIM('Merhaba   '); -- 'Merhaba'
+```
+
+---
+
+### 🔸 11. `UPPER(string)` ve `LOWER(string)`
+Tüm harfleri büyük (`UPPER`) veya küçük (`LOWER`) yapar.
+
+```sql
+SELECT UPPER('merhaba'); -- 'MERHABA'
+SELECT LOWER('MERHABA'); -- 'merhaba'
+```
+
+---
+
+### 🔸 12. `FORMAT(value, format_string)`
+Sayısal ya da tarihsel verileri belirli bir biçimde string olarak döner.
+
+```sql
+SELECT FORMAT(GETDATE(), 'yyyy-MM-dd') AS Tarih;
+```
+
+---
+
+### 🔸 13. `STRING_AGG(expression, delimiter)`
+SQL Server 2017+ ile gelen, birden fazla string’i gruplu şekilde birleştirmek için kullanılır.
+
+```sql
+SELECT STRING_AGG(ad, ', ') AS Adlar
+FROM Ogrenciler;
+```
+
+---
+
+### 🔸 14. `CONCAT(...)`
+Verilen tüm stringleri güvenli biçimde birleştirir. Null varsa bile birleştirme devam eder.
+
+```sql
+SELECT CONCAT(ad, ' ', soyad) AS TamAd
+FROM Ogrenciler;
+```
+
+---
+
+## 🔹 MSSQL’de String Karşılaştırmaları
+
+String ifadeleri karşılaştırırken **büyük/küçük harf duyarlılığı**, **kültür** (collation) gibi faktörler önemlidir.
+
+```sql
+SELECT * FROM Kisiler
+WHERE ad = 'ahmet';  -- Duyarlı mı değil mi? COLLATE ayarına bağlıdır.
+```
+
+### Karakter karşılaştırmalarında `COLLATE` kullanılabilir:
+
+```sql
+SELECT * FROM Kisiler
+WHERE ad COLLATE Latin1_General_CS_AS = 'Ahmet'; -- Case Sensitive (büyük/küçük fark var)
+```
+
+---
+
+## 🔹 Unicode ve Çok Dilli Destek
+
+- `NCHAR`, `NVARCHAR`, `NVARCHAR(MAX)` veri tipleri Unicode karakterleri destekler.
+- Çok dilli uygulamalarda `NVARCHAR` kullanmak önerilir.
+
+```sql
+CREATE TABLE Diller (
+    id INT,
+    cumle NVARCHAR(100)
+);
+
+INSERT INTO Diller VALUES (1, N'你好'), (2, N'مرحبا'), (3, N'שלום');
+```
+
+---
+
+## 🔹 SQL ile String Manipülasyonu – İleri Seviye Örnekler
+
+### 1. String Bölme (`STRING_SPLIT` - SQL Server 2016+)
+```sql
+SELECT value 
+FROM STRING_SPLIT('elma,armut,çilek', ',');
+```
+
+### 2. Dinamik cümle kurma:
+```sql
+SELECT 'Sayın ' + ad + ' ' + soyad + ', kaydınız tamamlandı.'
+FROM Musteriler;
+```
+
+### 3. Bir alanda e-posta kontrolü
+```sql
+SELECT *
+FROM Kullanici
+WHERE email LIKE '%@%.%';
+```
+
+---
+
+## 🔹 Sık Yapılan Hatalar ve Dikkat Edilmesi Gerekenler
+
+- **VARCHAR ile NVARCHAR** farkı: Unicode karakter kullanıyorsan `N` öneki ve `NVARCHAR` kullanmalısın.
+- **Boşluklar:** `LEN()` boşlukları saymaz ama `DATALENGTH()` sayar.
+- **NULL ile + işareti:** `NULL + 'text'` işlemi `NULL` döner. Ama `CONCAT()` null’ları yönetir.
+- **CASE SENSITIVITY:** Collation’a göre eşleştirme duyarlı veya duyarsız olabilir.
+
+---
+
+## 📌 Özetle
+
+| Konu | Açıklama |
+|------|----------|
+| Veri Tipleri | `VARCHAR`, `CHAR`, `NVARCHAR`, `TEXT`, `NCHAR` |
+| Fonksiyonlar | `LEN`, `SUBSTRING`, `REPLACE`, `CONCAT`, `STRING_AGG`, `LEFT`, `RIGHT`, `REVERSE`, `FORMAT`, `UPPER`, `LOWER`, vs. |
+| Unicode | Çok dilli içerikler için `NVARCHAR` kullanılır. |
+| Performans | `VARCHAR` disk alanı tasarrufu sağlar, `CHAR` performanslıdır ama sabittir. |
+| Null Yönetimi | `+` yerine `CONCAT()` önerilir. |
+| Yeni Özellikler | SQL Server 2016+ ile gelen `STRING_SPLIT`, `STRING_AGG` gibi fonksiyonlar önemlidir. |
+
+---
+
 
 
 
