@@ -212,8 +212,22 @@ EXISTS  (Alt sorgularda kayıt var mı ?)			 EXAM: WHERE EXISTS (SELECT * FROM d
 
 -- ----------------------------------------
 -- ----------------------------------------
--- ***AGGREAGATE***
--- Operator
+-- ***AGGREGATE FUNCTION***
+-- Birden fazla verilerden anlamlı sonuçlar(değer) üretmek için kullanırız. Biz bu yapıya özet değer deriz.
+SELECT * FROM nortwind.dbo.Categories;
+
+-- En Küçük
+-- SORU-3) nortwind veritabanından `Categories` tablosundaki verilerden CategoryID'sinin en küçük değeri ?
+SELECT MIN(cate.CategoryID) as 'En küçük Değer' FROM nortwind.dbo.Categories as cate;
+
+-- En Büyük
+-- SORU-3) nortwind veritabanından `Categories` tablosundaki verilerden CategoryID'sinin en büyük değeri ?
+SELECT MAX(cate.CategoryID) as 'En küçük Değer' FROM nortwind.dbo.Categories as cate;
+
+-- Sayaç (Count)
+-- Toplama (SUM)
+-- Ortalama (AVG)
+
 
 -- ----------------------------------------
 -- ----------------------------------------
