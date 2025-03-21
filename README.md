@@ -2108,6 +2108,250 @@ FROM Sales;
 ---
 
 
+## CAST
+```sh
+
+```
+---
+MSSQL'deki `CAST` işlemi, veri tipleri arasında dönüşüm (type conversion) yapmamıza yarar ve SQL programlamada **olmazsa olmaz** bir konudur. Bu konuda seni hiç yarı yolda bırakmayacak kadar **detaylı ve açıklamalı** bir rehber sunuyorum 👇
+
+---
+
+# 🎯 CAST Nedir? Ne İşe Yarar?
+
+`CAST`, bir veri türünü başka bir veri türüne dönüştürmek için kullanılır. Örneğin bir `VARCHAR` türündeki değeri `INT`'e veya `DATETIME` değerini `VARCHAR`'a çevirebilirsin.
+
+> 🔁 Dönüştürülebilir veri türleri arasında işlem yaparken `CAST` ya da `CONVERT` fonksiyonları kullanılır.
+
+---
+
+## 🧠 CAST ile CONVERT Arasındaki Fark
+
+| Özellik             | `CAST()`              | `CONVERT()`                         |
+|---------------------|------------------------|--------------------------------------|
+| ANSI Standardı      | ✅ Evet                 | ❌ Hayır (T-SQL'e özgü)              |
+| Kullanımı           | Daha sade              | Format belirtme seçenekleri var     |
+| Tarih format kontrolü | ❌ Yok                | ✅ VAR (style kodları ile)           |
+
+Yani:
+- Standart ve taşınabilir kod için `CAST()` kullan.
+- Özelleştirilmiş tarih/saat biçimi için `CONVERT()` kullan.
+
+---
+
+# 🧪 CAST Sözdizimi
+
+```sql
+CAST(expression AS target_data_type)
+```
+
+| Parametre       | Açıklama                                |
+|------------------|-------------------------------------------|
+| `expression`     | Dönüştürmek istediğin veri                |
+| `target_data_type` | Hedef veri tipi (örn: `INT`, `VARCHAR`, `FLOAT`) |
+
+---
+
+## 🔤 CAST ile Sayı -> Yazı (VARCHAR)
+
+```sql
+SELECT CAST(12345 AS VARCHAR(10)) AS SayisalMetin;
+```
+📌 `12345` artık bir metin gibi davranır (örneğin bir cümle içinde birleştirebilirsin).
+
+---
+
+## 🔢 CAST ile Yazı -> Sayı
+
+```sql
+SELECT CAST('456' AS INT) AS MetinSayiya;
+```
+
+📌 Sadece sayısal değeri olan metinler dönüştürülebilir.  
+Aksi takdirde hata alırsın:
+
+```sql
+SELECT CAST('abc123' AS INT);  -- HATA verir
+```
+
+---
+
+## 📅 CAST ile Tarih -> Metin
+
+```sql
+SELECT CAST(GETDATE() AS VARCHAR(50)) AS TarihMetin;
+```
+
+📌 Tarih bilgisini metne çevirerek string işlemler yapılabilir (örneğin substring alarak yıl bilgisi çekme gibi).
+
+---
+
+## 🔁 CAST ile Sayı Tipleri Arası Dönüşüm
+
+```sql
+SELECT 
+    CAST(10 AS FLOAT) AS IntToFloat,
+    CAST(12.75 AS INT) AS FloatToInt;
+```
+
+📌 Dikkat! `FLOAT` → `INT` dönüşümünde ondalık kısmı **kesilir**, yuvarlanmaz.
+
+```sql
+CAST(12.75 AS INT)  --> 12
+```
+
+---
+
+## 🔐 CAST ile BIT (True/False) Dönüşümü
+
+```sql
+SELECT CAST(1 AS BIT) AS TrueDeger,
+       CAST(0 AS BIT) AS FalseDeger;
+```
+
+📌 MSSQL'de `BIT` veri tipi 0 veya 1 (false / true) olarak temsil edilir.
+
+---
+
+## 🧮 Gerçek Hayat Örnekleri
+
+### 🔹 1. Sayıları metin olarak birleştirme
+```sql
+SELECT 'Toplam Fiyat: ' + CAST(1500 AS VARCHAR(10)) + ' TL' AS Aciklama;
+```
+
+---
+
+### 🔹 2. Ondalıklı bölme işlemlerinde `CAST` kullanımı
+```sql
+SELECT CAST(10 AS FLOAT) / 3 AS Sonuc;   -- Çıktı: 3.3333
+```
+
+📌 Eğer `INT / INT` yapılırsa sonuç da `INT` olur → 3.0 değil, **3**
+
+---
+
+### 🔹 3. Tarihi yıl olarak çekmek
+```sql
+SELECT 
+    CAST(YEAR(GETDATE()) AS VARCHAR) + '-Yılı' AS YilBilgisi;
+```
+
+---
+
+## ⚠️ Hatalı CAST Kullanımı ve Dikkat Edilecekler
+
+### ❌ Örnek: Geçersiz metni sayıya çevirmek
+```sql
+SELECT CAST('abc' AS INT);  -- HATA: Dönüşüm başarısız
+```
+
+### ❌ Örnek: NULL değer dönüşümü
+```sql
+SELECT CAST(NULL AS INT);   -- NULL döner (hata değil)
+```
+
+### ❗ CAST ve `TRY_CAST`
+`CAST` hata fırlatırken, `TRY_CAST` dönüşüm başarısızsa NULL döner.
+
+```sql
+SELECT TRY_CAST('abc' AS INT) AS Sonuc;  -- NULL
+```
+
+---
+
+## 🔁 CAST ile Tablo Üzerinde Uygulama
+
+```sql
+SELECT 
+    ProductName,
+    CAST(UnitPrice AS VARCHAR) + ' TL' AS PriceText
+FROM Products;
+```
+
+---
+
+## 🧩 CAST + CASE WHEN ile Koşullu Kullanım
+
+```sql
+SELECT 
+    OrderID,
+    CASE 
+        WHEN TotalAmount > 1000 THEN CAST(TotalAmount AS VARCHAR) + ' (VIP)' 
+        ELSE CAST(TotalAmount AS VARCHAR)
+    END AS AmountInfo
+FROM Orders;
+```
+
+---
+
+## 🧪 CAST ile CREATE TABLE – Tip dönüşüm kontrolü
+
+```sql
+CREATE TABLE TestCasting (
+    OrjinalDeger VARCHAR(10),
+    SayisalDeger AS CAST(OrjinalDeger AS INT)
+);
+```
+
+---
+
+## 🆚 CAST vs CONVERT
+
+### 🔁 Aynı İşlem, İki Yöntem
+
+```sql
+SELECT 
+    CAST(GETDATE() AS VARCHAR(20)) AS Tarih1,
+    CONVERT(VARCHAR(20), GETDATE(), 104) AS Tarih2;
+```
+
+| Kullanım Durumu        | Önerilen |
+|------------------------|----------|
+| Temel dönüşüm          | `CAST()` |
+| Tarih biçimlendirme    | `CONVERT()` |
+| ANSI/taşınabilirlik    | `CAST()` |
+
+---
+
+## 🔚 Özetle `CAST` Kullanım Alanları
+
+✅ Sayı → Yazı  
+✅ Yazı → Sayı  
+✅ Tarih → Metin  
+✅ Metin → Tarih  
+✅ Float → Int  
+✅ Int → Float  
+✅ NULL dönüşümü  
+✅ Tabloda `AS` kolonlarında hesaplama  
+✅ CASE WHEN gibi mantıksal ifadelerde
+
+---
+
+
+
+## DATA TYPE (Mssql [SQL SERVER])
+```sh
+
+```
+---
+
+
+## DATE
+```sh
+
+```
+---
+
+
+## STRING
+```sh
+
+```
+---
+
+
+
 ## DML
 ```sh
 
