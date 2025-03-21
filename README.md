@@ -1462,6 +1462,18 @@ ORDER BY
 
 📌 **Northwind veritabanındaki Category tablosu ile ORDER BY komutlarını kullanarak sıralama işlemlerini rahatça yapabilirsiniz!** 🚀
 
+## Operator
+```sh
+
+```
+---
+
+## Aggreagate
+```sh
+
+```
+---
+
 ## DML
 ```sh
 

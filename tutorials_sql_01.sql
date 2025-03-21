@@ -149,6 +149,17 @@ FROM nortwind.dbo.Categories as cate;
 
 -- ----------------------------------------
 -- ----------------------------------------
+-- ***OPERATOR***
+-- Operator
+
+
+-- ----------------------------------------
+-- ----------------------------------------
+-- ***AGGREAGATE***
+-- Operator
+
+-- ----------------------------------------
+-- ----------------------------------------
 -- ***WHERE***
 -- WHERE: Şart(Belirli şartları sağlayan durumlarda filtreleme yapmak içindir.)
 /*
@@ -262,11 +273,6 @@ WHERE cate.Picture IS NULL;
 SELECT COUNT(*) 'Kaçtane Null olan var ?'
 FROM  nortwind.dbo.Categories cate
 WHERE cate.Picture IS NULL;
-
--- ----------------------------------------
--- ----------------------------------------
--- ***OPERATOR***
--- Operator
 
 
 -- ----------------------------------------
