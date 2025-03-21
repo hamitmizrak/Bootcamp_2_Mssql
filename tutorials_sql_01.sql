@@ -216,18 +216,44 @@ EXISTS  (Alt sorgularda kayıt var mı ?)			 EXAM: WHERE EXISTS (SELECT * FROM d
 -- Birden fazla verilerden anlamlı sonuçlar(değer) üretmek için kullanırız. Biz bu yapıya özet değer deriz.
 SELECT * FROM nortwind.dbo.Categories;
 
--- En Küçük
+-- En Küçük (İlgili sutundaki en küçük değeri bulur)
 -- SORU-3) nortwind veritabanından `Categories` tablosundaki verilerden CategoryID'sinin en küçük değeri ?
 SELECT MIN(cate.CategoryID) as 'En küçük Değer' FROM nortwind.dbo.Categories as cate;
 
--- En Büyük
+-- En Büyük (İlgili sutundaki en büyük değeri bulur)
 -- SORU-3) nortwind veritabanından `Categories` tablosundaki verilerden CategoryID'sinin en büyük değeri ?
 SELECT MAX(cate.CategoryID) as 'En küçük Değer' FROM nortwind.dbo.Categories as cate;
 
 -- Sayaç (Count)
--- Toplama (SUM)
--- Ortalama (AVG)
+-- İlgili değerden kaç tane olduğunu bulur.
+-- 1.YOL
+SELECT COUNT(*) as 'kaç tane ' FROM nortwind.dbo.Categories as cate;
+-- 2.YOL
+SELECT COUNT(cate.CategoryID) as 'kaç tane ' FROM nortwind.dbo.Categories as cate;
 
+-- Toplama (SUM)
+-- İlgili Sutundaki verileri toplar
+SELECT SUM(cate.CategoryID) as 'Toplam: ' FROM nortwind.dbo.Categories as cate;
+
+
+-- Ortalama (AVG)
+-- 1.YOL
+SELECT AVG(cate.CategoryID) as 'Toplam: ' FROM nortwind.dbo.Categories as cate;
+
+-- SORU-4) nortwind veritabanından `Categories` tablosundaki verilerden CategoryID ortalaması listeleyiniz ?
+-- 2.YOL
+SELECT 
+SUM(cate.CategoryID) as 'Toplam',
+COUNT(cate.CategoryID) as 'Kaç tane',
+SUM(cate.CategoryID)/COUNT(cate.CategoryID) as 'Ortalama'
+FROM nortwind.dbo.Categories as cate;
+
+-- NOT: Eğer virgülden sonraki değeride almak isterseniz. (1.0) ile çarpmamız gerekiyor.
+SELECT 
+SUM(cate.CategoryID) as 'Toplam',
+COUNT(cate.CategoryID) as 'Kaç tane',
+(SUM(cate.CategoryID)*1.0/COUNT(cate.CategoryID)) as 'Ortalama: Toplam/Kaçtane'
+FROM nortwind.dbo.Categories as cate;
 
 -- ----------------------------------------
 -- ----------------------------------------
