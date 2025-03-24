@@ -370,10 +370,50 @@ SELECT emp.FirstName, emp.LastName, emp.BirthDate,CONVERT(DATE,emp.BirthDate) AS
 -- 1948-12-08  00  :00    :00    .000
 -- YIL  AY GÜN SAAT:DAKIKA:SANIYE.MILISANIYE
 
--- SORU-4) nortwind veritabanından `Employees` tablosundaki verilerden BirthDate küçükten büyüğe doğru listeleyiniz ?
--- SORU-4) nortwind veritabanından `Employees` tablosundaki verilerden BirthDate küçükten büyüğe doğru listeleyiniz ve kaç tane olduğunu sayan sql scripti yazınız ? 
--- SORU-4) nortwind veritabanından `Employees` tablosundaki verilerden BirthDate küçükten büyüğe doğru listeleyiniz ve '1952-02-19' eşleşen sql scripti yazınız ?
 SELECT FirstName, LastName, BirthDate FROM Employees ;
+
+-- SORU-4) nortwind veritabanından `Employees` tablosundaki verilerden BirthDate küçükten büyüğe doğru listeleyiniz ?
+SELECT FirstName, LastName, BirthDate FROM Employees as emp ORDER BY emp.BirthDate ASC;
+
+-- SORU-5) nortwind veritabanından `Employees` tablosundaki verilerden kaç tane olduğunu sayan sql scripti yazınız ? 
+SELECT COUNT(*) AS 'Employees Count' FROM Employees as emp;
+
+-- SORU-6) nortwind veritabanından `Employees` tablosundaki verilerden BirthDate küçükten büyüğe doğru listeleyiniz ve '1952-02-19' eşleşen sql scripti yazınız ?
+SELECT emp.EmployeeID, FirstName, LastName, BirthDate 
+FROM Employees as emp 
+WHERE emp.BirthDate ='1952-02-19'
+ORDER BY emp.BirthDate ASC;
+
+-- GETDATE()
+SELECT GETDATE() as 'Şu anda ki Tarih'
+
+-- DATEADD()
+-- dateadd() = Zamanı yıl, ay için ileri tarihe göre alsın.
+select dateadd(day,1,getdate()) as 'Şu andaki zamanın ayı için 1 gün ileri'
+select dateadd(month,2,getdate()) as 'Şu andaki zamanın ayı için 2 ay ileri'
+select dateadd(year,3,getdate())  as 'Şu andaki zamanın yılı için 3 yıl ileri'
+
+-- DATEDIFF()
+-- datediff() = belirtilen 2 zaman için ara farkını bize gösterir.
+select datediff (day, '01.01.1990',getdate()) AS 'Gün Farkı';
+select datediff(month,'01.01.1990',getdate()) AS 'Gün Farkı';
+select datediff (year,'01.01.1990',getdate()) AS 'Yıl Farkı';
+
+-- DATEPART()
+-- datepart() = o zaman diliminin  hangi  hafta ,ay,yıl, olduğunu gösterir
+SELECT GETDATE() as 'Şu anda ki Tarih';
+select datepart (year,getdate()) 'YEAR';
+select datepart (month,getdate()) as 'Yılın kaçıncı Ay';
+select datepart(day,getdate()) as 'Gün';
+select datepart (hour,getdate()) as 'Saat';
+select datepart (MINUTE,getdate()) as 'Dakika';
+select datepart (SECOND,getdate()) as 'Saniye';
+select datepart (MILLISECOND,getdate()) as 'Milisaniye';
+
+select datepart (WEEK,getdate()) as 'Yılın kaçıncı Haftası';
+
+
+-- SORU-6)
 
  -- ----------------------------------------
 -- ----------------------------------------
@@ -509,16 +549,6 @@ WHERE cate.CategoryID BETWEEN 3 AND 5;
 
 -- ***LIKE***
 -- LIKE:
-
-
--- ----------------------------------------
--- ----------------------------------------
--- ***DATA TYPES***
-
-
--- ----------------------------------------
--- ----------------------------------------
--- ***DATE***
 
 
 -- ----------------------------------------
