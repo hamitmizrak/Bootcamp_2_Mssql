@@ -1352,7 +1352,237 @@ SELECT * FROM Orders WHERE OrderDate > '2024-12-31';
 - **Eğer indeksleme uygunsa, SQL Server genellikle `BETWEEN` ve `AND` kullanımlarını daha hızlı çalıştırır.** 🚀
 
 
-## ORDER BY 
+## IN (WHERE)
+```sh
+
+```
+---
+Elbette! SQL'de `IN` ifadesi oldukça güçlü ve sık kullanılan bir yapıdır. Şimdi detaylı şekilde inceleyelim ve ardından **Northwind veritabanı** üzerinden örneklerle açıklayalım.
+
+---
+
+## 🔍 `IN` Operatörü Nedir?
+
+### ✅ Tanım:
+`IN` operatörü, bir sütunun değerinin, belirli bir değer kümesinden biri olup olmadığını kontrol eder. `WHERE` koşulu içinde kullanılır ve `OR` ifadesine göre daha okunabilir ve kısa bir yazım sunar.
+
+---
+
+## 🧠 Söz Dizimi (Syntax):
+```sql
+SELECT column1, column2, ...
+FROM table_name
+WHERE column_name IN (value1, value2, ...);
+```
+
+---
+
+## 🧾 Örnek Mantık:
+```sql
+SELECT * 
+FROM Employees 
+WHERE Country IN ('USA', 'UK', 'Germany');
+```
+
+Bu sorgu şu anlama gelir:
+> "Ülke bilgisi sadece 'USA', 'UK' veya 'Germany' olan çalışanları getir."
+
+Bu, aşağıdakiyle aynı işlemi yapar ama daha kısa ve okunur:
+```sql
+WHERE Country = 'USA' OR Country = 'UK' OR Country = 'Germany'
+```
+
+---
+
+## 🔧 `IN` Kullanım Notları:
+
+| Özellik | Açıklama |
+|--------|----------|
+| Çoklu değer kontrolü | `IN` bir sütunun birden fazla değerden birine eşit olup olmadığını kontrol eder |
+| Alt sorgularla kullanılabilir | Liste yerine bir SELECT sorgusu verilebilir |
+| NULL içerirse | NULL değerler `IN` listesinde doğru sonuç döndürmez (NULL özel durumdur) |
+
+---
+
+## 📦 NORTHWIND Veritabanı ile `IN` Örnekleri
+
+---
+
+### 🎯 Örnek 1: Belirli ülkelerdeki müşterileri listeleme
+```sql
+SELECT CustomerID, CompanyName, Country
+FROM Customers
+WHERE Country IN ('Germany', 'France', 'Brazil');
+```
+📌 Açıklama: Yalnızca Almanya, Fransa ve Brezilya’daki müşterileri getirir.
+
+---
+
+### 🎯 Örnek 2: Belirli ürün kategorilerine ait ürünleri listeleme
+```sql
+SELECT ProductName, CategoryID
+FROM Products
+WHERE CategoryID IN (1, 2, 5);
+```
+📌 Açıklama: Kategori ID’si 1, 2 veya 5 olan ürünleri listeler.
+
+---
+
+### 🎯 Örnek 3: Belirli çalışanlar tarafından alınan siparişler
+```sql
+SELECT OrderID, EmployeeID, OrderDate
+FROM Orders
+WHERE EmployeeID IN (2, 4, 5);
+```
+📌 Açıklama: Sadece belirtilen çalışanların aldığı siparişleri getirir.
+
+---
+
+### 🎯 Örnek 4: Belirli ürünleri sipariş detaylarında bulma
+```sql
+SELECT OrderID, ProductID, UnitPrice
+FROM [Order Details]
+WHERE ProductID IN (1, 2, 3);
+```
+📌 Açıklama: Ürün ID'si 1, 2 veya 3 olan ürünlerin sipariş detaylarını listeler.
+
+---
+
+### 🎯 Örnek 5: `IN` + Subquery → Belirli ülkelerdeki çalışanlar
+```sql
+SELECT FirstName, LastName, Country
+FROM Employees
+WHERE Country IN (
+    SELECT DISTINCT Country
+    FROM Customers
+    WHERE Country IN ('USA', 'UK', 'France')
+);
+```
+📌 Açıklama: Müşterilerin bulunduğu USA, UK ve France ülkelerinden olan çalışanları getirir.
+
+---
+
+### 🎯 Örnek 6: `IN` + JOIN Kullanımı
+```sql
+SELECT c.CompanyName, o.OrderID
+FROM Customers c
+JOIN Orders o ON c.CustomerID = o.CustomerID
+WHERE c.Country IN ('Mexico', 'Spain');
+```
+📌 Açıklama: Meksika veya İspanya’daki müşterilerin verdiği siparişleri listeler.
+
+---
+
+## 🎓 SONUÇ
+
+- `IN`, `WHERE` içinde çoklu değer kontrolü yapar.
+- Kod okunabilirliğini artırır.
+- `OR` ifadeleri yerine daha sade kullanım sunar.
+- Alt sorgularla da kullanılabilir.
+- Özellikle sabit listeler, filtreleme ve alt sorgularla çok etkilidir.
+
+---
+
+
+## CAST
+```sh
+
+```
+### 📌 MSSQL `CAST` Nedir?
+
+`CAST`, SQL Server'da bir veri türünü başka bir veri türüne dönüştürmek için kullanılan bir fonksiyondur. Örneğin, bir `float` değeri `int` yapmak ya da bir sayısal değeri `varchar` (metin) haline getirmek için kullanılır.
+
+### 🔧 Söz Dizimi (Syntax):
+```sql
+CAST(expression AS target_data_type)
+```
+
+---
+
+## 🎯 Örneklerle `CAST` Kullanımı (Northwind Veritabanı ile)
+
+### 1. **Fiyatı (UnitPrice) Metin (VARCHAR) Olarak Getirme**
+```sql
+SELECT 
+    ProductName,
+    UnitPrice,
+    CAST(UnitPrice AS VARCHAR(20)) AS PriceAsText
+FROM Products;
+```
+📌 Açıklama: `UnitPrice` normalde `money` veya `decimal`. Bunu `VARCHAR`'a dönüştürerek metin gibi işlem yapabiliriz (örneğin birleştirme işlemlerinde).
+
+---
+
+### 2. **Miktarı Tam Sayıya Dönüştürme (`float` → `int`)**
+```sql
+SELECT 
+    ProductName,
+    UnitPrice,
+    CAST(UnitPrice AS INT) AS RoundedPrice
+FROM Products;
+```
+📌 Açıklama: `CAST` ile fiyatı tam sayıya çeviriyoruz. Virgülden sonrasını atar (yuvarlamaz, keser).
+
+---
+
+### 3. **Tarihi Sadece Yıl Olarak Gösterme**
+```sql
+SELECT 
+    OrderID,
+    OrderDate,
+    CAST(YEAR(OrderDate) AS VARCHAR(4)) AS OrderYear
+FROM Orders;
+```
+📌 Açıklama: `YEAR()` fonksiyonu ile yılı alıyoruz, `CAST` ile metne çeviriyoruz.
+
+---
+
+### 4. **İndirimli Tutar Hesaplama ve `money` Olarak Dönüştürme**
+```sql
+SELECT 
+    OrderID,
+    UnitPrice,
+    Quantity,
+    Discount,
+    CAST((UnitPrice * Quantity * (1 - Discount)) AS MONEY) AS DiscountedTotal
+FROM [Order Details];
+```
+📌 Açıklama: İndirimli fiyatı hesaplayıp sonucu `money` türüne dönüştürüyoruz.
+
+---
+
+### 5. **CustomerID ile Sipariş Sayısı (Sayı → VARCHAR Birleştirme)**
+```sql
+SELECT 
+    CustomerID,
+    CAST(COUNT(OrderID) AS VARCHAR) + ' adet sipariş' AS TotalOrders
+FROM Orders
+GROUP BY CustomerID;
+```
+📌 Açıklama: `COUNT` sayısını yazıya çevirip metinle birleştiriyoruz.
+
+---
+
+## 🎁 Ekstra: `CAST` ile `CONCAT` Kullanımı
+```sql
+SELECT 
+    ProductName,
+    'Fiyat: ' + CAST(UnitPrice AS VARCHAR) + ' $' AS PriceInfo
+FROM Products;
+```
+📌 Açıklama: Sayısal bir değer (UnitPrice), metinle birleştirilmeden önce `CAST` ile dönüştürülmeli.
+
+---
+
+
+## ORDER BY
+```sh
+
+```
+---
+
+
+## CAST 
 ```sh
 
 ```
@@ -2327,6 +2557,98 @@ SELECT
 ✅ CASE WHEN gibi mantıksal ifadelerde
 
 ---
+
+## Cast Örnekler (Mssql [SQL SERVER])
+```sh
+
+```
+---
+### 📌 MSSQL `CAST` Nedir?
+
+`CAST`, SQL Server'da bir veri türünü başka bir veri türüne dönüştürmek için kullanılan bir fonksiyondur. Örneğin, bir `float` değeri `int` yapmak ya da bir sayısal değeri `varchar` (metin) haline getirmek için kullanılır.
+
+### 🔧 Söz Dizimi (Syntax):
+```sql
+CAST(expression AS target_data_type)
+```
+
+---
+
+## 🎯 Örneklerle `CAST` Kullanımı (Northwind Veritabanı ile)
+
+### 1. **Fiyatı (UnitPrice) Metin (VARCHAR) Olarak Getirme**
+```sql
+SELECT 
+    ProductName,
+    UnitPrice,
+    CAST(UnitPrice AS VARCHAR(20)) AS PriceAsText
+FROM Products;
+```
+📌 Açıklama: `UnitPrice` normalde `money` veya `decimal`. Bunu `VARCHAR`'a dönüştürerek metin gibi işlem yapabiliriz (örneğin birleştirme işlemlerinde).
+
+---
+
+### 2. **Miktarı Tam Sayıya Dönüştürme (`float` → `int`)**
+```sql
+SELECT 
+    ProductName,
+    UnitPrice,
+    CAST(UnitPrice AS INT) AS RoundedPrice
+FROM Products;
+```
+📌 Açıklama: `CAST` ile fiyatı tam sayıya çeviriyoruz. Virgülden sonrasını atar (yuvarlamaz, keser).
+
+---
+
+### 3. **Tarihi Sadece Yıl Olarak Gösterme**
+```sql
+SELECT 
+    OrderID,
+    OrderDate,
+    CAST(YEAR(OrderDate) AS VARCHAR(4)) AS OrderYear
+FROM Orders;
+```
+📌 Açıklama: `YEAR()` fonksiyonu ile yılı alıyoruz, `CAST` ile metne çeviriyoruz.
+
+---
+
+### 4. **İndirimli Tutar Hesaplama ve `money` Olarak Dönüştürme**
+```sql
+SELECT 
+    OrderID,
+    UnitPrice,
+    Quantity,
+    Discount,
+    CAST((UnitPrice * Quantity * (1 - Discount)) AS MONEY) AS DiscountedTotal
+FROM [Order Details];
+```
+📌 Açıklama: İndirimli fiyatı hesaplayıp sonucu `money` türüne dönüştürüyoruz.
+
+---
+
+### 5. **CustomerID ile Sipariş Sayısı (Sayı → VARCHAR Birleştirme)**
+```sql
+SELECT 
+    CustomerID,
+    CAST(COUNT(OrderID) AS VARCHAR) + ' adet sipariş' AS TotalOrders
+FROM Orders
+GROUP BY CustomerID;
+```
+📌 Açıklama: `COUNT` sayısını yazıya çevirip metinle birleştiriyoruz.
+
+---
+
+## 🎁 Ekstra: `CAST` ile `CONCAT` Kullanımı
+```sql
+SELECT 
+    ProductName,
+    'Fiyat: ' + CAST(UnitPrice AS VARCHAR) + ' $' AS PriceInfo
+FROM Products;
+```
+📌 Açıklama: Sayısal bir değer (UnitPrice), metinle birleştirilmeden önce `CAST` ile dönüştürülmeli.
+
+---
+
 
 
 

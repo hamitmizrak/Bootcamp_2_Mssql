@@ -328,10 +328,26 @@ SELECT SIGN(0) AS 'Negatif';
 
 -- ----------------------------------------
 -- ----------------------------------------
--- ***CAST***
+-- ***CAST/CONVERT***
+/*
+CAST: SQL Server'da bir veri türünü başka br veri türüne dönüştürme senaryasudur.
+CAST(expression AS target_data_type)
+*/
+SELECT 5+6 as 'Toplam';
+SELECT '5'+6 as 'Toplam';
+SELECT 5+'6' as 'Toplam';
+SELECT ('5'+'6') as 'Toplam';
+SELECT (CAST ('5' AS INTEGER) +'6') as 'Toplam';
+SELECT (CAST ('5' AS INTEGER) +CAST('6' AS integer)) as 'Toplam';
 
+-- SORU-4) nortwind veritabanından `Products` tablosundaki verilerden sadece ProductID, UnitPrice seçiniz ve `UnitPrice` money datatype için bunu VARCHAR ile listeleyiniz ?
+ SELECT * FROM Products;
+ SELECT pro.CategoryID, pro.UnitPrice, CAST(pro.UnitPrice as varchar(20)) AS 'PriceAsMoneyToTextValue' FROM Products AS pro;
+ SELECT pro.CategoryID, pro.UnitPrice, CAST(pro.UnitPrice as int) AS 'PriceAsMoneyToIntegerValue' FROM Products AS pro;
 
-
+ -- SORU-4) nortwind veritabanından `Orders` tablosundaki verilerden sadece OrderID, OrderDate seçiniz ve `OrderDate` yıllarını listeleyiniz ?
+ SELECT *  FROM Orders;
+ SELECT ord.OrderID,ord.OrderDate, CAST(ord.OrderDate as varchar(10)) AS 'Sadece Yıllar'  FROM Orders AS ord;
 -- ----------------------------------------
 -- ----------------------------------------
 -- ***WHERE***
