@@ -341,17 +341,17 @@ SELECT (CAST ('5' AS INTEGER) +'6') as 'Toplam';
 SELECT (CAST ('5' AS INTEGER) +CAST('6' AS integer)) as 'Toplam';
 
 -- SORU-4) nortwind veritabanından `Products` tablosundaki verilerden sadece ProductID, UnitPrice seçiniz ve `UnitPrice` money datatype için bunu VARCHAR ile listeleyiniz ?
- SELECT * FROM Products;
- SELECT pro.CategoryID, pro.UnitPrice, CAST(pro.UnitPrice as varchar(20)) AS 'PriceAsMoneyToTextValue' FROM Products AS pro;
- SELECT pro.CategoryID, pro.UnitPrice, CAST(pro.UnitPrice as int) AS 'PriceAsMoneyToIntegerValue' FROM Products AS pro;
+SELECT * FROM Products;
+SELECT pro.CategoryID, pro.UnitPrice, CAST(pro.UnitPrice as varchar(20)) AS 'PriceAsMoneyToTextValue' FROM Products AS pro;
+SELECT pro.CategoryID, pro.UnitPrice, CAST(pro.UnitPrice as int) AS 'PriceAsMoneyToIntegerValue' FROM Products AS pro;
 
- -- SORU-4) nortwind veritabanından `Orders` tablosundaki verilerden sadece OrderID, OrderDate seçiniz ve `OrderDate` yıllarını listeleyiniz ?
- SELECT *  FROM Orders;
- SELECT ord.OrderID,ord.OrderDate, CAST(ord.OrderDate as varchar(10)) AS 'Date'  FROM Orders AS ord;
+-- SORU-4) nortwind veritabanından `Orders` tablosundaki verilerden sadece OrderID, OrderDate seçiniz ve `OrderDate` yıllarını listeleyiniz ?
+SELECT *  FROM Orders;
+SELECT ord.OrderID,ord.OrderDate, CAST(ord.OrderDate as varchar(10)) AS 'Date'  FROM Orders AS ord;
 
 -- CONVERT
 
- -- ----------------------------------------
+-- ----------------------------------------
 -- ----------------------------------------
 -- ***DATE***
 /*
@@ -402,6 +402,10 @@ select datediff (year,'01.01.1990',getdate()) AS 'Yıl Farkı';
 -- DATEPART()
 -- datepart() = o zaman diliminin  hangi  hafta ,ay,yıl, olduğunu gösterir
 SELECT GETDATE() as 'Şu anda ki Tarih';
+SELECT CAST(GETDATE() as DATE) AS 'CurrentDate';
+SELECT CAST(GETDATE() as TIME) AS 'CurrentTime';
+SELECT CAST(GETDATE() as DATETIME) AS 'CurrentDateTime';
+
 select datepart (year,getdate()) 'YEAR';
 select datepart (month,getdate()) as 'Yılın kaçıncı Ay';
 select datepart(day,getdate()) as 'Gün';
@@ -413,9 +417,35 @@ select datepart (MILLISECOND,getdate()) as 'Milisaniye';
 select datepart (WEEK,getdate()) as 'Yılın kaçıncı Haftası';
 
 
--- SORU-6)
+SELECT * FROM Orders;
+-- SORU-6) nortwind veritabanından `Orders` tablosundaki verilerden OrderDate küçükten büyüğe doğru listeleyiniz ?
+SELECT * FROM  nortwind.dbo.Orders as ord
+ORDER BY ord.OrderDate;
 
- -- ----------------------------------------
+-- SORU-6) nortwind veritabanından `Orders` tablosundaki verilerden OrderDate küçükten büyüğe doğru listeyip, sadece OrderID, OrderDate olsun ve YIL-AY-GÜN olarak ayrı ayrı listeleyiniz  ?
+SELECT ord.OrderID, ord.OrderDate,
+	DATENAME(YEAR, ord.OrderDate) AS 'Sipariş Yılı',
+	DATENAME(month, ord.OrderDate) AS 'Sipariş Ayı',
+	DATENAME(DAY, ord.OrderDate) AS 'Sipariş Günü'
+FROM  nortwind.dbo.Orders as ord
+ORDER BY ord.OrderDate;
+
+-- SORU-6) nortwind veritabanından `Orders` tablosundaki verilerden OrderDate küçükten büyüğe doğru listeyip, sadece OrderID, OrderDate olsun ve OrderDate sadece '1997' olan yılın siparileri listeleyiniz  ?
+SELECT ord.OrderID, ord.OrderDate
+FROM Orders as ord
+WHERE DATEPART(YEAR,ord.OrderDate)  =1997;
+
+
+-- SORU-6) nortwind veritabanından `Orders` tablosundaki verilerden OrderDate küçükten büyüğe doğru listeyip, sadece OrderID, OrderDate olsun ve OrderDate sadece '1997' olan yılın sipariler sayısı kaçtır  ?
+SELECT count(*) AS '1997 Yılına ait sipariş sayısı'
+FROM Orders as ord
+WHERE DATEPART(YEAR,ord.OrderDate)=1997;
+
+
+-- SORU-6) nortwind veritabanından `Orders` tablosundaki verilerden OrderDate küçükten büyüğe doğru listeyip, sadece OrderID, OrderDate olsun ve OrderDate  '1996' ile '1997'  yıllarınki sipariler listesi kaçtır  ?
+
+
+- ----------------------------------------
 -- ----------------------------------------
 -- ***DATA TYPES***
 
@@ -549,6 +579,10 @@ WHERE cate.CategoryID BETWEEN 3 AND 5;
 
 -- ***LIKE***
 -- LIKE:
+
+
+-- ***IN***
+-- IN:
 
 
 -- ----------------------------------------
