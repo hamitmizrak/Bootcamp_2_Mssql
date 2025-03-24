@@ -347,7 +347,38 @@ SELECT (CAST ('5' AS INTEGER) +CAST('6' AS integer)) as 'Toplam';
 
  -- SORU-4) nortwind veritabanından `Orders` tablosundaki verilerden sadece OrderID, OrderDate seçiniz ve `OrderDate` yıllarını listeleyiniz ?
  SELECT *  FROM Orders;
- SELECT ord.OrderID,ord.OrderDate, CAST(ord.OrderDate as varchar(10)) AS 'Sadece Yıllar'  FROM Orders AS ord;
+ SELECT ord.OrderID,ord.OrderDate, CAST(ord.OrderDate as varchar(10)) AS 'Date'  FROM Orders AS ord;
+
+-- CONVERT
+
+ -- ----------------------------------------
+-- ----------------------------------------
+-- ***DATE***
+/*
+year-month-day
+Data Type:DATE,
+Format   :YYYY-MM-DD(ISO 8601)
+Değer    :0001-01-01 <= DATE <=9999-12-31
+Alan(Boyut): 3 byte (3*8)
+*/
+
+-- SORU-4) nortwind veritabanından `Employees` tablosundaki verilerden sadece FirstName, LastName, BirthDate listeleyiniz ?
+SELECT FirstName, LastName, BirthDate FROM Employees;
+
+-- SORU-4) nortwind veritabanından `Employees` tablosundaki verilerden sadece FirstName, LastName, BirthDate listeleyiniz ve BirthDate sadece DATE gösteriniz ?
+SELECT emp.FirstName, emp.LastName, emp.BirthDate,CONVERT(DATE,emp.BirthDate) AS 'OnlyDate'  FROM Employees AS emp;
+-- 1948-12-08  00  :00    :00    .000
+-- YIL  AY GÜN SAAT:DAKIKA:SANIYE.MILISANIYE
+
+-- SORU-4) nortwind veritabanından `Employees` tablosundaki verilerden BirthDate küçükten büyüğe doğru listeleyiniz ?
+-- SORU-4) nortwind veritabanından `Employees` tablosundaki verilerden BirthDate küçükten büyüğe doğru listeleyiniz ve kaç tane olduğunu sayan sql scripti yazınız ? 
+-- SORU-4) nortwind veritabanından `Employees` tablosundaki verilerden BirthDate küçükten büyüğe doğru listeleyiniz ve '1952-02-19' eşleşen sql scripti yazınız ?
+SELECT FirstName, LastName, BirthDate FROM Employees ;
+
+ -- ----------------------------------------
+-- ----------------------------------------
+-- ***DATA TYPES***
+
 -- ----------------------------------------
 -- ----------------------------------------
 -- ***WHERE***

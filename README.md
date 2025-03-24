@@ -2649,7 +2649,193 @@ FROM Products;
 
 ---
 
+## DATE
+```sh
 
+```
+---
+### 📌 MSSQL'de `DATE` Veri Türü Nedir? (Çok Detaylı Açıklama)
+
+---
+
+#### ✅ Tanım:
+
+`DATE`, **Microsoft SQL Server**’da bir **tarih** (year-month-day formatında) saklamak için kullanılan bir **veri türüdür**. Zaman (saat, dakika, saniye) içermez, sadece **tarih bilgisini** içerir.
+
+```sql
+-- DATE veri tipi örneği:
+'2025-03-24'
+```
+
+---
+
+#### ✅ Özellikleri:
+
+| Özellik              | Açıklama |
+|----------------------|----------|
+| **Veri Tipi**        | DATE |
+| **Format**           | YYYY-MM-DD (ISO 8601) |
+| **Sakladığı Veri**   | Sadece tarih (zaman yok) |
+| **Minimum Değer**    | 0001-01-01 |
+| **Maksimum Değer**   | 9999-12-31 |
+| **Boyut**            | 3 byte |
+| **Zaman Bilgisi**    | YOK ❌ |
+| **Zaman Dilimi**     | YOK ❌ |
+
+---
+
+#### ✅ Kullanım Amaçları:
+
+- Doğum tarihi
+- Sipariş tarihi
+- İzin başlangıç/bitiş tarihi
+- Fatura tarihleri
+- İşe giriş tarihi
+
+---
+
+#### ✅ Diğer Zaman Veri Tipleriyle Karşılaştırma:
+
+| Veri Tipi      | Tarih | Saat | Dakika | Saniye | Milisaniye | Boyut |
+|----------------|-------|------|--------|--------|-------------|-------|
+| `DATE`         | ✅    | ❌   | ❌     | ❌     | ❌          | 3 byte |
+| `TIME`         | ❌    | ✅   | ✅     | ✅     | ✅          | 3-5 byte |
+| `DATETIME`     | ✅    | ✅   | ✅     | ✅     | ✅ (kısıtlı) | 8 byte |
+| `SMALLDATETIME`| ✅    | ✅   | ✅     | ✅     | ❌          | 4 byte |
+| `DATETIME2`    | ✅    | ✅   | ✅     | ✅     | ✅ (kesin)  | 6-8 byte |
+
+---
+
+### 📘 MSSQL `DATE` Veri Tipi Kullanımı (Kod Örnekleri)
+
+#### ✅ 1. Tabloda `DATE` Kolonu Tanımlama
+
+```sql
+CREATE TABLE Employees (
+    EmployeeID INT PRIMARY KEY,
+    FirstName NVARCHAR(50),
+    LastName NVARCHAR(50),
+    BirthDate DATE  -- sadece tarih bilgisi tutar
+);
+```
+
+#### ✅ 2. Veri Ekleme
+
+```sql
+INSERT INTO Employees (EmployeeID, FirstName, LastName, BirthDate)
+VALUES (1, 'Ahmet', 'Yılmaz', '1990-05-10');
+```
+
+#### ✅ 3. Veri Çekme
+
+```sql
+SELECT FirstName, LastName, BirthDate FROM Employees;
+```
+
+---
+
+### 📌 🔍 Northwind Veritabanı Üzerinden `DATE` Örnekleri
+
+**Northwind** veritabanında tarih bilgileri genellikle `DATETIME` olarak tutulur. Ancak bu değerlerden sadece tarih kısmı çekilebilir.
+
+---
+
+#### ✅ 1. Sadece Tarih Kısmını Alma (CAST/CONVERT)
+
+```sql
+SELECT 
+    OrderID,
+    CustomerID,
+    CONVERT(DATE, OrderDate) AS OrderDateOnly
+FROM Orders;
+```
+
+📌 Açıklama: `OrderDate` kolonu `DATETIME` tipindedir, biz sadece `DATE` kısmını alıyoruz.
+
+---
+
+#### ✅ 2. Belirli Tarihteki Siparişler
+
+```sql
+SELECT OrderID, CustomerID, OrderDate
+FROM Orders
+WHERE CONVERT(DATE, OrderDate) = '1997-08-25';
+```
+
+📌 Açıklama: Zamanı dikkate almadan eşleşen siparişleri döndürür.
+
+---
+
+#### ✅ 3. Belirli Tarih Aralığındaki Siparişler
+
+```sql
+SELECT OrderID, OrderDate
+FROM Orders
+WHERE OrderDate BETWEEN '1997-01-01' AND '1997-12-31';
+```
+
+📌 Açıklama: 1997 yılı içindeki tüm siparişleri listeler.
+
+---
+
+#### ✅ 4. `DATEPART` ile Yıla Göre Filtreleme
+
+```sql
+SELECT OrderID, OrderDate
+FROM Orders
+WHERE DATEPART(YEAR, OrderDate) = 1998;
+```
+
+📌 Açıklama: `OrderDate` yıl bilgisi alınır ve sadece 1998 yılı siparişleri döner.
+
+---
+
+#### ✅ 5. Gün, Ay, Yıl Bilgilerini Ayırmak
+
+```sql
+SELECT 
+    OrderID,
+    OrderDate,
+    DATENAME(MONTH, OrderDate) AS OrderMonth,
+    DATEPART(DAY, OrderDate) AS OrderDay,
+    DATEPART(YEAR, OrderDate) AS OrderYear
+FROM Orders;
+```
+
+---
+
+### 🧠 Ekstra Bilgiler:
+
+#### 📌 `GETDATE()` ile Şu Anki Tarihi Almak:
+
+```sql
+SELECT GETDATE() AS CurrentDateTime;
+SELECT CAST(GETDATE() AS DATE) AS CurrentDateOnly;
+```
+
+---
+
+#### 📌 DEFAULT Değeri olarak Kullanmak:
+
+```sql
+CREATE TABLE Logs (
+    LogID INT PRIMARY KEY,
+    Message NVARCHAR(255),
+    LogDate DATE DEFAULT CAST(GETDATE() AS DATE)
+);
+```
+
+---
+
+### ✅ Kapanış – Özetle:
+
+- `DATE`, sadece **tarih** bilgisi içerir, saat içermez.
+- Hafiftir (3 byte), performanslıdır.
+- `DATETIME` gibi zaman bilgisi barındıran tiplerden dönüştürülebilir.
+- `CONVERT()` veya `CAST()` fonksiyonlarıyla yaygın olarak kullanılır.
+- Northwind gibi veritabanlarında tarih bazlı analizlerde çok işlevseldir.
+
+---
 
 
 ## DATA TYPE (Mssql [SQL SERVER])
