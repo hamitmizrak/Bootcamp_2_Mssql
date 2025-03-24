@@ -351,101 +351,8 @@ SELECT ord.OrderID,ord.OrderDate, CAST(ord.OrderDate as varchar(10)) AS 'Date'  
 
 -- CONVERT
 
+
 -- ----------------------------------------
--- ----------------------------------------
--- ***DATE***
-/*
-year-month-day
-Data Type:DATE,
-Format   :YYYY-MM-DD(ISO 8601)
-Değer    :0001-01-01 <= DATE <=9999-12-31
-Alan(Boyut): 3 byte (3*8)
-*/
-
--- SORU-4) nortwind veritabanından `Employees` tablosundaki verilerden sadece FirstName, LastName, BirthDate listeleyiniz ?
-SELECT FirstName, LastName, BirthDate FROM Employees;
-
--- SORU-4) nortwind veritabanından `Employees` tablosundaki verilerden sadece FirstName, LastName, BirthDate listeleyiniz ve BirthDate sadece DATE gösteriniz ?
-SELECT emp.FirstName, emp.LastName, emp.BirthDate,CONVERT(DATE,emp.BirthDate) AS 'OnlyDate'  FROM Employees AS emp;
--- 1948-12-08  00  :00    :00    .000
--- YIL  AY GÜN SAAT:DAKIKA:SANIYE.MILISANIYE
-
-SELECT FirstName, LastName, BirthDate FROM Employees ;
-
--- SORU-4) nortwind veritabanından `Employees` tablosundaki verilerden BirthDate küçükten büyüğe doğru listeleyiniz ?
-SELECT FirstName, LastName, BirthDate FROM Employees as emp ORDER BY emp.BirthDate ASC;
-
--- SORU-5) nortwind veritabanından `Employees` tablosundaki verilerden kaç tane olduğunu sayan sql scripti yazınız ? 
-SELECT COUNT(*) AS 'Employees Count' FROM Employees as emp;
-
--- SORU-6) nortwind veritabanından `Employees` tablosundaki verilerden BirthDate küçükten büyüğe doğru listeleyiniz ve '1952-02-19' eşleşen sql scripti yazınız ?
-SELECT emp.EmployeeID, FirstName, LastName, BirthDate 
-FROM Employees as emp 
-WHERE emp.BirthDate ='1952-02-19'
-ORDER BY emp.BirthDate ASC;
-
--- GETDATE()
-SELECT GETDATE() as 'Şu anda ki Tarih'
-
--- DATEADD()
--- dateadd() = Zamanı yıl, ay için ileri tarihe göre alsın.
-select dateadd(day,1,getdate()) as 'Şu andaki zamanın ayı için 1 gün ileri'
-select dateadd(month,2,getdate()) as 'Şu andaki zamanın ayı için 2 ay ileri'
-select dateadd(year,3,getdate())  as 'Şu andaki zamanın yılı için 3 yıl ileri'
-
--- DATEDIFF()
--- datediff() = belirtilen 2 zaman için ara farkını bize gösterir.
-select datediff (day, '01.01.1990',getdate()) AS 'Gün Farkı';
-select datediff(month,'01.01.1990',getdate()) AS 'Gün Farkı';
-select datediff (year,'01.01.1990',getdate()) AS 'Yıl Farkı';
-
--- DATEPART()
--- datepart() = o zaman diliminin  hangi  hafta ,ay,yıl, olduğunu gösterir
-SELECT GETDATE() as 'Şu anda ki Tarih';
-SELECT CAST(GETDATE() as DATE) AS 'CurrentDate';
-SELECT CAST(GETDATE() as TIME) AS 'CurrentTime';
-SELECT CAST(GETDATE() as DATETIME) AS 'CurrentDateTime';
-
-select datepart (year,getdate()) 'YEAR';
-select datepart (month,getdate()) as 'Yılın kaçıncı Ay';
-select datepart(day,getdate()) as 'Gün';
-select datepart (hour,getdate()) as 'Saat';
-select datepart (MINUTE,getdate()) as 'Dakika';
-select datepart (SECOND,getdate()) as 'Saniye';
-select datepart (MILLISECOND,getdate()) as 'Milisaniye';
-
-select datepart (WEEK,getdate()) as 'Yılın kaçıncı Haftası';
-
-
-SELECT * FROM Orders;
--- SORU-6) nortwind veritabanından `Orders` tablosundaki verilerden OrderDate küçükten büyüğe doğru listeleyiniz ?
-SELECT * FROM  nortwind.dbo.Orders as ord
-ORDER BY ord.OrderDate;
-
--- SORU-6) nortwind veritabanından `Orders` tablosundaki verilerden OrderDate küçükten büyüğe doğru listeyip, sadece OrderID, OrderDate olsun ve YIL-AY-GÜN olarak ayrı ayrı listeleyiniz  ?
-SELECT ord.OrderID, ord.OrderDate,
-	DATENAME(YEAR, ord.OrderDate) AS 'Sipariş Yılı',
-	DATENAME(month, ord.OrderDate) AS 'Sipariş Ayı',
-	DATENAME(DAY, ord.OrderDate) AS 'Sipariş Günü'
-FROM  nortwind.dbo.Orders as ord
-ORDER BY ord.OrderDate;
-
--- SORU-6) nortwind veritabanından `Orders` tablosundaki verilerden OrderDate küçükten büyüğe doğru listeyip, sadece OrderID, OrderDate olsun ve OrderDate sadece '1997' olan yılın siparileri listeleyiniz  ?
-SELECT ord.OrderID, ord.OrderDate
-FROM Orders as ord
-WHERE DATEPART(YEAR,ord.OrderDate)  =1997;
-
-
--- SORU-6) nortwind veritabanından `Orders` tablosundaki verilerden OrderDate küçükten büyüğe doğru listeyip, sadece OrderID, OrderDate olsun ve OrderDate sadece '1997' olan yılın sipariler sayısı kaçtır  ?
-SELECT count(*) AS '1997 Yılına ait sipariş sayısı'
-FROM Orders as ord
-WHERE DATEPART(YEAR,ord.OrderDate)=1997;
-
-
--- SORU-6) nortwind veritabanından `Orders` tablosundaki verilerden OrderDate küçükten büyüğe doğru listeyip, sadece OrderID, OrderDate olsun ve OrderDate  '1996' ile '1997'  yıllarınki sipariler listesi kaçtır  ?
-
-
-- ----------------------------------------
 -- ----------------------------------------
 -- ***DATA TYPES***
 
@@ -579,10 +486,193 @@ WHERE cate.CategoryID BETWEEN 3 AND 5;
 
 -- ***LIKE***
 -- LIKE:
+/* 
+- SQL içerisinde en çok kullanacağımız bir desen(pattern) işlemini görür.
+- Aramalarda, tablolardai filtrelemelerde sıklıkla kullanırız.
+- Where ile birlikte kullanılır.
 
+SELECT * 
+FROM tablo_adi
+WHERE kolon_adi LIKE 'pattern'
+
+LIKE(Wilcard) karakterler
+%  => Birden fazla yani 0,1 veya daha fazla karakter demektir.
+_  => Sadece 1 karakter demektir.
+
+Malatya
+'M%'         M ile başlayan
+'%a'         a ile biten
+'%lat%'      baş,son ve ortada bir yerde 'lat' olsun
+'M_%'        M ile başlayacak sonrasında 1 harf gelecek toplam 2 harf olacak
+'M_l_t_y_%'  Mxlxyx toplamında 6 harf olacak şartlarda yanda yazıyor (Mxlxyx)
+*/
+
+SELECT * FROM  Customers;
+-- SORU-2) nortwind veritabanından `Customers` tablosundaki 'city' ve 'Country' kolunu olacak şekilde sıralayınız ?
+SELECT cus.CustomerID,cus.City, cus.Country
+FROM nortwind.dbo.Customers as cus;
+
+-- SORU-2) nortwind veritabanından `Customers` tablosundaki 'city' ve 'Country' kolunu olacak şekilde ve Country sutun(kolonu) küçükten-büyüğe sıralayınız ?
+SELECT cus.CustomerID,cus.City, cus.Country
+FROM nortwind.dbo.Customers as cus
+ORDER BY cus.Country;
+
+-- SORU-2) nortwind veritabanından `Customers` tablosundaki 'city' ve 'Country' kolunu olacak şekilde ve Country sutun(kolonu) küçükten-büyüğe sıralayınız 
+-- ve Count A harfi ile başlayanları listeyiniz ?
+SELECT cus.CustomerID,cus.City, cus.Country
+FROM nortwind.dbo.Customers as cus
+WHERE cus.Country LIKE 'A%'
+ORDER BY cus.Country;
+
+
+-- SORU-2) nortwind veritabanından `Customers` tablosundaki 'city' ve 'Country' kolunu olacak şekilde ve Country sutun(kolonu) küçükten-büyüğe sıralayınız 
+-- ve Country  a harfi ile biten listeyiniz ?
+SELECT cus.CustomerID,cus.City, cus.Country
+FROM nortwind.dbo.Customers as cus
+WHERE cus.Country LIKE '%a'
+ORDER BY cus.Country;
+
+-- SORU-2) nortwind veritabanından `Customers` tablosundaki 'city' ve 'Country' kolunu olacak şekilde ve Country sutun(kolonu) küçükten-büyüğe sıralayınız 
+-- ve Country içinde 'an' geçen Country listeyiniz ?
+SELECT cus.CustomerID,cus.City, cus.Country
+FROM nortwind.dbo.Customers as cus
+WHERE cus.Country LIKE '%an%'
+ORDER BY cus.Country;
+
+-- SORU-2) nortwind veritabanından `Customers` tablosundaki 'city' ve 'Country' kolunu olacak şekilde ve Country sutun(kolonu) küçükten-büyüğe sıralayınız 
+-- ve Country içinde 6 karakterli olan Country listeyiniz ?
+SELECT cus.CustomerID,cus.City, cus.Country
+FROM nortwind.dbo.Customers as cus
+WHERE cus.Country LIKE '______' --6 tane underscore
+ORDER BY cus.Country;
+
+-- SORU-2) nortwind veritabanından `Customers` tablosundaki 'city' ve 'Country' kolunu olacak şekilde ve Country sutun(kolonu) küçükten-büyüğe sıralayınız 
+-- ve Country içinde 'Me' ile başlayan ve en az 3  karakterli olan Country listeyiniz ?
+SELECT cus.CustomerID,cus.City, cus.Country
+FROM nortwind.dbo.Customers as cus
+WHERE cus.Country LIKE 'Me_%' --6 tane underscore
+ORDER BY cus.Country;
+
+
+-- SORU-2) nortwind veritabanından `Customers` tablosundaki 'city' ve 'Country' kolunu olacak şekilde ve Country sutun(kolonu) küçükten-büyüğe sıralayınız 
+-- ve Country 'UK' ve City 'London' verilerini listeyiniz ?
+SELECT cus.CustomerID,cus.City, cus.Country
+FROM nortwind.dbo.Customers as cus
+WHERE cus.Country LIKE 'UK' AND cus.City LIKE 'London'
+ORDER BY cus.Country;
+
+-- SORU-2) nortwind veritabanından `Customers` tablosundaki 'city' ve 'Country' kolunu olacak şekilde ve Country sutun(kolonu) küçükten-büyüğe sıralayınız 
+-- ve Country 'UK' ve City 'London' ile ilgili kaç tane veri vardır ?
+SELECT COUNT(*) 'Country:UK VE City:London Geçen SAyısı'
+FROM nortwind.dbo.Customers as cus
+WHERE cus.Country LIKE 'UK' AND cus.City LIKE 'London';
+
+-- SORU-2) nortwind veritabanından `Customers` tablosundaki 'city' ve 'Country' kolunu olacak şekilde ve Country sutun(kolonu) küçükten-büyüğe sıralayınız 
+-- ve Count A ile başlayan kaç tane veri vardır ?
+SELECT COUNT(*) 'Şartı Sağlayan Veri Sayısı'
+FROM nortwind.dbo.Customers as cus
+WHERE cus.Country LIKE 'A%';
 
 -- ***IN***
 -- IN:
+
+
+-- ----------------------------------------
+-- ----------------------------------------
+-- ***DATE***
+/*
+year-month-day
+Data Type:DATE,
+Format   :YYYY-MM-DD(ISO 8601)
+Değer    :0001-01-01 <= DATE <=9999-12-31
+Alan(Boyut): 3 byte (3*8)
+*/
+
+-- SORU-4) nortwind veritabanından `Employees` tablosundaki verilerden sadece FirstName, LastName, BirthDate listeleyiniz ?
+SELECT FirstName, LastName, BirthDate FROM Employees;
+
+-- SORU-4) nortwind veritabanından `Employees` tablosundaki verilerden sadece FirstName, LastName, BirthDate listeleyiniz ve BirthDate sadece DATE gösteriniz ?
+SELECT emp.FirstName, emp.LastName, emp.BirthDate,CONVERT(DATE,emp.BirthDate) AS 'OnlyDate'  FROM Employees AS emp;
+-- 1948-12-08  00  :00    :00    .000
+-- YIL  AY GÜN SAAT:DAKIKA:SANIYE.MILISANIYE
+
+SELECT FirstName, LastName, BirthDate FROM Employees ;
+
+-- SORU-4) nortwind veritabanından `Employees` tablosundaki verilerden BirthDate küçükten büyüğe doğru listeleyiniz ?
+SELECT FirstName, LastName, BirthDate FROM Employees as emp ORDER BY emp.BirthDate ASC;
+
+-- SORU-5) nortwind veritabanından `Employees` tablosundaki verilerden kaç tane olduğunu sayan sql scripti yazınız ? 
+SELECT COUNT(*) AS 'Employees Count' FROM Employees as emp;
+
+-- SORU-6) nortwind veritabanından `Employees` tablosundaki verilerden BirthDate küçükten büyüğe doğru listeleyiniz ve '1952-02-19' eşleşen sql scripti yazınız ?
+SELECT emp.EmployeeID, FirstName, LastName, BirthDate 
+FROM Employees as emp 
+WHERE emp.BirthDate ='1952-02-19'
+ORDER BY emp.BirthDate ASC;
+
+-- GETDATE()
+SELECT GETDATE() as 'Şu anda ki Tarih'
+
+-- DATEADD()
+-- dateadd() = Zamanı yıl, ay için ileri tarihe göre alsın.
+select dateadd(day,1,getdate()) as 'Şu andaki zamanın ayı için 1 gün ileri'
+select dateadd(month,2,getdate()) as 'Şu andaki zamanın ayı için 2 ay ileri'
+select dateadd(year,3,getdate())  as 'Şu andaki zamanın yılı için 3 yıl ileri'
+
+-- DATEDIFF()
+-- datediff() = belirtilen 2 zaman için ara farkını bize gösterir.
+select datediff (day, '01.01.1990',getdate()) AS 'Gün Farkı';
+select datediff(month,'01.01.1990',getdate()) AS 'Gün Farkı';
+select datediff (year,'01.01.1990',getdate()) AS 'Yıl Farkı';
+
+-- DATEPART()
+-- datepart() = o zaman diliminin  hangi  hafta ,ay,yıl, olduğunu gösterir
+SELECT GETDATE() as 'Şu anda ki Tarih';
+SELECT CAST(GETDATE() as DATE) AS 'CurrentDate';
+SELECT CAST(GETDATE() as TIME) AS 'CurrentTime';
+SELECT CAST(GETDATE() as DATETIME) AS 'CurrentDateTime';
+
+select datepart (year,getdate()) 'YEAR';
+select datepart (month,getdate()) as 'Yılın kaçıncı Ay';
+select datepart(day,getdate()) as 'Gün';
+select datepart (hour,getdate()) as 'Saat';
+select datepart (MINUTE,getdate()) as 'Dakika';
+select datepart (SECOND,getdate()) as 'Saniye';
+select datepart (MILLISECOND,getdate()) as 'Milisaniye';
+
+select datepart (WEEK,getdate()) as 'Yılın kaçıncı Haftası';
+
+
+SELECT * FROM Orders;
+-- SORU-6) nortwind veritabanından `Orders` tablosundaki verilerden OrderDate küçükten büyüğe doğru listeleyiniz ?
+SELECT * FROM  nortwind.dbo.Orders as ord
+ORDER BY ord.OrderDate;
+
+-- SORU-6) nortwind veritabanından `Orders` tablosundaki verilerden OrderDate küçükten büyüğe doğru listeyip, sadece OrderID, OrderDate olsun ve YIL-AY-GÜN olarak ayrı ayrı listeleyiniz  ?
+SELECT ord.OrderID, ord.OrderDate,
+	DATENAME(YEAR, ord.OrderDate) AS 'Sipariş Yılı',
+	DATENAME(month, ord.OrderDate) AS 'Sipariş Ayı',
+	DATENAME(DAY, ord.OrderDate) AS 'Sipariş Günü'
+FROM  nortwind.dbo.Orders as ord
+ORDER BY ord.OrderDate;
+
+-- SORU-6) nortwind veritabanından `Orders` tablosundaki verilerden OrderDate küçükten büyüğe doğru listeyip, sadece OrderID, OrderDate olsun ve OrderDate sadece '1997' olan yılın siparileri listeleyiniz  ?
+SELECT ord.OrderID, ord.OrderDate
+FROM Orders as ord
+WHERE DATEPART(YEAR,ord.OrderDate)  =1997;
+
+
+-- SORU-6) nortwind veritabanından `Orders` tablosundaki verilerden OrderDate küçükten büyüğe doğru listeyip, sadece OrderID, OrderDate olsun ve OrderDate sadece '1997' olan yılın sipariler sayısı kaçtır  ?
+SELECT count(*) AS '1997 Yılına ait sipariş sayısı'
+FROM Orders as ord
+WHERE DATEPART(YEAR,ord.OrderDate)=1997;
+
+
+-- SORU-6) nortwind veritabanından `Orders` tablosundaki verilerden OrderDate küçükten büyüğe doğru listeyip, sadece OrderID, OrderDate olsun ve OrderDate  '1996' ile '1997'  yıllarınki sipariler listesi kaçtır  ?
+SELECT ord.OrderID, ord.OrderDate
+FROM  nortwind.dbo.Orders as ord
+WHERE ord.OrderDate BETWEEN '1996-01-01' AND '1997-12-31'; --1997-12-31  12: son ayın 31: Son günü
+
 
 
 -- ----------------------------------------

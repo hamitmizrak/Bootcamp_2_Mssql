@@ -1200,6 +1200,7 @@ SELECT * FROM Employees WHERE FirstName LIKE 'J_n%';
 
 ---
 
+
 ## **7. NULL Değerleri Filtreleme (`IS NULL` ve `IS NOT NULL`)**
 ### **7.1 NULL Olan Kayıtları Getirme**
 E-posta adresi olmayan çalışanları getirir:
@@ -1350,6 +1351,208 @@ SELECT * FROM Orders WHERE OrderDate > '2024-12-31';
 - **Sıralı veri (tarih, sayısal) filtrelemesi yaparken `BETWEEN` veya `AND` kullanın.**
 - **Eğer `OR` kullanmanız gerekiyorsa, mümkünse `UNION ALL` veya `IN` kullanarak performansı artırabilirsiniz.**
 - **Eğer indeksleme uygunsa, SQL Server genellikle `BETWEEN` ve `AND` kullanımlarını daha hızlı çalıştırır.** 🚀
+
+## LIKE (WHERE)
+```sh
+
+```
+---
+ `LIKE` operatörü SQL’de **metinsel veriler üzerinde esnek filtreleme** yapmak için kullanılan çok güçlü bir araçtır.
+
+---
+
+## ✅ SQL'de `LIKE` Operatörü Nedir?
+
+---
+
+### 📌 Tanım:
+`LIKE`, bir string (metin) verisinin belirli bir **desene (pattern)** uyup uymadığını kontrol etmek için kullanılır. **Tam eşleşme değil**, **kısmi eşleşme** durumlarında kullanılır.
+
+---
+
+### ✅ Söz Dizimi (Syntax):
+
+```sql
+SELECT * 
+FROM tablo_adi
+WHERE kolon_adi LIKE 'pattern';
+```
+
+---
+
+### 📘 `LIKE` ile Kullanılan Joker (Wildcard) Karakterler:
+
+| Karakter | Anlamı |
+|----------|--------|
+| `%`      | Sıfır, bir veya daha fazla karakter yerine geçer |
+| `_`      | Yalnızca bir karakter yerine geçer |
+
+---
+
+### 🔍 Karşılaştırmalı Örnekler:
+
+| Arama Kalıbı (LIKE) | Eşleşen Örnek Değerler | Açıklama |
+|---------------------|------------------------|----------|
+| `'A%'`              | `Ahmet`, `Ali`, `Ayşe` | A harfiyle başlayan her şey |
+| `'%n'`              | `Mertin`, `Can`        | n harfiyle biten |
+| `'%at%'`            | `Fatma`, `Kamilat`     | Ortasında "at" geçen |
+| `'A_'`              | `Ay`, `Al`             | A ile başlayıp toplam 2 harf |
+| `'A__e'`            | `Abde`, `Axle`         | A ile başlayıp toplam 4 harf, sonu 'e' |
+
+---
+
+## 🧠 MSSQL Northwind Veritabanında `LIKE` Kullanımı ile Sorular ve Cevaplar
+
+---
+
+### 🔷 SORU 1:
+**`Customers` tablosundan şirket adı (CompanyName) "A" harfi ile başlayan kayıtları listeleyiniz.**
+
+```sql
+SELECT CustomerID, CompanyName
+FROM Customers
+WHERE CompanyName LIKE 'A%';
+```
+
+🧾 **Açıklama:**  
+`'A%'` ifadesi: **A harfiyle başlayan** tüm şirket adlarını getirir. `%` her şeyi temsil eder.
+
+---
+
+### 🔷 SORU 2:
+**`Customers` tablosundan şirket adı içinde "Market" kelimesi geçenleri listeleyiniz.**
+
+```sql
+SELECT CustomerID, CompanyName
+FROM Customers
+WHERE CompanyName LIKE '%Market%';
+```
+
+🧾 **Açıklama:**  
+`'%Market%'` ifadesi, şirket adı içerisinde herhangi bir yerde "Market" geçen tüm kayıtları döner.
+
+---
+
+### 🔷 SORU 3:
+**`Employees` tablosundaki soyadı (LastName) "n" harfiyle biten kayıtları listeleyiniz.**
+
+```sql
+SELECT EmployeeID, LastName, FirstName
+FROM Employees
+WHERE LastName LIKE '%n';
+```
+
+🧾 **Açıklama:**  
+`'%n'` → Sonu "n" harfi ile biten soyadlarını döndürür.
+
+---
+
+### 🔷 SORU 4:
+**`Products` tablosundan ürün adı (ProductName) içerisinde "ch" geçen ürünleri listeleyiniz.**
+
+```sql
+SELECT ProductID, ProductName
+FROM Products
+WHERE ProductName LIKE '%ch%';
+```
+
+🧾 **Açıklama:**  
+"Cheese", "Chai", "Chocolate" gibi isimleri döndürür.
+
+---
+
+### 🔷 SORU 5:
+**`Products` tablosunda ürün adı 5 harfli olanları listeleyiniz.**
+
+```sql
+SELECT ProductID, ProductName
+FROM Products
+WHERE ProductName LIKE '_____';
+```
+
+🧾 **Açıklama:**  
+`'_____'` → Altı çizgi (`_`) 5 tane karakter demektir. Yani **tam 5 harfli** ürün adlarını döndürür.
+
+---
+
+### 🔷 SORU 6:
+**`Employees` tablosundan FirstName "Ma" ile başlayanları ve en az 3 harfli olanları listeleyiniz.**
+
+```sql
+SELECT EmployeeID, FirstName, LastName
+FROM Employees
+WHERE FirstName LIKE 'Ma_';
+```
+
+🧾 **Açıklama:**  
+`'Ma_'` → "Ma" ile başlar ve toplam **3 harf** olur. "Max" gibi isimleri getirir.
+
+---
+
+### 🔷 SORU 7:
+**`Suppliers` tablosunda CompanyName içinde hem “Foods” hem de “Ltd” geçenleri listeleyiniz.**
+
+```sql
+SELECT SupplierID, CompanyName
+FROM Suppliers
+WHERE CompanyName LIKE '%Foods%' AND CompanyName LIKE '%Ltd%';
+```
+
+🧾 **Açıklama:**  
+Her iki kelimeyi **içeren** şirket adlarını döner. Birden çok `LIKE` operatörü `AND` ile kombine edilebilir.
+
+---
+
+### 🔷 SORU 8:
+**`Customers` tablosunda ülke (Country) adı “land” ile biten müşterileri listeleyiniz.**
+
+```sql
+SELECT CustomerID, CompanyName, Country
+FROM Customers
+WHERE Country LIKE '%land';
+```
+
+🧾 **Açıklama:**  
+Sonu “land” ile biten ülkeler: **Finland**, **Iceland**, **Switzerland** gibi.
+
+---
+
+### 🔷 SORU 9:
+**`Employees` tablosundaki `Title` kolonunda "Sales" geçen çalışanları listeleyiniz.**
+
+```sql
+SELECT EmployeeID, FirstName, LastName, Title
+FROM Employees
+WHERE Title LIKE '%Sales%';
+```
+
+🧾 **Açıklama:**  
+“Sales Representative”, “Sales Manager” gibi ünvanlara sahip çalışanlar listelenir.
+
+---
+
+### 🔷 SORU 10:
+**`Products` tablosundaki ürün adları sadece "C" harfi ile başlayıp 4 harfli olanları listeleyiniz.**
+
+```sql
+SELECT ProductID, ProductName
+FROM Products
+WHERE ProductName LIKE 'C___';
+```
+
+🧾 **Açıklama:**  
+C harfiyle başlayan ve toplam **4 harfli** ürün isimleri gelir. Örn: "Chai", "Corn", "Cake".
+
+---
+
+## 🎯 Sonuç
+
+- `LIKE`, SQL’de **esnek ve etkili metin filtreleme** yapmanın temel yollarından biridir.
+- `%` ve `_` karakterleri ile çok farklı kombinasyonlar yapabilirsin.
+- Northwind gibi örnek veritabanlarında bu konuyu uygulamalı öğrenmek, sınav ve proje soruları için çok ideal.
+
+---
+
 
 
 ## IN (WHERE)
