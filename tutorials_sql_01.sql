@@ -591,7 +591,17 @@ WHERE cat.CategoryID=(SELECT MAX(query_cat.CategoryID) FROM Categories as query_
 -- 3.YOL (Dynamics and Cast)
 SELECT * 
 FROM nortwind.dbo.Categories as cat
-WHERE cat.CategoryID=CAST((SELECT MAX(query_cat.CategoryID) FROM Categories as query_cat) as INTEGER);
+WHERE cat.CategoryID=CAST((
+	SELECT MAX(query_cat.CategoryID) 
+	FROM Categories as query_cat) as INTEGER);
+
+-- 4.YOL (Dynamics and Cast)
+-- IN: Birden fazla değer döndürecek demektir.
+SELECT * 
+FROM nortwind.dbo.Categories as cat
+WHERE cat.CategoryID IN(
+CAST((SELECT MAX(query_cat.CategoryID) FROM Categories as query_cat) as INTEGER)
+)  
 
 
 -- SORU-2) nortwind veritabanından `Categories` tablosundaki 'categoryID'nin en büyük veriyi gösteriniz ?
