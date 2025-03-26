@@ -1683,6 +1683,87 @@ WHERE c.Country IN ('Mexico', 'Spain');
 
 ---
 
+## IN ile SUBQUERY ARASINDAKİ FARKLAR
+```sh
+
+```
+Süper, şimdi gelelim detaylıca:  
+**"IN ile Subquery nedir, farkları nelerdir?"** sorusunun sade ve örnekli cevabına 👇
+
+---
+
+## 📌 1. Subquery (Alt Sorgu) Nedir?
+
+**Subquery**, bir SQL ifadesi içinde gömülü başka bir SQL sorgusudur.
+
+**Amaç:** Ana sorguya yardımcı veriler üretmek.
+
+Kullanım yerleri:
+- `SELECT` içinde
+- `WHERE`, `FROM`, `HAVING`, `JOIN`, `UPDATE`, `DELETE` gibi ifadelerde
+
+### ✅ Örnek Subquery:
+```sql
+SELECT *
+FROM Orders
+WHERE CustomerID = (
+    SELECT CustomerID FROM Customers WHERE CompanyName = 'Around the Horn'
+);
+```
+
+> `()` içindeki sorgu bir **subquery**’dir ve dış sorguya değer sağlar.
+
+---
+
+## 📌 2. IN Nedir?
+
+**IN**, bir değer kümesi (liste) içinde olup olmadığını kontrol eden bir SQL operatörüdür.
+
+### ✅ Sabit listeyle örnek:
+```sql
+SELECT * FROM Products
+WHERE CategoryID IN (1, 2, 3);
+```
+
+### ✅ Subquery ile birlikte:
+```sql
+SELECT * FROM Products
+WHERE CategoryID IN (
+    SELECT CategoryID FROM Categories WHERE CategoryName LIKE 'B%'
+);
+```
+
+> Bu örnekte `IN (...)` kısmı da bir subquery'dir. Yani **IN ile subquery birlikte** kullanılabilir.
+
+---
+
+## ✅ IN ile Subquery Arasındaki Farklar
+
+| Özellik                        | IN                                       | Subquery                                          |
+|-------------------------------|------------------------------------------|---------------------------------------------------|
+| Tanım                          | Belirli bir kümede değer arar            | Ana sorguya yardımcı veri üreten alt sorgudur     |
+| Kullanım amacı                 | Liste karşılaştırması                    | Her türlü veri üretimi, filtreleme, karşılaştırma |
+| Tek başına kullanılabilir mi? | Hayır (liste gerekir)                    | Evet (ana sorgu içinde)                           |
+| Subquery ile ilişkisi         | Sıklıkla birlikte kullanılır             | IN operatörüne veya diğer operatörlere gömülebilir|
+| Döndürdüğü veri               | IN: sabit ya da alt sorgudan gelen liste | Subquery: tek veya çoklu satır/sütun              |
+
+---
+
+## 🧠 İpucu:
+- `IN (...)` bir subquery içeriyorsa, subquery **çok satır döndürebilir**.
+- `= (...)` kullanıyorsan, subquery yalnızca **tek bir değer** döndürmelidir.
+
+---
+
+## 🎯 Kısa Özet:
+
+- `IN` → "bir listedeki değerlerle eşleşiyor mu?" diye bakar.
+- `Subquery` → başka bir sorgudan veri alır, bu veri sabit ya da dinamik olabilir.
+- **`IN` genellikle `subquery` ile birlikte çalışır.**
+
+---
+
+
 
 ## CAST
 ```sh

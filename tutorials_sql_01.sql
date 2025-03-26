@@ -574,7 +574,9 @@ FROM nortwind.dbo.Customers as cus
 WHERE cus.Country LIKE 'A%';
 
 -- ***IN***
--- IN:(SubQuery)
+-- IN ile SubQuery arasındaki farklar
+-- IN: Birden fazla sonuç döndürür
+-- subQuery bir tane sonuç döndürür.
 SELECT * from Categories;
 
 -- SORU-2) nortwind veritabanından `Categories` tablosundaki 'categoryID'nin en büyük veriyi gösteriniz ?
@@ -603,8 +605,15 @@ WHERE cat.CategoryID IN(
 CAST((SELECT MAX(query_cat.CategoryID) FROM Categories as query_cat) as INTEGER)
 )  
 
+-- SORU-2) nortwind databasesi'nden Products tablosundaki, `CategoryID`leri 1 ve 2olanları listeyiniz
+SELECT pro.ProductID, pro.ProductName, pro.CategoryID 
+FROM Products as pro
+WHERE pro.CategoryID IN (1, 2);
 
--- SORU-2) nortwind veritabanından `Categories` tablosundaki 'categoryID'nin en büyük veriyi gösteriniz ?
+-- SORU-2) nortwind veritabanından Çalışanlar(Employees) tablosundaki ID'si 1,3,5 olan çalışanları lsiteleyeiniz ?
+SELECT * FROM Employees;
+
+
 
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
@@ -623,6 +632,8 @@ CAST((SELECT MAX(query_cat.CategoryID) FROM Categories as query_cat) as INTEGER)
 select * from Orders;
 select * from Employees;
 select * from Customers;
+
+
 
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
