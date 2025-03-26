@@ -2393,10 +2393,6 @@ SELECT MAX(KategoriToplami) FROM (
 ```
 ---
 
-Elbette! MSSQL'de çok önemli olan **`GROUP BY`** ve **`HAVING`** ifadelerini detaylıca açıklayayım, ardından **Northwind veritabanı** üzerinden örnek sorular ve cevaplar vereyim.
-
----
-
 ## 🧠 `GROUP BY` ve `HAVING` Nedir?
 
 ### 🔹 `GROUP BY` Nedir?
@@ -4160,14 +4156,12 @@ Bu komut, eğer güncelleme işlemi sorunsuz gerçekleşirse `COMMIT` ile deği�
 📌 **DML komutlarını etkin kullanmak, veritabanı yönetimi için hayati önem taşır!** 🚀
 
 
-## JOIN
+## JOIN 
 ```sh
 
 ```
 ---
-Elbette! Aşağıda **MSSQL'de JOIN işlemi** hakkında çok detaylı bir açıklama bulacaksın. Ardından, **Northwind veritabanını kullanarak** farklı türde **JOIN işlemlerine dayalı örnek sorular ve SQL sorguları** sunacağım. Her şey öğretici ve örneklerle açıklanacak şekilde tasarlandı. Kelime kısıtlaması olmadan, tam anlamıyla bir kaynak niteliğinde düşünebilirsin.
 
----
 
 ## 🔍 MSSQL `JOIN` Nedir? Detaylı Açıklama
 

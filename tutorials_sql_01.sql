@@ -761,11 +761,21 @@ WHERE ord.OrderDate BETWEEN '1996-01-01' AND '1997-12-31'; --1997-12-31  12: son
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
--- DML
+-- DML (Data Manipulation Language)
+-- Kolonlar üzerinde insert, delete, update
+USE nortwind;
+
+
 -- INSERT
+INSERT INTO nortwind.dbo.Categories(CategoryName,Description,Picture) VALUES ('C#','hight level language',NULL);
+SELECT * FROM nortwind.dbo.Categories;
 
 
 -- UPDATE
+UPDATE nortwind.dbo.Categories SET CategoryName='Python', Description='Numpy' WHERE CategoryID=1009;
+SELECT * FROM nortwind.dbo.Categories;
+
+
 -- SORU-2) nortwind veritabanından `Categories` tablosundaki 'categoryID'de 12 ve büyük olan verileri gösteriniz ?
 SELECT * 
 FROM nortwind.dbo.Categories as cat
@@ -795,7 +805,35 @@ WHERE cat.CategoryID IN (
 
 
 -- DELETE
+DELETE FROM nortwind.dbo.Categories WHERE CategoryID=1009;
+SELECT * FROM nortwind.dbo.Categories;
 
+
+
+-- --------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------
+-- DDL (Data Definition Language)
+-- Tablo veya Veritabanı eklemek, güncelleme, silme
+
+-- CREATE DATABASE (Database Ekleme)
+CREATE DATABASE scriptdb;
+
+-- DROP DATABASE (Database Silmek)
+-- Mssql
+USE master
+GO
+	DROP DATABASE scriptdb;
+GO
+
+-- RENAME DATABASE (Database İsmini Değiştirmek)
+EXEC sp_renamedb 'scriptdb','yeniscriptdb';
+
+
+-- TABLE
 
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
@@ -806,20 +844,6 @@ WHERE cat.CategoryID IN (
 -- MSSQL (SQL SERVER) Sıklıkla kullanılan teknoloji içerikleri
 -- Index
 -- SP
-
-
-
-
--- --------------------------------------------------------------------------------------------------
--- --------------------------------------------------------------------------------------------------
--- --------------------------------------------------------------------------------------------------
--- --------------------------------------------------------------------------------------------------
--- --------------------------------------------------------------------------------------------------
--- --------------------------------------------------------------------------------------------------
--- DDL
-
-
-
 
 
 -- --------------------------------------------------------------------------------------------------
