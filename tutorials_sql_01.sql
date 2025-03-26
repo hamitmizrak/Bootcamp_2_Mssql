@@ -645,12 +645,67 @@ ORDER BY emp1.EmployeeID asc
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
 -- ***JOIN***
--- SORU-2) nortwind veritabanından Hangi müşteriler  Mexico veya Germany veya Franca şipariş vermiş kişileri listeleyiniz ?
+SELECT * from Orders;
+SELECT * FROM Employees;
+SELECT * FROM Customers;
+SELECT * FROM Products;
+SELECT * FROM Suppliers;
 
-select * from Orders;
-select * from Employees;
-select * from Customers;
+-- SORU-2) nortwind veritabanından çalışanların(Employee) aldığı siparişler listeleyiniz ?
+SELECT emp.EmployeeID,emp.FirstName,emp.LastName, ord.OrderID
+FROM Employees emp 
+JOIN Orders ord ON emp.EmployeeID=ord.EmployeeID;
 
+-- SORU-2) nortwind veritabanından Hangi müşteriler(Customer)  `Mexico` veya `Germany`veya `France` şipariş vermiş kişileri listeleyiniz ?
+SELECT cus.CustomerID, cus.CompanyName, cus.Country,ord.OrderID,ord.ShipName
+FROM Customers cus
+JOIN Orders as ord ON cus.CustomerID= ord.CustomerID
+WHERE cus.Country IN ('Mexico','Germany','France') ORDER BY cus.Country ASC;
+
+-- SORU-2) nortwind veritabanından Her ürünün(Product) ilgili tedarikcisi(Supplier)  listeleyiniz ?
+SELECT pro.ProductID,pro.ProductName,pro.UnitPrice, sup.CompanyName,sup.ContactName 
+FROM Products pro 
+JOIN Suppliers sup ON pro.SupplierID=sup.SupplierID;
+
+-- NOT: ON sonra gelen verilerden yerleri değiştirebiliriz.
+SELECT pro.ProductID,pro.ProductName,pro.UnitPrice, sup.CompanyName,sup.ContactName 
+FROM Products pro 
+JOIN Suppliers sup ON sup.SupplierID=pro.SupplierID;
+
+-- LEFT JOIN (Products)
+SELECT pro.ProductID,pro.ProductName,pro.UnitPrice, sup.CompanyName,sup.ContactName 
+FROM Products pro 
+LEFT JOIN Suppliers sup ON sup.SupplierID=pro.SupplierID;
+
+
+-- RIGHT JOIN (Products)
+SELECT pro.ProductID,pro.ProductName,pro.UnitPrice, sup.CompanyName,sup.ContactName 
+FROM Products pro 
+RIGHT JOIN Suppliers sup ON sup.SupplierID=pro.SupplierID;
+
+
+-- Multiple Join(2 tane JOIN)
+SELECT * FROM Categories;  -- CategoryID(PK)
+SELECT * FROM Suppliers;   -- SupplierID(PK)
+SELECT * FROM Products;    -- ProductID(PK), Supplier(FK), CategoryID(FK)
+
+-- SORU-2) nortwind veritabanından Her ürünün(Product), hangi kategoride(Categories) ve hangi Tedarikciden(Supplier) geldiğini listeleyiniz ?
+SELECT 
+pro.ProductID, cat.CategoryID,sup.SupplierID, 
+cat.CategoryName AS 'Category Name',  sup.CompanyName AS 'Company Name',sup.Country
+FROM Products as pro
+JOIN Categories as cat ON pro.CategoryID= cat.CategoryID
+JOIN Suppliers  as sup ON pro.SupplierID= sup.SupplierID;  
+
+-- SORU-2) nortwind veritabanından Her ürünün(Product), hangi kategoride(Categories) ve hangi Tedarikciden(Supplier) toplam kaç veri geldiği sayınız ?
+SELECT COUNT(*) 'Her ürünün(Product), hangi kategoride(Categories) ve hangi Tedarikciden(Supplier) toplam kaç veri'
+FROM Products as pro --NOT: FK olan tabloyu buraya yazalım.
+JOIN Categories as cat ON pro.CategoryID= cat.CategoryID
+JOIN Suppliers  as sup ON pro.SupplierID= sup.SupplierID;  
+
+
+SELECT * from Orders;     -- OrderID(PK), CustomerID(FK), EmployeeID(FK)
+SELECT * FROM Customers;  -- CustomerID
 
 
 -- --------------------------------------------------------------------------------------------------
