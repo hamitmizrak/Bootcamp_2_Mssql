@@ -594,7 +594,7 @@ FROM nortwind.dbo.Categories as cat
 WHERE cat.CategoryID=CAST((SELECT MAX(query_cat.CategoryID) FROM Categories as query_cat) as INTEGER);
 
 
-
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki 'categoryID'nin en büyük veriyi gösteriniz ?
 
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
@@ -744,8 +744,15 @@ WHERE CategoryID>=12 AND Picture IS NULL;
 -- SORU-2) nortwind veritabanından `Categories` tablosundaki 'categoryID'de 11 ve büyük olan verilerden 
 -- `Picture` koloundaki NULL değerleri yerine `0x151C2F00020000000D000E0014002100FFFFFFFF` ile güncelleyiniz ?
 -- 2.YOL
-UPDATE Categories SET Picture=REPLACE(cat.Picture, 'NULL','0x151C2F00020000000D000E0014002100FFFFFFFF')  FROM Categories as cat;
+--UPDATE Categories SET Picture=REPLACE(cat.Picture, 'NULL','0x151C2F00020000000D000E0014002100FFFFFFFF')  FROM Categories as cat;
 
+UPDATE cat 
+SET Picture=0x151C2F00020000000D000E0014002100FFFFFFFF  
+FROM Categories as cat
+WHERE cat.CategoryID IN (
+	SELECT CategoryID FROM Categories
+	WHERE CategoryID>=11 AND Picture IS NULL
+);
 
 
 -- DELETE
