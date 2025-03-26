@@ -874,21 +874,106 @@ SELECT * FROM nortwind.dbo.Categories;
 -- DDL (Data Definition Language)
 -- Tablo veya Veritabanı eklemek, güncelleme, silme
 
--- CREATE DATABASE (Database Ekleme)
-CREATE DATABASE scriptdb;
+-- SENARYO: Bir Okul veritabanı oluşturucak
+-- TABLOLAR
+-- Students    (Öğrenci Bilgileri)
+-- Deparmaents (Bölüm Bilgileri)
+-- Relation (Deparments(1) - Students(N))
 
--- DROP DATABASE (Database Silmek)
--- Mssql
-USE master
-GO
-	DROP DATABASE scriptdb;
+-- AMAÇ:
+/*
+> Veritabanı  oluşturmak,Silmek, Güncelleme
+> Tablolar oluşturmak,Silmek, Güncelleme
+> Primary Key ve Foreign Key oluşturmak
+> Veri ekleme, Silmek , Güncellemek, Sorgulama (C-R-U-D)
+*/
+
+
+-- CREATE DATABASE (Database Ekleme)
+CREATE DATABASE SchoolDB;
 GO
 
 -- RENAME DATABASE (Database İsmini Değiştirmek)
-EXEC sp_renamedb 'scriptdb','yeniscriptdb';
+--EXEC sp_renamedb 'SchoolDB','SchoolDB';
+
+-- Veritabanına Geçiş
+USE SchoolDB;
+GO
+
+-- Veritabanı Sil
+-- DROP DATABASE SchoolDB;
+
+-- Relation (Deparments(1) - Students(N))
+-- NOT: Tekilde başlayabilirsiniz
+-- Deparments(1)
+IF NOT EXISTS (
+	SELECT * FROM sys.tables WHERE name='Departments' AND type ='U'
+)
+BEGIN
+	CREATE TABLE Departments(
+		DepartmentID INT PRIMARY KEY IDENTITY(1,1),  --PK ve AI(Otomatik artmak)
+		DepartmentName NVARCHAR(100) NOT NULL,
+		CreatedDate DATETIME DEFAULT GETDATE()         -- Oluşturma tarihi
+	);
+END;
+
+-- Tablo Sil
+-- DROP TABLE Departments
+
+-- Relation (Deparments(1) - Students(N))
+-- NOT: Tekilde başlayabilirsiniz
+-- Deparments(1)
+-- sys.tables: MSSQL Sisteme görünümü yani tabloları lsiteler
+-- type ='U' : User-defined olarak yani ben bu tabloyu oluşturuyorum
+IF NOT EXISTS (
+	SELECT * FROM sys.tables WHERE name='Students' AND type ='U'
+)
+BEGIN
+	CREATE TABLE Students(
+		StudentID INT PRIMARY KEY  IDENTITY(1,1),    --PK ve AI(Otomatik artmak)
+		Firstname NVARCHAR(100) NOT NULL,
+		LastName NVARCHAR(255) NOT NULL,
+		Age INT CHECK (Age>=18 AND Age<=55),          --Öğrenci yaş sınırı en 18 en fazla 55 
+		Email NVARCHAR(255) UNIQUE,                   -- Benzersiz E-posta
+		Phone NVARCHAR(20),
+		BirthDate DATE,
+		RegisterDate DATETIME DEFAULT GETDATE(),
+		DepartmentID INT,             --FK
+		FOREIGN KEY (DepartmentID) 
+			REFERENCES Departments(DepartmentID)
+			ON DELETE SET NULL           -- Departman Silinirse null olsun
+			ON UPDATE CASCADE            --  Güncelleme olursa otomatik gerçekleşsin
+	);
+END;
+
+-- DML (Data Manipulation Language)
+-- Kolonlar üzerinde insert, delete, update
+USE SchoolDB;
+
+-- INSERT
+-- Dikkat !!! İlişkisel Database(Relation Database) Ekleme işlemlerinden Öncelikle Tekil ile başlanır 
+INSERT INTO SchoolDB.dbo.Departments(DepartmentName) VALUES('Computer Engineering'),('Physics'),('Mathematics');
+
+INSERT INTO SchoolDB.dbo.Students
+(Firstname,LastName,Age,Email,Phone,BirthDate,DepartmentID) 
+VALUES
+('Hamit1','Mızrak-1','30','hamitmizrak@gmail.com','1112223344','2010-04-12',1),
+('Hamit1','Mızrak2','25','hamitmizrak2@gmail.com','1112223344','2015-05-09',1)
+
+-- DQL
+SELECT * FROM SchoolDB.dbo.Departments;
+SELECT * FROM SchoolDB.dbo.Students;
 
 
--- TABLE
+-- UPDATE
+UPDATE SchoolDB.dbo.Departments SET DepartmentName='Mathematics44' WHERE DepartmentID=(SELECT MAX(de.DepartmentID) FROM Departments as de);
+SELECT * FROM SchoolDB.dbo.Departments;
+
+-- DELETE
+DELETE FROM SchoolDB.dbo.Departments WHERE DepartmentID=1;
+SELECT * FROM SchoolDB.dbo.Departments ;
+SELECT * FROM SchoolDB.dbo.Students;
+
 
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------

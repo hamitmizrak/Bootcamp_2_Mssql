@@ -895,6 +895,212 @@ DDL (Data Definition Language)	Tabloları, şemaları tanımlama (CREATE, ALTER,
 DCL (Data Control Language)	Kullanıcı yetkilendirmeleri (GRANT, REVOKE)
 TCL (Transaction Control Language)	İşlemleri yönetme (COMMIT, ROLLBACK, SAVEPOINT)
 
+## SQL `GO` 555
+```sh
+
+```
+---
+
+MSSQL'de sıklıkla karşımıza çıkan **`GO`** ifadesi, SQL diline ait bir **komut** değildir — ama çok özel bir **batch ayırıcı (komut bloğu ayırıcı)**dır. Aşağıda **detaylı şekilde** açıklayayım:
+
+---
+
+## 🔍 `GO` Komutu Nedir?
+
+### ✅ `GO`, MSSQL Server için **batch ayırıcı**dır.
+Yani, birden fazla SQL komutunu yazarken, bu komutları **ayrı ayrı çalıştırılabilir bloklara (batch)** ayırmak için kullanılır.
+
+**Batch (toplu işlem)**: SQL Server, bir grup SQL komutunu birlikte çalıştırır. Ancak bazı SQL ifadeleri **tek başına bir batch** içinde olmak zorundadır (örneğin `CREATE DATABASE`, `USE` gibi).
+
+---
+
+## 📌 Kullanım Amacı
+
+- SQL Server **birden fazla sorguyu tek dosyada** işlerken, hangi noktada komutları ayrı ayrı değerlendireceğini belirlemek için kullanılır.
+- Özellikle **SSMS (SQL Server Management Studio)**, `GO` komutunu gördüğünde önceki komut bloğunu çalıştırır ve sonra diğer bloğa geçer.
+
+---
+
+## 💡 Örnek:
+
+```sql
+CREATE DATABASE SchoolDB;
+GO
+
+USE SchoolDB;
+GO
+
+CREATE TABLE Students (
+    StudentID INT PRIMARY KEY,
+    FullName NVARCHAR(100)
+);
+GO
+```
+
+### Açıklama:
+1. `CREATE DATABASE` komutu kendi başına bir batch’te olmalı → `GO` ile bitirildi.
+2. `USE SchoolDB` komutu da ayrı çalışmalı → yine `GO`.
+3. `CREATE TABLE` de ayrı batch olarak çalıştırıldı.
+
+---
+
+## 🔧 Teknik Notlar:
+
+| Özellik              | Açıklama                                                                 |
+|----------------------|--------------------------------------------------------------------------|
+| `GO` bir **SQL komutu değildir** | T-SQL sözdizimi içinde yer almaz; sadece **SSMS**, **sqlcmd**, **Azure Data Studio** gibi araçlar tarafından yorumlanır. |
+| **Zorunlu değildir**, ama **tavsiye edilir** | Özellikle `CREATE`, `USE`, `ALTER` gibi komutlarda. |
+| Hataları ayıklamak için faydalı | Kodun hangi kısmında hata olduğunu kolay tespit etmeye yarar. |
+
+---
+
+## 🚫 Yanlış Kullanım:
+
+```sql
+CREATE DATABASE SchoolDB
+USE SchoolDB
+CREATE TABLE ...
+```
+
+Yukarıdaki kodda `GO` olmazsa, hata alınır çünkü `CREATE DATABASE` ve `USE` aynı batch'te çalışamaz.
+
+---
+
+## 🧪 Gelişmiş Kullanım (GO N Sayısı)
+
+```sql
+PRINT 'Merhaba';
+GO 3
+```
+
+Bu kod, `PRINT 'Merhaba'` komutunu **3 kez çalıştırır**.
+
+---
+
+## 🎯 Kısaca Özet:
+
+- `GO` → MSSQL'de **batch sonlandırıcı**dır.
+- SQL Server’a değil, SQL Server'ı çalıştıran araca (SSMS, sqlcmd vs.) komut verir.
+- `CREATE`, `USE`, `ALTER` gibi komutlar için araya koyulması genelde zorunludur.
+- Kodun yönetimini, hataların bulunmasını ve mantıksal blokları ayırmayı kolaylaştırır.
+
+---
+
+
+## SQL `dbo`
+```sh
+
+```
+---
+
+Elbette! SQL Server'da sıkça gördüğümüz **`dbo`** ifadesi, aslında oldukça önemli bir kavramdır. Aşağıda kelime sınırı olmadan, detaylı ve anlaşılır şekilde açıklayacağım.
+
+---
+
+## 🔍 `dbo` Nedir?
+
+### ✅ `dbo` = **Database Owner** (Veritabanı Sahibi)
+
+`dbo`, **SQL Server veritabanlarında varsayılan şema (schema)** olarak kullanılan bir tanımlayıcıdır. Veritabanı içindeki nesnelerin (tablolar, görünümler, prosedürler vs.) **kime ait olduğunu ve nerede bulunduğunu** belirlemeye yarar.
+
+---
+
+## 🔧 Şema (Schema) Nedir?
+
+Bir şema, SQL Server'da **veritabanı nesneleri için bir kapsayıcı**dır. Şemalar sayesinde veritabanındaki nesneler mantıksal olarak gruplandırılır.
+
+Örneğin:
+
+```sql
+dbo.Students
+```
+
+- `dbo` → Şema adı (owner/kapsayıcı)
+- `Students` → Tablo adı
+
+Bu şekilde hem isim çakışmalarını önleriz, hem de güvenlik ve yetkilendirme işlemleri kolaylaşır.
+
+---
+
+## 📦 Neden `dbo`?
+
+- SQL Server’da yeni bir veritabanı oluşturduğunuzda, sistem otomatik olarak `dbo` adlı bir şema oluşturur.
+- Eğer bir kullanıcıya özel bir şema atanmazsa, o kişinin oluşturduğu nesneler **varsayılan olarak `dbo` şemasına** ait olur.
+
+Örneğin:
+
+```sql
+CREATE TABLE Students (...);
+```
+
+Bu tablo aslında `dbo.Students` olarak oluşur. Ama kullanıcı `dbo` olduğu için ön ek yazılmasa da `dbo` altında oluşturulur.
+
+---
+
+## 🔐 Güvenlik ve Yetkilendirme
+
+Şemalar sayesinde kullanıcılar arasında erişim kontrolü sağlanabilir:
+
+Örneğin:
+- `finance.Employees` → Sadece finans departmanının erişebileceği veriler
+- `hr.Employees` → İnsan kaynakları departmanına özel tablo
+
+Ama eğer bir şema belirtilmezse, SQL Server otomatik olarak `dbo`'yu kullanır.
+
+---
+
+## 🧠 Örnekler
+
+### 1. Varsayılan şema kullanımı:
+```sql
+SELECT * FROM Students;
+-- Bu aslında: SELECT * FROM dbo.Students;
+```
+
+### 2. Farklı bir şema oluşturma:
+```sql
+CREATE SCHEMA sales;
+
+CREATE TABLE sales.Orders (
+    OrderID INT,
+    ProductName NVARCHAR(100)
+);
+```
+
+---
+
+## 🧪 Dbo Kullanıcısı ile dbo Şeması Farklıdır!
+
+- **`dbo` şeması** → Nesneleri gruplamak için kullanılır.
+- **`dbo` kullanıcısı** → Veritabanının sahibi olan kullanıcıdır (genellikle `sa` veya `admin` rollerine sahiptir).
+
+Ama genellikle bu ikisi üst üste bindiği için karıştırılır.
+
+---
+
+## 📌 Neden Önemli?
+
+| Özellik                     | Açıklama                                                                 |
+|-----------------------------|--------------------------------------------------------------------------|
+| Varsayılan şema             | Belirtilmezse otomatik olarak `dbo` kullanılır.                         |
+| Güvenlik yönetimi           | Şemalar ile kim neye erişebilir kontrol edilir.                         |
+| Nesne yönetimi              | Aynı isimde farklı şemalarda tablolar olabilir: `hr.Employees`, `sales.Employees` |
+| Netlik sağlar               | `dbo.TabloAdı` yazarak hangi şemada olduğunu açıkça belirtmiş oluruz.  |
+
+---
+
+## 🎯 Özetle:
+
+| Terim          | Anlamı                                      |
+|----------------|----------------------------------------------|
+| `dbo`          | Varsayılan şema (schema), genelde owner’dır |
+| `dbo.TabloAdı` | Veritabanı sahibine ait tablo                |
+| Şema           | Nesneleri gruplamak için mantıksal kapsayıcı |
+| Kullanıcı      | `dbo` adlı kullanıcı, veritabanı sahibi olabilir |
+
+---
+
+
 ## DQL
 ```sh
 
