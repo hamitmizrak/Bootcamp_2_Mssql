@@ -577,6 +577,7 @@ WHERE cus.Country LIKE 'A%';
 -- IN ile SubQuery arasındaki farklar
 -- IN: Birden fazla sonuç döndürür
 -- subQuery bir tane sonuç döndürür.
+-- IN içinde subQuery kullanabilirsiniz.
 SELECT * from Categories;
 
 -- SORU-2) nortwind veritabanından `Categories` tablosundaki 'categoryID'nin en büyük veriyi gösteriniz ?
@@ -610,10 +611,27 @@ SELECT pro.ProductID, pro.ProductName, pro.CategoryID
 FROM Products as pro
 WHERE pro.CategoryID IN (1, 2);
 
--- SORU-2) nortwind veritabanından Çalışanlar(Employees) tablosundaki ID'si 1,3,5 olan çalışanları lsiteleyeiniz ?
-SELECT * FROM Employees;
+-- SORU-2) nortwind veritabanından Çalışanlar(Employees) tablosundaki ID'si 1,3,5 olan çalışanları listeleyiniz ?
+SELECT emp.EmployeeID,emp.FirstName,emp.LastName 
+FROM Employees as emp
+WHERE emp.EmployeeID IN(1,3,5);
+
+-- SORU-2) nortwind veritabanından Çalışanlar(Employees) tablosundaki ID'si tek olan çalışanları EmployeeID küçükten büyüğe doğru listeleyiniz ?
+-- Step-1:  İlk olarak EmployeeID'si tek olanları bulunuz ?
+SELECT emp2.EmployeeID 
+FROM nortwind.dbo.Employees as emp2
+WHERE emp2.EmployeeID % 2 =1  -- tek olan veriler
 
 
+-- Step-2:  üste bulduğumuz değerleri IN ile çoklu olacak şekilde yazacağım.
+SELECT emp1.EmployeeID,emp1.FirstName,emp1.LastName 
+FROM Employees as emp1
+WHERE emp1.EmployeeID IN(
+		SELECT emp2.EmployeeID 
+		FROM nortwind.dbo.Employees as emp2
+		WHERE emp2.EmployeeID % 2 =1  -- tek olan veriler
+)
+ORDER BY emp1.EmployeeID asc
 
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
