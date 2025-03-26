@@ -723,7 +723,7 @@ SEQUEL: Structured English QUery Language
 
 
 
-## SQL NEdir ? Devam
+## SQL Nedir ? Devam
 ```sh
 
 ```
@@ -1560,9 +1560,6 @@ C harfiyle başlayan ve toplam **4 harfli** ürün isimleri gelir. Örn: "Chai",
 
 ```
 ---
-Elbette! SQL'de `IN` ifadesi oldukça güçlü ve sık kullanılan bir yapıdır. Şimdi detaylı şekilde inceleyelim ve ardından **Northwind veritabanı** üzerinden örneklerle açıklayalım.
-
----
 
 ## 🔍 `IN` Operatörü Nedir?
 
@@ -2306,6 +2303,155 @@ SELECT MAX(KategoriToplami) FROM (
 | `MIN()`   | En küçük değer |
 | `MAX()`   | En büyük değer |
 | `STRING_AGG()` | Metinleri birleştirir |
+
+---
+
+## GROUP BY ve HAVING Nedir
+```sh
+
+```
+---
+
+Elbette! MSSQL'de çok önemli olan **`GROUP BY`** ve **`HAVING`** ifadelerini detaylıca açıklayayım, ardından **Northwind veritabanı** üzerinden örnek sorular ve cevaplar vereyim.
+
+---
+
+## 🧠 `GROUP BY` ve `HAVING` Nedir?
+
+### 🔹 `GROUP BY` Nedir?
+`GROUP BY`, SQL'de **verileri belirli bir kolona göre gruplamak** için kullanılır. Genellikle **aggregate (toplama) fonksiyonlarıyla** birlikte kullanılır:
+- `COUNT()` → Satır sayısı
+- `SUM()` → Toplam
+- `AVG()` → Ortalama
+- `MIN()` → Minimum
+- `MAX()` → Maksimum
+
+📌 **Örnek Amaçlar:**
+- Her müşterinin kaç siparişi olduğunu bulmak
+- Her ürün kategorisindeki toplam satış miktarını görmek
+- Her çalışanın ne kadar satış yaptığını ölçmek
+
+---
+
+### 🔹 `HAVING` Nedir?
+`HAVING`, `GROUP BY` sonrası **filtreleme** yapmak için kullanılır.
+
+> 🔔 `WHERE`, **gruplama öncesi** filtreleme yapar.  
+> 🔔 `HAVING`, **gruplama sonrası** filtreleme yapar.
+
+---
+
+## 📊 `GROUP BY` ve `HAVING` ile Örnekler (Northwind)
+
+---
+
+### 🔸 **SORU 1:**
+**Her ülkeye göre müşteri sayısını listeleyiniz.**
+
+📌 **Sorgu:**
+```sql
+SELECT Country, COUNT(*) AS MusteriSayisi
+FROM Customers
+GROUP BY Country;
+```
+
+🧠 Açıklama:
+- Her ülke için müşteri sayısını grupladık.
+- `GROUP BY Country` ülkeleri gruplar.
+- `COUNT(*)` her grup içindeki müşteri sayısını verir.
+
+---
+
+### 🔸 **SORU 2:**
+**Sadece 5’ten fazla müşterisi olan ülkeleri listeleyiniz.**
+
+📌 **Sorgu:**
+```sql
+SELECT Country, COUNT(*) AS MusteriSayisi
+FROM Customers
+GROUP BY Country
+HAVING COUNT(*) > 5;
+```
+
+🧠 Açıklama:
+- `GROUP BY` ile ülkeleri grupladık.
+- `HAVING` ile **grup sonucu** olan müşteri sayısına filtre uyguladık.
+- `WHERE` kullanamazdık çünkü `COUNT(*)` bir grup fonksiyonu.
+
+---
+
+### 🔸 **SORU 3:**
+**Her çalışanın kaç sipariş aldığını listeleyiniz.**
+
+📌 **Sorgu:**
+```sql
+SELECT EmployeeID, COUNT(OrderID) AS SiparisSayisi
+FROM Orders
+GROUP BY EmployeeID;
+```
+
+---
+
+### 🔸 **SORU 4:**
+**Sadece 100’den fazla sipariş alan çalışanları listeleyiniz.**
+
+📌 **Sorgu:**
+```sql
+SELECT EmployeeID, COUNT(OrderID) AS SiparisSayisi
+FROM Orders
+GROUP BY EmployeeID
+HAVING COUNT(OrderID) > 100;
+```
+
+---
+
+### 🔸 **SORU 5:**
+**Her kategorideki ürünlerin ortalama fiyatını listeleyiniz.**
+
+📌 **Sorgu:**
+```sql
+SELECT CategoryID, AVG(UnitPrice) AS OrtalamaFiyat
+FROM Products
+GROUP BY CategoryID;
+```
+
+---
+
+### 🔸 **SORU 6:**
+**Ortalama fiyatı 30’dan büyük olan kategorileri listeleyiniz.**
+
+📌 **Sorgu:**
+```sql
+SELECT CategoryID, AVG(UnitPrice) AS OrtalamaFiyat
+FROM Products
+GROUP BY CategoryID
+HAVING AVG(UnitPrice) > 30;
+```
+
+---
+
+### 🔸 **SORU 7 (Gelişmiş):**
+**Her çalışanın toplam satış tutarını (ürün fiyatı x miktar) hesaplayınız ve 10.000’den fazla satış yapanları listeleyiniz.**  
+**Tablolar:** `Orders`, `OrderDetails`
+
+📌 **Sorgu:**
+```sql
+SELECT o.EmployeeID, SUM(od.UnitPrice * od.Quantity) AS ToplamSatis
+FROM Orders o
+JOIN [Order Details] od ON o.OrderID = od.OrderID
+GROUP BY o.EmployeeID
+HAVING SUM(od.UnitPrice * od.Quantity) > 10000;
+```
+
+---
+
+## ✅ Kısaca Özet:
+
+| Özellik     | GROUP BY                             | HAVING                                       |
+|-------------|--------------------------------------|----------------------------------------------|
+| Ne yapar?   | Satırları belirli alanlara göre gruplar | Gruplanmış sonuçlara filtre uygular          |
+| Ne zaman?   | Aggregate (toplam, ortalama vs.) kullanırken | Aggregate sonrası koşul belirtirken         |
+| Alternatif  | Yok                                 | WHERE, ama gruplama yapılmadan önce çalışır |
 
 ---
 
@@ -3931,6 +4077,226 @@ Bu komut, eğer güncelleme işlemi sorunsuz gerçekleşirse `COMMIT` ile deği�
 - **MS SQL Server gibi RDBMS sistemlerinde veri işleme işlemleri için kritik öneme sahiptir.**
 
 📌 **DML komutlarını etkin kullanmak, veritabanı yönetimi için hayati önem taşır!** 🚀
+
+
+## JOIN
+```sh
+
+```
+---
+Elbette! Aşağıda **MSSQL'de JOIN işlemi** hakkında çok detaylı bir açıklama bulacaksın. Ardından, **Northwind veritabanını kullanarak** farklı türde **JOIN işlemlerine dayalı örnek sorular ve SQL sorguları** sunacağım. Her şey öğretici ve örneklerle açıklanacak şekilde tasarlandı. Kelime kısıtlaması olmadan, tam anlamıyla bir kaynak niteliğinde düşünebilirsin.
+
+---
+
+## 🔍 MSSQL `JOIN` Nedir? Detaylı Açıklama
+
+SQL'de `JOIN`, **iki veya daha fazla tabloyu** belirli bir ortak alan (genellikle birincil anahtar ve yabancı anahtar) üzerinden **birleştirmek (ilişkilendirmek)** için kullanılır.
+
+`JOIN`, ilişkisel veritabanlarının en güçlü özelliklerinden biridir çünkü veri normalleştirilmiş yapılarda tutulur ve ilişkili verilerin birlikte gösterilmesi `JOIN` ile sağlanır.
+
+---
+
+## 🔗 JOIN Türleri
+
+### 1. 🔹 `INNER JOIN`
+Sadece **her iki tabloda da eşleşen kayıtları** döndürür. En çok kullanılan `JOIN` türüdür.
+
+📌 **Kural:** Sadece eşleşen kayıtlar gelir.
+
+```sql
+SELECT *
+FROM Customers c
+INNER JOIN Orders o ON c.CustomerID = o.CustomerID;
+```
+
+---
+
+### 2. 🔹 `LEFT JOIN` (veya `LEFT OUTER JOIN`)
+Sol tablodaki **tüm kayıtları** getirir, sağ tablodan **eşleşen varsa getirir**, yoksa `NULL` döner.
+
+📌 **Kural:** Sol tablo garantili, sağ taraf opsiyonel.
+
+```sql
+SELECT *
+FROM Customers c
+LEFT JOIN Orders o ON c.CustomerID = o.CustomerID;
+```
+
+---
+
+### 3. 🔹 `RIGHT JOIN` (veya `RIGHT OUTER JOIN`)
+Sağ tablodaki **tüm kayıtları** getirir, sol tablodan **eşleşen varsa getirir**, yoksa `NULL` döner.
+
+📌 **Kural:** Sağ tablo garantili, sol taraf opsiyonel.
+
+```sql
+SELECT *
+FROM Orders o
+RIGHT JOIN Customers c ON c.CustomerID = o.CustomerID;
+```
+
+---
+
+### 4. 🔹 `FULL JOIN` (veya `FULL OUTER JOIN`)
+Hem sol hem sağ tablonun tüm kayıtlarını getirir. Eşleşme olmayan yerlerde `NULL` döner.
+
+```sql
+SELECT *
+FROM Customers c
+FULL JOIN Orders o ON c.CustomerID = o.CustomerID;
+```
+
+---
+
+### 5. 🔹 `CROSS JOIN`
+İki tabloyu **birbiriyle çarpar** (Cartesian product). Filtreleme yapılmazsa çok büyük sonuç dönebilir.
+
+```sql
+SELECT *
+FROM Employees
+CROSS JOIN Territories;
+```
+
+---
+
+### 6. 🔹 `SELF JOIN`
+Aynı tabloyu **kendiyle** birleştirme işlemidir. Genelde hiyerarşik yapılarda kullanılır.
+
+```sql
+SELECT e1.FirstName AS Employee, e2.FirstName AS Manager
+FROM Employees e1
+LEFT JOIN Employees e2 ON e1.ReportsTo = e2.EmployeeID;
+```
+
+---
+
+## 🧠 JOIN ile İlgili Bilinmesi Gerekenler
+
+| JOIN Türü        | Sol (A) | Sağ (B) | Açıklama                                              |
+|------------------|---------|---------|--------------------------------------------------------|
+| `INNER JOIN`     | ✅       | ✅       | Sadece eşleşen kayıtlar                               |
+| `LEFT JOIN`      | ✅       | ✅/❌    | Sol tablo tümü gelir, sağ eşleşme yoksa NULL          |
+| `RIGHT JOIN`     | ✅/❌    | ✅       | Sağ tablo tümü gelir, sol eşleşme yoksa NULL          |
+| `FULL JOIN`      | ✅/❌    | ✅/❌    | Her iki tablo tümü gelir                              |
+| `CROSS JOIN`     | 🔄       | 🔄       | Her satır diğer her satırla eşleştirilir (Çarpım)     |
+| `SELF JOIN`      | 🔁       | 🔁       | Tablo kendiyle birleşir (örneğin çalışan-yönetici)     |
+
+---
+
+## 📚 JOIN Temelli Northwind Örnek Sorular ve Cevaplar
+
+---
+
+### 🔸 SORU 1
+**Müşteri isimleriyle birlikte yaptıkları sipariş sayılarını listeleyiniz.**  
+(Kullanılan tablolar: `Customers`, `Orders`)
+
+```sql
+SELECT c.CompanyName, COUNT(o.OrderID) AS SiparisSayisi
+FROM Customers c
+INNER JOIN Orders o ON c.CustomerID = o.CustomerID
+GROUP BY c.CompanyName;
+```
+
+---
+
+### 🔸 SORU 2
+**Hiç sipariş vermemiş müşterileri listeleyiniz.**  
+(`LEFT JOIN` kullanılarak)
+
+```sql
+SELECT c.CompanyName
+FROM Customers c
+LEFT JOIN Orders o ON c.CustomerID = o.CustomerID
+WHERE o.OrderID IS NULL;
+```
+
+---
+
+### 🔸 SORU 3
+**Her siparişte yer alan ürünlerin isimlerini, miktarlarını ve birim fiyatlarını listeleyiniz.**  
+(Tablolar: `Order Details`, `Products`)
+
+```sql
+SELECT od.OrderID, p.ProductName, od.Quantity, od.UnitPrice
+FROM [Order Details] od
+INNER JOIN Products p ON od.ProductID = p.ProductID;
+```
+
+---
+
+### 🔸 SORU 4
+**Sipariş numarası, müşteri adı, çalışan adı bilgilerini gösteren bir tablo hazırlayınız.**  
+(Tablolar: `Orders`, `Customers`, `Employees`)
+
+```sql
+SELECT o.OrderID, c.CompanyName AS Musteri, 
+       e.FirstName + ' ' + e.LastName AS Calisan
+FROM Orders o
+JOIN Customers c ON o.CustomerID = c.CustomerID
+JOIN Employees e ON o.EmployeeID = e.EmployeeID;
+```
+
+---
+
+### 🔸 SORU 5
+**Hiç ürün satmamış ürünleri listeleyiniz.**  
+(`LEFT JOIN` ile)
+
+```sql
+SELECT p.ProductName
+FROM Products p
+LEFT JOIN [Order Details] od ON p.ProductID = od.ProductID
+WHERE od.OrderID IS NULL;
+```
+
+---
+
+### 🔸 SORU 6
+**Her çalışanın yöneticisini (rapor ettiği kişi) listeleyiniz.**  
+(`SELF JOIN`)
+
+```sql
+SELECT e1.FirstName + ' ' + e1.LastName AS Calisan,
+       e2.FirstName + ' ' + e2.LastName AS Yonetici
+FROM Employees e1
+LEFT JOIN Employees e2 ON e1.ReportsTo = e2.EmployeeID;
+```
+
+---
+
+### 🔸 SORU 7
+**Ürünler ve ait oldukları kategorilerin isimlerini gösteriniz.**  
+(Tablolar: `Products`, `Categories`)
+
+```sql
+SELECT p.ProductName, c.CategoryName
+FROM Products p
+JOIN Categories c ON p.CategoryID = c.CategoryID;
+```
+
+---
+
+### 🔸 SORU 8
+**Her tedarikçi (Supplier) tarafından tedarik edilen ürünleri listeleyiniz.**  
+(Tablolar: `Products`, `Suppliers`)
+
+```sql
+SELECT s.CompanyName AS Tedarikci, p.ProductName
+FROM Products p
+JOIN Suppliers s ON p.SupplierID = s.SupplierID;
+```
+
+---
+
+## ✅ Özetle
+
+- `JOIN` işlemi, tabloları ilişkilendirmek için kullanılır.
+- `INNER JOIN` en sık kullanılanıdır.
+- `LEFT`, `RIGHT`, `FULL`, `CROSS`, `SELF` gibi varyasyonları vardır.
+- Her `JOIN` türü, veri ilişkisine göre farklı sonuçlar üretir.
+
+---
 
 
 

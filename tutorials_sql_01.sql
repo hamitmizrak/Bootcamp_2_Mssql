@@ -574,11 +574,25 @@ FROM nortwind.dbo.Customers as cus
 WHERE cus.Country LIKE 'A%';
 
 -- ***IN***
--- IN:
+-- IN:(SubQuery)
+SELECT * from Categories;
 
-select * from Orders;
-select * from Employees;
-select * from Customers;
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki 'categoryID'nin en büyük veriyi gösteriniz ?
+-- 1.YOL (Manuel)
+SELECT * 
+FROM nortwind.dbo.Categories as cat
+WHERE cat.CategoryID=14;
+
+-- 2.YOL (Dynamics)
+SELECT * 
+FROM nortwind.dbo.Categories as cat
+WHERE cat.CategoryID=(SELECT MAX(query_cat.CategoryID) FROM Categories as query_cat);
+
+-- 3.YOL (Dynamics and Cast)
+SELECT * 
+FROM nortwind.dbo.Categories as cat
+WHERE cat.CategoryID=CAST((SELECT MAX(query_cat.CategoryID) FROM Categories as query_cat) as INTEGER);
+
 
 
 
@@ -594,7 +608,11 @@ select * from Customers;
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
 -- ***JOIN***
+-- SORU-2) nortwind veritabanından Hangi müşteriler  Mexico veya Germany veya Franca şipariş vermiş kişileri listeleyiniz ?
 
+select * from Orders;
+select * from Employees;
+select * from Customers;
 
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
@@ -705,6 +723,32 @@ WHERE ord.OrderDate BETWEEN '1996-01-01' AND '1997-12-31'; --1997-12-31  12: son
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
 -- DML
+-- INSERT
+
+
+-- UPDATE
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki 'categoryID'de 12 ve büyük olan verileri gösteriniz ?
+SELECT * 
+FROM nortwind.dbo.Categories as cat
+WHERE cat.CategoryID>12;
+
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki 'categoryID'de 12 ve büyük olan verilerden 
+-- `Picture` koloundaki NULL değerleri yerine `0x151C2F00020000000D000E0014002100FFFFFFFF` ile güncelleyiniz ?
+USE nortwind;
+
+-- 1.YOL
+UPDATE Categories
+SET Picture =0x151C2F00020000000D000E0014002100FFFFFFFF
+WHERE CategoryID>=12 AND Picture IS NULL;
+
+-- SORU-2) nortwind veritabanından `Categories` tablosundaki 'categoryID'de 11 ve büyük olan verilerden 
+-- `Picture` koloundaki NULL değerleri yerine `0x151C2F00020000000D000E0014002100FFFFFFFF` ile güncelleyiniz ?
+-- 2.YOL
+UPDATE Categories SET Picture=REPLACE(cat.Picture, 'NULL','0x151C2F00020000000D000E0014002100FFFFFFFF')  FROM Categories as cat;
+
+
+
+-- DELETE
 
 
 -- --------------------------------------------------------------------------------------------------
