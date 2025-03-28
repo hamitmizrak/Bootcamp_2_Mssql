@@ -993,7 +993,7 @@ Bu kod, `PRINT 'Merhaba'` komutunu **3 kez çalıştırır**.
 ```
 ---
 
-Elbette! SQL Server'da sıkça gördüğümüz **`dbo`** ifadesi, aslında oldukça önemli bir kavramdır. Aşağıda kelime sınırı olmadan, detaylı ve anlaşılır şekilde açıklayacağım.
+SQL Server'da sıkça gördüğümüz **`dbo`** ifadesi, aslında oldukça önemli bir kavramdır. Aşağıda kelime sınırı olmadan, detaylı ve anlaşılır şekilde açıklayacağım.
 
 ---
 
@@ -5065,7 +5065,7 @@ END;
 ```
 ---
 
-Elbette! Şimdi sana **MSSQL'de View (Görünüm)** kavramını **çok detaylı**, kelime kısıtlaması olmadan, teknik açıklamalar ve örneklerle anlatacağım. Hem teorik hem de uygulamalı bilgilerle donatılmış bir içerik olacak. Hadi başlayalım!
+ **MSSQL'de View (Görünüm)** kavramını **çok detaylı**, kelime kısıtlaması olmadan, teknik açıklamalar ve örneklerle anlatacağım. Hem teorik hem de uygulamalı bilgilerle donatılmış bir içerik olacak. Hadi başlayalım!
 
 ---
 
@@ -5566,7 +5566,7 @@ RECONFIGURE;
 
 ```
 ---
-Elbette! Şimdi sana **MSSQL Stored Procedure (Saklı Yordam)** kavramını **çok detaylı**, örnekleriyle ve açıklamalarıyla anlatacağım. Hiçbir kelime kısıtlaması olmadan, örnekli ve her düzeyde bilgi içeren bir içerik olacak. Hadi başlayalım.
+**MSSQL Stored Procedure (Saklı Yordam)** kavramını **çok detaylı**, örnekleriyle ve açıklamalarıyla anlatacağım. Hiçbir kelime kısıtlaması olmadan, örnekli ve her düzeyde bilgi içeren bir içerik olacak. Hadi başlayalım.
 
 ---
 
