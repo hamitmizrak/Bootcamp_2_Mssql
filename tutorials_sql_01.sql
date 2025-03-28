@@ -699,6 +699,118 @@ SELECT * from Orders;     -- OrderID(PK), CustomerID(FK), EmployeeID(FK)
 SELECT * FROM Customers;  -- CustomerID
 
 
+
+----------------------------------------------------------------------------------------------------------------------
+-- Hayali Sutun
+select *  from student;
+select (stu.studentVizeNotes*0.4+stu.studentFinalNotes*0.6) as result from [ScriptDb].[dbo].[student] as stu;
+
+
+--------------------------------------------------------------------------------------------------
+-- UNION : aynı sutun sayısına sahip tabloları alt alta görmek istediğimizde kullanıyoruz.
+-- UNIONALL (datatype, script, table, PK)
+use ScriptDb;
+if not exists (select * from sysobjects where name='notes' and xtype='U')
+    CREATE TABLE teacher (
+	StudentId INT PRIMARY KEY IDENTITY NOT NULL,
+	studentName varchar(50) NOT NULL,
+	studentSurname varchar(50) NOT NULL,
+	city varchar(50) NOT NULL,
+	Phone_Number varchar(20) NOT NULL,
+	studentVizeNotes int NOT NULL,
+	studentFinalNotes int NOT NULL,
+	Registration_Date date,
+	created_at DATETIME NOT NULL  DEFAULT CURRENT_TIMESTAMP,
+);
+go
+
+insert into
+student(studentName,studentSurname,city,Phone_Number,studentVizeNotes,studentFinalNotes,Registration_Date)
+values
+('Adı-1','Soyadı-1','Bingöl','11122233',80,80,'2024-03-28');
+
+insert into
+teacher(studentName,studentSurname,city,Phone_Number,studentVizeNotes,studentFinalNotes,Registration_Date)
+values
+('Adı-22','Soyadı-22','Bingöl','11122233',80,80,'2024-03-28');
+
+select * from student
+union
+select * from teacher
+
+--------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------
+-- GROP BY (Tablo içindeki Belli Kolon ÜZerinden Gruplama)
+/*
+Bir kolonumuzdaki kaç kere tekrar yaptığını, minumum değerini bulmak ,maksimum değerini bulma (aggregate function) değerler üzerinde işlem yapabilmemizi sağlar.
+
+group by: Kolonun gruplama yapabilmemize olanak sağlar.
+
+Aggregate: count, max, min, sum, avg
+
+select kolon_adiXYZ ,aggregate_function from tablo_adi where şart group by kolon_adiXYZ;
+
+*/
+
+use nortwind;
+SELECT * FROM employees
+
+-- Group By Örnek-1
+-- Aşağıdaki örnek, "Customers" tablosundaki müşterileri şehirlerine göre gruplar ve her bir şehirde kaç müşteri olduğunu sayar:
+SELECT City, COUNT(*) AS CustomerCount
+FROM Customers
+GROUP BY City;
+--Bu sorgu, "Customers" tablosundaki verileri "City" (şehir) sütununa göre gruplar ve her bir grup için o şehirde kaç müşteri olduğunu sayar. Sonuçlar, şehir başına bir satırda görünecektir.
+
+
+-- Group By Örnek-2
+--Tablodaki verileri belirli bir sütuna göre gruplamak ve bu gruplar üzerinde toplu işlemler yapmak için GROUP BY ifadesi kullanılır.
+--Örneğin, bir "Orders" (Siparişler) tablosundaki siparişleri müşteri numaralarına göre gruplamak ve her müşterinin kaç siparişi olduğunu bulmak isteyebilirsiniz.
+--Aşağıdaki örnek, "Orders" tablosundaki siparişleri müşteri numaralarına göre gruplar ve her bir müşterinin kaç siparişi olduğunu sayar:
+SELECT CustomerID, COUNT(*) AS OrderCount
+FROM Orders
+GROUP BY CustomerID;
+--Bu sorgu, "Orders" tablosundaki verileri "CustomerID" (Müşteri Numarası) sütununa göre gruplar ve her bir müşteri için kaç tane sipariş olduğunu sayar. Sonuçlar, müşteri numarası başına bir satırda görünecektir.
+
+
+-- Group By Örnek-3
+-- Örneğin, bir "employees" (çalışanlar) tablosunda çalışanların bölümlere göre maaş ortalamalarını bulmak istediğinizi varsayalım:
+SELECT department, AVG(salary) AS avg_salary
+FROM employees
+GROUP BY department;
+--Bu sorgu, "employees" tablosundaki verileri "department" sütununa göre gruplar ve her bir bölüm için ortalama maaşı hesaplar. Sonuçlar, bölüm başına bir satırda görünecektir.
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+-- HAVING ( Group By ile oluşturduğumuz  Belli Kolon Üzerindeki Filtrelemedir)
+-- Having Örnek-1
+-- Örnek olarak, bir müşteri siparişleri tablosunda, her müşterinin toplam sipariş miktarını bulalım ve sadece toplam sipariş miktarı 1000'den büyük olan müşterileri listeleyelim:
+SELECT customer_id, SUM(order_amount) AS total_order_amount
+FROM orders
+GROUP BY customer_id
+HAVING SUM(order_amount) > 1000;
+-- Bu sorgu, siparişler tablosundaki her müşterinin toplam sipariş miktarını hesaplar, ardından bu miktarı 1000'den büyük olan müşterileri listeler.
+
+
+-- Having Örnek-2
+-- Örnek olarak, bir işletmenin çalışanlarının departmanlarına göre ortalama maaşlarını hesaplayalım ve sadece ortalama maaşı belirli bir değerden yüksek olan departmanları listeleyelim:
+SELECT department, AVG(salary) AS avg_salary
+FROM employees
+GROUP BY department
+HAVING AVG(salary) > 50000;
+-- Bu sorgu, employees tablosundaki verileri departmanlara göre gruplar, her bir grup için ortalama maaşı hesaplar, ardından ortalama maaşı 50000'den büyük olan grupları seçer ve sonuç olarak bu grupların departmanlarını ve ortalama maaşlarını gösterir.
+
+
+-- GROP BY AND HAVING
+select * from Products
+
+SELECT pro.ProductName, AVG(pro.UnitPrice) AS price
+FROM Products as pro
+GROUP BY pro.ProductName
+HAVING AVG(pro.UnitPrice) > 30;
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
 -- ***GROUP BY(GRUPLAMA)***
@@ -711,6 +823,85 @@ SELECT * FROM Customers;  -- CustomerID
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
 -- ***STRING***
+
+
+-- /*~~~~ STRING ~~~~*/
+SELECT * FROM Categories;
+
+-- LISTELEMEK
+-- nortwind databasesinden Categories tablosundaki CategoryName'leri Listeyin ?
+SELECT cat.CategoryName FROM Categories as cat;
+
+
+-- LENGTH
+-- nortwind databasesinden Categories tablosundaki CategoryName'lerin harf sayısını hesaplatan script yazınız ?
+SELECT LEN(cat.CategoryName) as 'Harf Sayısı' FROM Categories as cat;
+
+
+-- UPPER
+-- nortwind databasesinden Categories tablosundaki CategoryName'leri BÜYÜK harflere çevirerek Listeyin ?
+SELECT UPPER(cat.CategoryName) as 'BÜYÜK Harfler'  FROM Categories as cat;
+
+
+-- LOWER
+-- nortwind databasesinden Categories tablosundaki CategoryName'leri küçük harflere çevirerek Listeyin ?
+SELECT LOWER(cat.CategoryName) as 'küçük Harfler'  FROM Categories as cat;
+
+-- ltrim
+-- nortwind databasesinden Categories tablosundaki CategoryName'lerinde eğer soldan boşluklar varsa sil ve Listeyin (Validation)
+SELECT ltrim(cat.CategoryName) as 'Soldaki Boşluklar Silindi'  FROM Categories as cat;
+
+
+-- RTRIM
+-- nortwind databasesinden Categories tablosundaki CategoryName'lerinde eğer sağdan boşluklar varsa sil ve Listeyin (Validation)
+SELECT RTRIM(cat.CategoryName) as 'Soldaki Boşluklar Silindi'  FROM Categories as cat;
+
+
+-- SUBSTRING
+-- nortwind databasesinden Categories tablosundaki CategoryName'lerinde ilk 4 harfini gösterin ve Listeyin (Masking)
+SELECT SUBSTRING(cat.CategoryName,0,5) as '1-4 arasındaki Harfler'  FROM Categories as cat; -- 0<=SUBSTRING <=5-1
+
+
+-- İç içe Function kullanımı
+-- nortwind databasesinden Categories tablosundaki CategoryName'lerinde ilk 4 harfini gösterin ve BÜYÜK Harfe çevrilsin ve  Listeyin (Masking)
+SELECT UPPER(SUBSTRING(cat.CategoryName,0,5))   as '1-4 arasındaki Harfler'  FROM Categories as cat; -- 0<=SUBSTRING <=5-1
+
+
+-- REPLACE
+-- nortwind databasesinden Categories tablosundaki CategoryName'lerinden `Produce` kelimelerini `Ürün` ile değiştirin ve Listeyin (Masking)
+SELECT * FROM Categories;
+
+-- 1.YOL (DQL)
+SELECT REPLACE(cat.CategoryName,'Produce','Ürün') as 'Değiştir'  FROM Categories as cat;
+
+-- 2.YOL (DML)
+update Categories SET CategoryName=REPLACE(cat.CategoryName,'Produce','Ürün') from Categories as cat;
+
+-- 3.YOL (DML)
+update [nortwind].[dbo].[Categories]  SET CategoryName=replace(cat.CategoryName,'Produce','Ürün') from Categories as cat
+
+-- SORU
+-- Nortwind databasesinden Categories tablosundaki CategoryID en küçük olan veri için bütün 'e' harfi yerine 'x' yazalım.
+-- keyword: subquery,update,replace(),min()
+select * from Categories
+update [nortwind].[dbo].[Categories] SET CategoryName=replace(cat.CategoryName,'e','x') from Categories as cat where cat.CategoryID=(select min(CategoryID) from Categories)
+
+-- SORU
+-- Nortwind databasesinden Categories tablosundaki CategoryID 4 ile 5 arasındaki CategoryName bütün 'a' harfi yerine 'x' yazalım.
+-- keyword: subquery,update,replace(),between()
+select * from Categories
+update [nortwind].[dbo].[Categories] SET CategoryName=replace(cat.CategoryName,'a','x') from Categories as cat where cat.CategoryID between 4 and 5;
+
+
+-- CONCAT
+-- nortwind databasesinden Categories tablosundaki CategoryName'lerinden sonuna `INC` ekleyin ve Listeyin (Masking)
+SELECT CONCAT(cat.CategoryName,'.INC')   FROM Categories as cat;
+
+
+-- REVERSE
+-- nortwind databasesinden Categories tablosundaki CategoryName'lerinden Test yazdır ve Listeyin (Masking)
+SELECT REVERSE(cat.CategoryName) as 'Ters'   FROM Categories as cat;
+
 
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
