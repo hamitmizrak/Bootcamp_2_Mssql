@@ -895,7 +895,7 @@ DDL (Data Definition Language)	Tabloları, şemaları tanımlama (CREATE, ALTER,
 DCL (Data Control Language)	Kullanıcı yetkilendirmeleri (GRANT, REVOKE)
 TCL (Transaction Control Language)	İşlemleri yönetme (COMMIT, ROLLBACK, SAVEPOINT)
 
-## SQL `GO` 555
+## SQL `GO`
 ```sh
 
 ```
@@ -4592,7 +4592,1315 @@ DDL (Data Definition Language)	Tabloları, şemaları tanımlama (CREATE, ALTER,
 DCL (Data Control Language)	Kullanıcı yetkilendirmeleri (GRANT, REVOKE)
 TCL (Transaction Control Language)	İşlemleri yönetme (COMMIT, ROLLBACK, SAVEPOINT)
 
+## NF
+```sh
 
+```
+---
+
+
+## Index
+```sh
+
+```
+---
+**MSSQL'de Index (İndeks)** kavramını, **Northwind veritabanı** üzerinden örneklerle **detaylı ve anlaşılır** şekilde açıklayacağım. İndeksin ne işe yaradığını, nasıl oluşturulup kullanıldığını ve performansa nasıl katkı sağladığını adım adım öğreneceğiz.
+
+---
+
+# 📘 MSSQL'de INDEX NEDİR? (Northwind Örnekli)
+
+---
+
+## 🧠 Tanım:
+
+**Index (İndeks)**, veritabanındaki tablolar üzerinde **arama ve sıralama işlemlerini hızlandırmak** için kullanılan **veri yapılarıdır**. Tıpkı bir kitapta alfabetik dizin (index) gibi çalışır: sayfalar arasında tek tek aramak yerine, doğrudan ilgili yere ulaşmamızı sağlar.
+
+---
+
+## 🚀 İndeks Neden Kullanılır?
+
+1. Büyük veri tabanlarında **arama hızını artırmak**
+2. `WHERE`, `JOIN`, `ORDER BY`, `GROUP BY` gibi işlemleri **optimize etmek**
+3. Performansı artırırken sistem kaynaklarını daha verimli kullanmak
+4. Sorgu planlarını iyileştirmek
+
+---
+
+## 🧩 Gerçek Hayattan Benzetme
+
+Bir kütüphane düşün:
+
+- 1000 sayfalık bir kitap var.
+- İçindekiler kısmı (Index), konuların hangi sayfada olduğunu söyler.
+- Eğer bu yoksa her sayfayı tek tek taramak gerekir.
+
+SQL'de de bir tablo ne kadar büyükse, **index olmadan** veri bulmak o kadar zor ve yavaştır.
+
+---
+
+## 📌 MSSQL'de Temel İndeks Türleri
+
+| İndeks Türü | Açıklama |
+|-------------|----------|
+| **Clustered Index** | Verileri fiziksel olarak sıralar. Tablo başına sadece 1 adet olabilir. |
+| **Non-Clustered Index** | Verilere işaret eden ayrı bir yapıdır. Tablo başına birden fazla olabilir. |
+| **Unique Index** | Benzersiz veri saklar (tekrar eden veri olamaz). |
+| **Composite Index** | Birden fazla kolona göre oluşturulan indeks. |
+| **Filtered Index** | Belirli şartlara uyan satırlar için oluşturulur. |
+| **Full-Text Index** | Metin aramaları (LIKE yerine) için optimize edilmiştir. |
+
+---
+
+## 📚 Northwind Üzerinden Örnekler
+
+---
+
+### 🔍 Örnek 1: Primary Key Otomatik Clustered Index’tir
+
+```sql
+-- Products tablosunun ProductID sütunu Primary Key
+-- ve otomatik olarak Clustered Index içerir
+```
+
+Bu şu demektir: **Products tablosundaki veriler, ProductID’ye göre fiziksel olarak sıralanmıştır.**
+
+---
+
+### ⚡ Örnek 2: Non-Clustered Index Oluşturma
+
+```sql
+CREATE NONCLUSTERED INDEX idx_ProductName
+ON Products(ProductName);
+```
+
+Bu index sayesinde şu sorgu çok daha hızlı çalışır:
+
+```sql
+SELECT * FROM Products
+WHERE ProductName = 'Chai';
+```
+
+---
+
+### 🧠 Örnek 3: Composite Index (Çoklu Kolon)
+
+```sql
+CREATE NONCLUSTERED INDEX idx_CategorySupplier
+ON Products(CategoryID, SupplierID);
+```
+
+Şu sorguda bu indeks kullanılır:
+
+```sql
+SELECT * FROM Products
+WHERE CategoryID = 2 AND SupplierID = 5;
+```
+
+> ⚠️ Kolon sırası önemlidir. Yukarıdaki index `SupplierID, CategoryID` şeklinde tanımlansaydı farklı sorgu planı oluşurdu.
+
+---
+
+### 📑 Örnek 4: Unique Index
+
+```sql
+CREATE UNIQUE INDEX idx_UniqueProductName
+ON Products(ProductName);
+```
+
+Bu, aynı ürün adının tekrar kaydedilmesini engeller.
+
+---
+
+### 🧮 Örnek 5: Filtered Index (Koşullu İndeks)
+
+```sql
+CREATE NONCLUSTERED INDEX idx_InStockProducts
+ON Products(ProductName)
+WHERE UnitsInStock > 0;
+```
+
+Bu indeks sadece stoğu olan ürünler üzerinde çalışır. Daha hafiftir ve daha hızlıdır.
+
+---
+
+### 📚 Örnek 6: Full-Text Index (Gelişmiş Metin Arama)
+
+Eğer `ProductName` gibi metin alanlarında gelişmiş arama yapılmak istenirse:
+
+1. Full-Text özelliği etkinleştirilir.
+2. İlgili tabloya `Full-Text Index` tanımlanır.
+
+```sql
+-- Örnek: ProductName kolonunda 'tea' geçen ürünleri aramak
+SELECT * FROM Products
+WHERE CONTAINS(ProductName, 'tea');
+```
+
+> Full-text index ile `LIKE '%tea%'` yerine daha performanslı arama yapılabilir.
+
+---
+
+## 🔍 İndeksin Avantajları
+
+- ✅ Okuma işlemlerini hızlandırır
+- ✅ Sorgu planlarını optimize eder
+- ✅ Özellikle büyük tablolarda büyük fark yaratır
+
+---
+
+## ⚠️ İndeksin Dezavantajları
+
+- ❌ Yazma (INSERT, UPDATE, DELETE) işlemlerinde **ekstra maliyet** getirir (çünkü indeks de güncellenir)
+- ❌ Fazla sayıda indeks belleği tüketir
+- ❌ Yanlış kullanıldığında performansı düşürebilir
+
+---
+
+## 📊 İndeks Nasıl Görüntülenir?
+
+```sql
+-- Bir tablo üzerindeki tüm indexleri gösterir
+EXEC sp_helpindex 'Products';
+```
+
+---
+
+## 🧠 SQL Server Sorgu Planında İndeks Kullanımı
+
+```sql
+SET STATISTICS IO ON;
+SET STATISTICS TIME ON;
+
+-- Veya sorguyu çalıştırdıktan sonra: Include Actual Execution Plan tıklanır
+SELECT * FROM Products WHERE ProductName = 'Chai';
+```
+
+➡️ Sorgunun hangi indeksi kullanıp kullanmadığını **execution plan** ile görebilirsin.
+
+---
+
+## 🧹 İndeks Silme
+
+```sql
+DROP INDEX idx_ProductName ON Products;
+```
+
+---
+
+## 🧾 Özet
+
+| Kavram | Açıklama |
+|--------|----------|
+| **Index** | Sorguları hızlandırmak için kullanılan yapı |
+| **Clustered** | Verileri fiziksel olarak sıralar (tek olabilir) |
+| **NonClustered** | Ayrı bir yapıda tutulur, işaret eder |
+| **Composite** | Çok kolonlu index |
+| **Filtered** | Şartlı index |
+| **Full-Text** | Gelişmiş metin arama için |
+
+---
+
+## ✅ Northwind’de Nerelerde İndeks Kullanmalı?
+
+| Tablo | Kolon | Neden İndeks Gerekebilir |
+|-------|-------|---------------------------|
+| Products | ProductName | Ürün adıyla arama yapılıyorsa |
+| Orders | OrderDate | Tarihe göre filtreleme varsa |
+| Order Details | ProductID | Ürün bazlı satış raporları |
+| Customers | Country | Ülkeye göre raporlama yapılacaksa |
+
+---
+
+
+## Transaction
+```sh
+
+```
+---
+ **MSSQL Transaction (İşlem)** kavramını **çok detaylı**, örnekli ve açıklayıcı bir şekilde anlatacağım. Gerçek hayattan benzetmelerle, SQL Server’daki kullanımını adım adım öğreneceğiz.
+
+---
+
+# 💾 MSSQL TRANSACTION NEDİR? (Çok Detaylı Açıklama)
+
+---
+
+## 🔍 Tanım:
+
+**Transaction (İşlem)**, bir veya birden fazla SQL komutunun **bir bütün olarak** çalıştırılmasıdır. Ya **tüm komutlar başarılı olur ve veritabanına kalıcı olarak yazılır**, ya da **birinde hata olursa hiçbir değişiklik yapılmaz** (geri alınır).
+
+> Kural: **Hepsi ya da hiçbiri!**
+
+---
+
+### 🧠 Gerçek Hayattan Benzetme:
+
+Düşün ki bir bankada iki hesap arasında para transferi yapıyorsun:
+
+- Hesap A'dan 100₺ düş
+- Hesap B'ye 100₺ ekle
+
+İlk işlem başarılı olur ama ikinci işlem başarısız olursa ne olur? Para havada kalır! İşte bu tür durumları önlemek için transaction'lar devreye girer.
+
+---
+
+## 📜 Transaction'ın 4 Temel Özelliği (ACID Kuralları)
+
+| Kural | Açıklama |
+|-------|----------|
+| **Atomicity** | Bütünlük: İşlem ya tamamen yapılır ya hiç yapılmaz. |
+| **Consistency** | Tutarlılık: Veri her zaman tutarlı kalır. |
+| **Isolation** | İzolasyon: İşlemler birbirini etkilemez. |
+| **Durability** | Kalıcılık: İşlem tamamlandığında veri kalıcı olur. |
+
+---
+
+## 📌 MSSQL’de Temel Transaction Komutları
+
+| Komut | Açıklama |
+|-------|----------|
+| `BEGIN TRANSACTION` | İşlem bloğunu başlatır |
+| `COMMIT` | İşlem başarılıysa kalıcı yapar |
+| `ROLLBACK` | İşlem hatalıysa geri alır |
+| `SAVE TRANSACTION` | Geri alma için ara nokta belirler |
+
+---
+
+## 🛠️ BASİT TRANSACTION ÖRNEĞİ
+
+```sql
+BEGIN TRANSACTION;
+
+UPDATE Accounts SET Balance = Balance - 100 WHERE AccountID = 1;
+UPDATE Accounts SET Balance = Balance + 100 WHERE AccountID = 2;
+
+COMMIT;
+```
+
+Eğer iki `UPDATE` komutu da başarılı olursa `COMMIT` ile işlemler kalıcı olur.
+
+---
+
+## ❌ Hatalı Durumda Geri Alma (ROLLBACK)
+
+```sql
+BEGIN TRANSACTION;
+
+UPDATE Accounts SET Balance = Balance - 100 WHERE AccountID = 1;
+
+-- Burada bir hata oluşursa işlem iptal edilecek
+IF (SELECT Balance FROM Accounts WHERE AccountID = 2) IS NULL
+BEGIN
+    ROLLBACK;
+    PRINT 'Hesap bulunamadı. İşlem iptal edildi.';
+    RETURN;
+END
+
+UPDATE Accounts SET Balance = Balance + 100 WHERE AccountID = 2;
+
+COMMIT;
+```
+
+Bu örnekte, ikinci hesap yoksa tüm işlemler geri alınır.
+
+---
+
+## 🧠 TRY - CATCH Bloklarıyla Transaction Kullanımı
+
+```sql
+BEGIN TRY
+    BEGIN TRANSACTION;
+
+    UPDATE Products SET UnitsInStock = UnitsInStock - 10 WHERE ProductID = 1;
+    UPDATE Products SET UnitsInStock = UnitsInStock + 10 WHERE ProductID = 2;
+
+    COMMIT;
+    PRINT 'Stok transferi başarılı.';
+END TRY
+BEGIN CATCH
+    ROLLBACK;
+    PRINT 'Hata oluştu: ' + ERROR_MESSAGE();
+END CATCH
+```
+
+Bu yapı, hata olduğunda işlemi geri almak için idealdir.
+
+---
+
+## 🧩 SAVE TRANSACTION Örneği
+
+`SAVEPOINT` gibi ara kontrol noktası oluşturmak için:
+
+```sql
+BEGIN TRANSACTION;
+
+UPDATE Products SET UnitsInStock = UnitsInStock - 10 WHERE ProductID = 1;
+
+SAVE TRANSACTION BeforeSecondUpdate;
+
+UPDATE Products SET UnitsInStock = UnitsInStock + 10 WHERE ProductID = 9999; -- hata olabilir
+
+-- Hata varsa sadece ikinci işlem geri alınır
+IF @@ERROR <> 0
+BEGIN
+    ROLLBACK TRANSACTION BeforeSecondUpdate;
+    COMMIT;
+    PRINT 'İkinci işlem geri alındı, ilk işlem kaldı.';
+END
+ELSE
+    COMMIT;
+```
+
+---
+
+## 💬 Transaction İçinde DDL Komutları Kullanılır mı?
+
+Evet, ama dikkatli olunmalı. Örnek:
+
+```sql
+BEGIN TRANSACTION;
+
+CREATE TABLE TestTrans (ID INT);
+INSERT INTO TestTrans VALUES (1);
+
+ROLLBACK;  -- Hem tablo hem veri geri alınır.
+```
+
+Ancak bazı `DDL` komutları (örneğin bazı `ALTER` işlemleri) transaction desteklemeyebilir.
+
+---
+
+## 🔒 Transaction Isolation Level Nedir?
+
+Birden fazla işlemin eşzamanlı yürüdüğü senaryolarda **veri tutarlılığı** sağlamak için kullanılır.
+
+| Seviye | Açıklama |
+|--------|----------|
+| READ UNCOMMITTED | Diğer işlemlerin kaydetmediği verilere erişilebilir. (Kirli okuma) |
+| READ COMMITTED | Yalnızca commit edilmiş veriler okunabilir. (SQL Server varsayılan) |
+| REPEATABLE READ | Okunan veri değiştirilemez, ama yeni satırlar eklenebilir. |
+| SERIALIZABLE | En yüksek koruma. Tüm işlemler sıralı gibi davranır. |
+| SNAPSHOT | Değişiklikten önceki haliyle veri okunur. |
+
+➡️ Ayarlamak için:
+
+```sql
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+BEGIN TRANSACTION;
+-- işlemler
+COMMIT;
+```
+
+---
+
+## 📂 Gerçek Hayat Senaryoları
+
+1. **Bankacılık:** Para transferi işlemleri (işlemler yarıda kalamaz).
+2. **Stok Yönetimi:** Stoktan düşme ve başka bir yere ekleme birlikte yapılmalı.
+3. **E-Ticaret Sepeti:** Sipariş tamamlandığında ürün stoktan düşmeli ve sipariş kaydı birlikte olmalı.
+4. **Personel Yönetimi:** Çalışan silinirse maaş kayıtları da silinmeli, aksi durumda geri alınmalı.
+
+---
+
+## 📑 Transaction'ı Kullanan Prosedür Örneği
+
+```sql
+CREATE PROCEDURE TransferMoney
+    @FromAccount INT,
+    @ToAccount INT,
+    @Amount MONEY
+AS
+BEGIN
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        UPDATE Accounts
+        SET Balance = Balance - @Amount
+        WHERE AccountID = @FromAccount;
+
+        UPDATE Accounts
+        SET Balance = Balance + @Amount
+        WHERE AccountID = @ToAccount;
+
+        COMMIT;
+        PRINT 'Transfer başarılı.';
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+        PRINT 'Hata oluştu: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+```
+
+---
+
+## 🧾 Özetle
+
+| Terim | Açıklama |
+|-------|----------|
+| `BEGIN TRANSACTION` | İşlem bloğunu başlatır |
+| `COMMIT` | İşlem başarılıysa veriyi kalıcı yapar |
+| `ROLLBACK` | İşlem başarısızsa tüm değişiklikleri geri alır |
+| `SAVE TRANSACTION` | Geri alma için ara nokta belirler |
+| `@@TRANCOUNT` | Aktif transaction sayısını verir |
+
+---
+
+## 🧠 Sık Yapılan Hatalar
+
+- `BEGIN TRANSACTION` yazıp `COMMIT` veya `ROLLBACK` unutanlar.
+- Aynı tabloya işlem yaparken başka kullanıcıların işlemlerini kilitlemek.
+- Hataları kontrol etmeyen transaction yapıları (TRY-CATCH eksikliği).
+- `NESTED` transaction sanmak: MSSQL'de iç içe transaction görünse de gerçekte sadece bir tane aktif olur.
+
+---
+
+
+
+
+## View
+```sh
+
+```
+---
+
+Elbette! Şimdi sana **MSSQL'de View (Görünüm)** kavramını **çok detaylı**, kelime kısıtlaması olmadan, teknik açıklamalar ve örneklerle anlatacağım. Hem teorik hem de uygulamalı bilgilerle donatılmış bir içerik olacak. Hadi başlayalım!
+
+---
+
+# 👁️‍🗨️ MSSQL View (Görünüm) Nedir?
+
+---
+
+## 🔍 Tanım:
+
+**View**, yani **görünüm**, bir veya birden fazla tablonun verilerini birleştirip özelleştirilmiş bir şekilde sunan, **sanal bir tablo**dur.
+
+> Gerçekte fiziksel bir veri içermez, sadece bir **SELECT sorgusunun sonucunu yansıtan mantıksal bir yapıdır.**
+
+---
+
+## 📚 Neden View Kullanılır?
+
+1. **Karmaşık sorguları basitleştirmek**
+2. **Veri güvenliğini sağlamak (hassas verileri gizlemek)**
+3. **Raporlamayı kolaylaştırmak**
+4. **Tekrarlayan kodları merkezi hale getirmek**
+5. **Veri erişimini kontrol etmek**
+6. **JOIN, WHERE, GROUP BY gibi işlemleri soyutlamak**
+
+---
+
+## 🧠 View'ın Özellikleri
+
+| Özellik | Açıklama |
+|--------|----------|
+| Sanaldır | Fiziksel veri içermez, SELECT sorgusu gibidir. |
+| Okunabilir | İçeriği SELECT ile görüntülenebilir. |
+| Bazı durumlarda yazılabilir | Tek tabloya dayalı, PRIMARY KEY içeren view'lar üzerinden INSERT/UPDATE yapılabilir. |
+| Performansa katkısı | Karmaşık sorgular soyutlandığı için okunabilirlik artar, ancak fiziksel index barındırmadığından performans kısıtlıdır. |
+| İç içe kullanılabilir | View içinde başka view'lar kullanılabilir. |
+| Indexed View | Fiziksel veri içeren özel view türüdür. (Detayları aşağıda) |
+
+---
+
+## 🎯 MSSQL View Söz Dizimi
+
+```sql
+CREATE VIEW view_adi
+AS
+SELECT kolonlar
+FROM tablo_adi
+[JOIN ...]
+[WHERE ...]
+[GROUP BY ...]
+```
+
+---
+
+## 📌 Örnek 1: Basit View Oluşturma
+
+```sql
+CREATE VIEW vw_Products
+AS
+SELECT ProductID, ProductName, UnitPrice, UnitsInStock
+FROM Products;
+```
+
+➡️ Kullanımı:
+
+```sql
+SELECT * FROM vw_Products;
+```
+
+---
+
+## 📌 Örnek 2: Filtreli View
+
+```sql
+CREATE VIEW vw_ActiveProducts
+AS
+SELECT ProductID, ProductName, UnitPrice
+FROM Products
+WHERE Discontinued = 0;
+```
+
+---
+
+## 📌 Örnek 3: JOIN ile View
+
+```sql
+CREATE VIEW vw_ProductCategories
+AS
+SELECT p.ProductID, p.ProductName, c.CategoryName
+FROM Products p
+INNER JOIN Categories c ON p.CategoryID = c.CategoryID;
+```
+
+---
+
+## 📌 Örnek 4: Aggregate ve GROUP BY View
+
+```sql
+CREATE VIEW vw_TotalSalesPerProduct
+AS
+SELECT ProductID, SUM(Quantity * UnitPrice) AS TotalSales
+FROM [Order Details]
+GROUP BY ProductID;
+```
+
+---
+
+## 🛠️ View Güncelleme (ALTER VIEW)
+
+```sql
+ALTER VIEW vw_Products
+AS
+SELECT ProductID, ProductName, UnitPrice
+FROM Products
+WHERE UnitsInStock > 0;
+```
+
+---
+
+## ❌ View Silme
+
+```sql
+DROP VIEW vw_Products;
+```
+
+---
+
+## 🧠 View Üzerinden Veri Güncelleme (UPDATE/INSERT)
+
+Eğer view tek bir tabloya bağlıysa ve Primary Key içeriyorsa veri güncellenebilir:
+
+```sql
+CREATE VIEW vw_UpdateStock
+AS
+SELECT ProductID, ProductName, UnitsInStock
+FROM Products;
+```
+
+➡️ Kullanımı:
+
+```sql
+UPDATE vw_UpdateStock
+SET UnitsInStock = UnitsInStock + 10
+WHERE ProductID = 1;
+```
+
+❌ Ama aşağıdaki gibi `JOIN` içeren veya `GROUP BY` gibi özet işlemler içeren view’lar **güncellenemez**:
+
+```sql
+-- Güncellenemez!
+CREATE VIEW vw_SalesPerCategory
+AS
+SELECT c.CategoryName, SUM(od.Quantity * od.UnitPrice) AS TotalSales
+FROM Categories c
+JOIN Products p ON c.CategoryID = p.CategoryID
+JOIN [Order Details] od ON p.ProductID = od.ProductID
+GROUP BY c.CategoryName;
+```
+
+---
+
+## 🔐 View ile Güvenlik
+
+Kullanıcılara sadece belirli verileri gösterip asıl tabloyu gizleyebilirsin:
+
+```sql
+CREATE VIEW vw_EmployeePublic
+AS
+SELECT FirstName, LastName, Title
+FROM Employees;
+```
+
+🧑‍💼 Kullanıcıya sadece bu view’a erişim yetkisi verilir:
+
+```sql
+GRANT SELECT ON vw_EmployeePublic TO User123;
+```
+
+---
+
+## ⚡ Indexed View Nedir?
+
+Normalde view'lar **fiziksel veri tutmaz**, ancak `Indexed View` (diğer adıyla **materialized view**) fiziksel olarak veriyi saklar ve index oluşturulabilir.
+
+Örnek:
+
+```sql
+-- Şart: WITH SCHEMABINDING ile oluşturulmalı
+CREATE VIEW vw_SalesSummary
+WITH SCHEMABINDING
+AS
+SELECT ProductID, COUNT_BIG(*) AS TotalSales
+FROM dbo.[Order Details]
+GROUP BY ProductID;
+```
+
+➡️ Ardından index eklenebilir:
+
+```sql
+CREATE UNIQUE CLUSTERED INDEX idx_SalesSummary
+ON vw_SalesSummary (ProductID);
+```
+
+💡 Avantaj: View daha hızlı çalışır çünkü veriyi önceden saklar.
+
+---
+
+## 🔄 View İçinde View Kullanımı (Nesting)
+
+```sql
+-- İlk view
+CREATE VIEW vw_OrdersTotal
+AS
+SELECT OrderID, SUM(UnitPrice * Quantity) AS TotalAmount
+FROM [Order Details]
+GROUP BY OrderID;
+
+-- İkinci view
+CREATE VIEW vw_HighValueOrders
+AS
+SELECT * FROM vw_OrdersTotal
+WHERE TotalAmount > 1000;
+```
+
+---
+
+## 💬 View ile Function Arasındaki Farklar
+
+| Özellik | View | Function |
+|--------|------|----------|
+| SELECT içinde kullanılabilir | ✅ | ✅ |
+| Parametre alabilir | ❌ | ✅ |
+| Güncellenebilir | Bazen | ❌ |
+| DDL destekler mi | ❌ | ❌ |
+| Karmaşık işlem desteği | Orta | Yüksek |
+| Performanslı mı | Orta | İyi |
+
+---
+
+## 📈 View Performansına Dikkat!
+
+- Çok karmaşık view'lar yavaş çalışabilir.
+- Üzerinde `JOIN`, `GROUP BY`, `DISTINCT`, `UNION` olan view’larda performans izlenmeli.
+- View içinde view (nested view) çok derinleşirse optimize etmek zorlaşır.
+
+---
+
+## 🧾 Özet
+
+| Terim | Açıklama |
+|------|----------|
+| **View (Görünüm)** | SELECT sorgusunu temsil eden sanal tablo |
+| **WITH SCHEMABINDING** | View’ın bağlı olduğu tablolar değiştirilemesin |
+| **Indexed View** | Veriyi fiziksel olarak tutan performanslı view |
+| **Updatable View** | Tek tabloya dayalı ve primary key içeriyorsa güncellenebilir |
+| **Non-Updatable View** | JOIN, GROUP BY içeren view’lar |
+
+---
+
+## 🔚 Sonuç
+
+**View**, MSSQL’de sorgu mantığını merkezileştirmek, veri güvenliğini sağlamak ve raporlama süreçlerini kolaylaştırmak için **mükemmel bir araçtır**. Özellikle büyük projelerde `View` kullanımı kod tekrarını azaltır, performans düzenlemeleri sağlar ve kodu daha anlaşılır hale getirir.
+
+---
+
+
+
+
+
+## Trigger
+```sh
+
+```
+---
+### 🔥 MSSQL Trigger Nedir? Detaylı Anlatım ve Örneklerle Açıklama
+
+---
+
+### ✅ **Trigger (Tetikleyici) Nedir?**
+
+SQL Server’da **Trigger**, belirli bir olay gerçekleştiğinde **otomatik olarak çalışan** bir **veritabanı nesnesidir**. Genellikle **INSERT**, **UPDATE** veya **DELETE** gibi işlemler üzerine tetiklenir. Amaç; veri bütünlüğünü sağlamak, log tutmak, otomatik kontroller yapmak, audit işlemlerini gerçekleştirmektir.
+
+Trigger'lar, prosedürler gibi yazılır ama kullanıcı tarafından çağrılmaz; **bir olay gerçekleştiğinde SQL Server tarafından otomatik olarak çağrılır**.
+
+---
+
+## 📌 Trigger Türleri
+
+1. ### **AFTER Triggers (FOR Triggers)**
+   - Veri değişikliği **gerçekleştikten sonra** tetiklenir.
+   - INSERT, UPDATE veya DELETE işlemlerinden sonra devreye girer.
+   - Genelde loglama, denetim gibi işlemlerde kullanılır.
+
+2. ### **INSTEAD OF Triggers**
+   - Veri değişikliği işleminden **önce devreye girer**.
+   - Gerçek veri değişikliğini engelleyebilir.
+   - Özellikle **view'lar üzerinde veri işlemlerinde** kullanılır.
+
+3. ### **DDL Triggers (Data Definition Language Triggers)**
+   - CREATE, ALTER, DROP gibi **şema değişiklikleri** üzerine tetiklenir.
+   - Veritabanı ya da sunucu düzeyinde tanımlanabilir.
+
+4. ### **LOGON Triggers**
+   - Sunucuya **bağlantı kurulduğunda** tetiklenir.
+   - Güvenlik kontrolleri, IP sınırlamaları vb. için kullanılır.
+
+---
+
+## ⚙️ MSSQL AFTER TRIGGER Örneği
+
+Bir `Products` tablosu olsun ve her eklenen ürün için `ProductLog` tablosuna log atalım:
+
+### 📂 Tablo Oluşturma
+
+```sql
+CREATE TABLE Products (
+    ProductID INT PRIMARY KEY IDENTITY,
+    ProductName NVARCHAR(100),
+    Price DECIMAL(10,2)
+);
+
+CREATE TABLE ProductLog (
+    LogID INT PRIMARY KEY IDENTITY,
+    ProductID INT,
+    ProductName NVARCHAR(100),
+    Price DECIMAL(10,2),
+    LogDate DATETIME
+);
+```
+
+### 🧠 AFTER INSERT TRIGGER
+
+```sql
+CREATE TRIGGER trg_AfterInsertProduct
+ON Products
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO ProductLog (ProductID, ProductName, Price, LogDate)
+    SELECT ProductID, ProductName, Price, GETDATE()
+    FROM INSERTED;
+END;
+```
+
+📌 Açıklama:
+- `INSERTED` sanal tablosu, eklenen verileri içerir.
+- `AFTER INSERT` tetiklendiğinde yeni ürün bilgileri `ProductLog` tablosuna aktarılır.
+
+---
+
+## ⚠️ UPDATE İçin Trigger Örneği
+
+```sql
+CREATE TRIGGER trg_AfterUpdateProduct
+ON Products
+AFTER UPDATE
+AS
+BEGIN
+    INSERT INTO ProductLog (ProductID, ProductName, Price, LogDate)
+    SELECT ProductID, ProductName, Price, GETDATE()
+    FROM INSERTED;
+END;
+```
+
+- Bu trigger her güncellemede o verinin güncel halini loglar.
+
+---
+
+## ❌ DELETE İçin Trigger
+
+```sql
+CREATE TRIGGER trg_AfterDeleteProduct
+ON Products
+AFTER DELETE
+AS
+BEGIN
+    INSERT INTO ProductLog (ProductID, ProductName, Price, LogDate)
+    SELECT ProductID, ProductName, Price, GETDATE()
+    FROM DELETED;
+END;
+```
+
+- `DELETED` sanal tablosu, silinen veriyi temsil eder.
+- Bu örnekte silinen ürünlerin bilgisi loglanır.
+
+---
+
+## 🧩 INSTEAD OF TRIGGER Örneği
+
+Bir `vw_Products` adında bir View oluşturalım ve bu view üzerinden INSERT yapılamayacağı için `INSTEAD OF` Trigger kullanarak yönlendirme yapalım:
+
+### View Oluşturma
+
+```sql
+CREATE VIEW vw_Products
+AS
+SELECT ProductID, ProductName, Price FROM Products;
+```
+
+### INSTEAD OF INSERT
+
+```sql
+CREATE TRIGGER trg_InsteadOfInsertOnView
+ON vw_Products
+INSTEAD OF INSERT
+AS
+BEGIN
+    INSERT INTO Products (ProductName, Price)
+    SELECT ProductName, Price FROM INSERTED;
+END;
+```
+
+- `INSTEAD OF` trigger sayesinde View’a yapılan INSERT işlemi gerçek tablodaki `Products` tablosuna yönlendirilir.
+
+---
+
+## 🛡️ DDL TRIGGER Örneği
+
+Bir tablo DROP edilmeye çalışıldığında bunu engellemek isteyelim:
+
+```sql
+CREATE TRIGGER trg_BlockDropTable
+ON DATABASE
+FOR DROP_TABLE
+AS
+BEGIN
+    PRINT 'Tablo silme işlemi engellendi!';
+    ROLLBACK;
+END;
+```
+
+- Bu DDL trigger, veritabanında herhangi bir tablo silinmeye çalışıldığında işlemi geri alır ve uyarı verir.
+
+---
+
+## 🔐 LOGON TRIGGER Örneği
+
+Sadece belirli bir kullanıcı bağlanabilsin:
+
+```sql
+CREATE TRIGGER trg_BlockLogon
+ON ALL SERVER
+FOR LOGON
+AS
+BEGIN
+    IF ORIGINAL_LOGIN() <> 'adminuser'
+    BEGIN
+        ROLLBACK;
+    END
+END;
+```
+
+- Sadece `adminuser` SQL Server’a bağlanabilir. Diğer kullanıcılar engellenir.
+
+---
+
+## 🎯 Trigger’larda Kullanılan Sanal Tablolar
+
+| Sanal Tablo  | Ne Zaman Kullanılır             |
+|--------------|----------------------------------|
+| INSERTED     | INSERT ve UPDATE işlemlerinde   |
+| DELETED      | DELETE ve UPDATE işlemlerinde   |
+
+---
+
+## 📌 Trigger Kullanırken Dikkat Edilmesi Gerekenler
+
+- **Performansa Etkisi:** Çok fazla trigger performansı düşürebilir.
+- **Recursive Trigger:** Bir trigger başka bir trigger’ı tetikleyebilir.
+- **Sonsuz Döngü Riski:** INSERT içinde tekrar aynı tabloya INSERT yapılırsa döngü oluşabilir.
+- **TRY...CATCH Kullanımı:** Trigger içinde hataları kontrol altına almak için kullanılabilir.
+
+---
+
+## 🧪 İleri Seviye: Nested Trigger Ayarı
+
+```sql
+EXEC sp_configure 'nested triggers', 1;
+RECONFIGURE;
+```
+
+- İç içe tetikleyicilere izin verir.
+
+---
+
+## 🔚 Özetle
+
+| Tür             | Ne Zaman Çalışır                    | Kullanım Alanı                   |
+|------------------|--------------------------------------|----------------------------------|
+| AFTER            | İşlem gerçekleştikten sonra         | Loglama, Audit                   |
+| INSTEAD OF       | İşlem öncesinde devreye girer       | View üzerinde işlem kontrolü     |
+| DDL              | Şema değişikliklerinde              | DROP, ALTER işlemlerinde izleme  |
+| LOGON            | Sunucu bağlantılarında              | Güvenlik                         |
+
+---
+
+## SP (Stored Procudure)
+```sh
+
+```
+---
+Elbette! Şimdi sana **MSSQL Stored Procedure (Saklı Yordam)** kavramını **çok detaylı**, örnekleriyle ve açıklamalarıyla anlatacağım. Hiçbir kelime kısıtlaması olmadan, örnekli ve her düzeyde bilgi içeren bir içerik olacak. Hadi başlayalım.
+
+---
+
+# 🚀 MSSQL Stored Procedure (Saklı Yordam) Nedir?
+
+---
+
+### 📌 Tanım:
+
+**Stored Procedure**, yani Türkçesiyle **saklı yordam**, SQL Server’da **önceden yazılmış ve veritabanında saklanan** bir veya daha fazla SQL ifadesinden oluşan **tekrar kullanılabilir bir programlama yapısıdır**.
+
+Saklı yordamlar sayesinde:
+
+- Kod tekrarından kaçınılır.
+- Güvenlik ve erişim kontrolü sağlanabilir.
+- Performans artırılabilir (çünkü derlenmiş halde saklanır).
+- Parametre ile çalıştıkları için dinamik hale getirilebilir.
+- Karar yapıları, döngüler gibi gelişmiş mantık içerikleri barındırabilir.
+
+---
+
+### 🎯 Stored Procedure Özellikleri:
+
+| Özellik | Açıklama |
+|--------|----------|
+| Tekrar kullanılabilir | Aynı prosedür defalarca çağrılabilir. |
+| Parametre alabilir | Dinamik veri ile çalışabilir. |
+| Gelişmiş kontrol yapılabilir | IF, WHILE, TRY-CATCH gibi yapılar kullanılabilir. |
+| Geri değer dönebilir | OUTPUT parametre ya da RETURN değeri döndürebilir. |
+| Güvenlik sağlar | Kullanıcının doğrudan tabloya erişmesini engelleyebilir. |
+| Performanslıdır | İlk çalışmada derlenir ve planı önbelleğe alınır. |
+
+---
+
+## 🛠️ Stored Procedure Oluşturma Temel Söz Dizimi:
+
+```sql
+CREATE PROCEDURE prosedur_adi
+    @parametre1 tip,
+    @parametre2 tip = varsayilan_deger
+AS
+BEGIN
+    -- SQL komutları
+END;
+```
+
+---
+
+## 📌 Örnek 1: Basit Stored Procedure (Parametresiz)
+
+```sql
+CREATE PROCEDURE GetAllProducts
+AS
+BEGIN
+    SELECT * FROM Products;
+END;
+```
+
+➡️ Kullanımı:
+
+```sql
+EXEC GetAllProducts;
+```
+
+---
+
+## 📌 Örnek 2: Parametre Alan Procedure
+
+```sql
+CREATE PROCEDURE GetProductsByCategory
+    @CategoryID INT
+AS
+BEGIN
+    SELECT * FROM Products
+    WHERE CategoryID = @CategoryID;
+END;
+```
+
+➡️ Kullanımı:
+
+```sql
+EXEC GetProductsByCategory @CategoryID = 2;
+```
+
+---
+
+## 📌 Örnek 3: Varsayılan Değerli Parametre
+
+```sql
+CREATE PROCEDURE GetProductsWithMinPrice
+    @MinPrice DECIMAL(10, 2) = 10.00
+AS
+BEGIN
+    SELECT * FROM Products
+    WHERE Price >= @MinPrice;
+END;
+```
+
+➡️ Kullanımı:
+
+```sql
+EXEC GetProductsWithMinPrice;           -- Varsayılan 10.00
+EXEC GetProductsWithMinPrice 25.50;     -- 25.50 olarak değiştirildi
+```
+
+---
+
+## 📌 Örnek 4: OUTPUT Parametre Kullanımı
+
+```sql
+CREATE PROCEDURE GetProductCountByCategory
+    @CategoryID INT,
+    @TotalCount INT OUTPUT
+AS
+BEGIN
+    SELECT @TotalCount = COUNT(*)
+    FROM Products
+    WHERE CategoryID = @CategoryID;
+END;
+```
+
+➡️ Kullanımı:
+
+```sql
+DECLARE @Count INT;
+EXEC GetProductCountByCategory 1, @Count OUTPUT;
+PRINT 'Ürün Sayısı: ' + CAST(@Count AS VARCHAR);
+```
+
+---
+
+## 📌 Örnek 5: IF – ELSE Kullanımı
+
+```sql
+CREATE PROCEDURE CheckProductStock
+    @ProductID INT
+AS
+BEGIN
+    DECLARE @Stock INT;
+    
+    SELECT @Stock = UnitsInStock FROM Products WHERE ProductID = @ProductID;
+    
+    IF @Stock > 0
+        PRINT 'Ürün stokta var';
+    ELSE
+        PRINT 'Ürün stokta yok';
+END;
+```
+
+➡️ Kullanımı:
+
+```sql
+EXEC CheckProductStock @ProductID = 5;
+```
+
+---
+
+## 📌 Örnek 6: TRY - CATCH ile Hata Yönetimi
+
+```sql
+CREATE PROCEDURE DeleteProduct
+    @ProductID INT
+AS
+BEGIN
+    BEGIN TRY
+        DELETE FROM Products WHERE ProductID = @ProductID;
+        PRINT 'Ürün başarıyla silindi.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Hata oluştu: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+```
+
+➡️ Kullanımı:
+
+```sql
+EXEC DeleteProduct 99;
+```
+
+---
+
+## 📌 Örnek 7: RETURN Değeri Kullanımı
+
+```sql
+CREATE PROCEDURE CheckStockAndReturn
+    @ProductID INT
+AS
+BEGIN
+    DECLARE @Stock INT;
+
+    SELECT @Stock = UnitsInStock FROM Products WHERE ProductID = @ProductID;
+
+    IF @Stock > 0
+        RETURN 1;
+    ELSE
+        RETURN 0;
+END;
+```
+
+➡️ Kullanımı:
+
+```sql
+DECLARE @Result INT;
+EXEC @Result = CheckStockAndReturn 5;
+
+IF @Result = 1
+    PRINT 'Stokta var';
+ELSE
+    PRINT 'Stokta yok';
+```
+
+---
+
+## 📌 Örnek 8: WHILE Döngüsü Kullanımı
+
+```sql
+CREATE PROCEDURE CountDown
+    @Start INT
+AS
+BEGIN
+    WHILE @Start > 0
+    BEGIN
+        PRINT 'Sayı: ' + CAST(@Start AS VARCHAR);
+        SET @Start = @Start - 1;
+    END
+END;
+```
+
+➡️ Kullanımı:
+
+```sql
+EXEC CountDown 5;
+```
+
+---
+
+## 📌 Örnek 9: Tabloda Güncelleme Yapma
+
+```sql
+CREATE PROCEDURE UpdateProductPrice
+    @ProductID INT,
+    @NewPrice DECIMAL(10,2)
+AS
+BEGIN
+    UPDATE Products
+    SET Price = @NewPrice
+    WHERE ProductID = @ProductID;
+    
+    PRINT 'Fiyat güncellendi.';
+END;
+```
+
+➡️ Kullanımı:
+
+```sql
+EXEC UpdateProductPrice 3, 25.99;
+```
+
+---
+
+## 🔄 Procedure Güncelleme
+
+```sql
+ALTER PROCEDURE GetAllProducts
+AS
+BEGIN
+    SELECT ProductID, ProductName, Price FROM Products;
+END;
+```
+
+---
+
+## ❌ Procedure Silme
+
+```sql
+DROP PROCEDURE GetAllProducts;
+```
+
+---
+
+## 🧠 Gelişmiş Uygulama: Transaction İçeren Procedure
+
+```sql
+CREATE PROCEDURE TransferStock
+    @FromProductID INT,
+    @ToProductID INT,
+    @Amount INT
+AS
+BEGIN
+    BEGIN TRANSACTION;
+
+    BEGIN TRY
+        UPDATE Products
+        SET UnitsInStock = UnitsInStock - @Amount
+        WHERE ProductID = @FromProductID;
+
+        UPDATE Products
+        SET UnitsInStock = UnitsInStock + @Amount
+        WHERE ProductID = @ToProductID;
+
+        COMMIT;
+        PRINT 'Stok transferi başarılı.';
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+        PRINT 'Hata oluştu: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+```
+
+➡️ Kullanımı:
+
+```sql
+EXEC TransferStock 1, 2, 10;
+```
+
+---
+
+## 💡 Stored Procedure vs View vs Function
+
+| Özellik              | Stored Procedure     | View              | Function           |
+|----------------------|----------------------|-------------------|--------------------|
+| Parametre alabilir   | ✅                   | ❌                | ✅                 |
+| DML (INSERT/UPDATE)  | ✅                   | ❌ (bazı istisnalar) | ❌ (genelde)      |
+| Değer dönebilir      | ✅ (RETURN / OUTPUT) | ❌                | ✅ (tek bir değer) |
+| Hata yönetimi        | ✅ TRY-CATCH         | ❌                | ❌                 |
+| Kontrol yapıları     | ✅ IF/WHILE vs.      | ❌                | Sınırlı            |
+
+---
+
+## 🧾 Sonuç
+
+MSSQL’de **Stored Procedure**, veritabanı programlamasının kalbidir. Hem kod organizasyonunu sağlar hem güvenliği artırır hem de performansa katkıda bulunur. Özellikle kurumsal projelerde; stok yönetimi, sipariş takibi, loglama, raporlama gibi işlemler prosedürlerle yönetilir.
 
 
 ## DCL:
@@ -4608,52 +5916,3 @@ TCL: Transaction Control Language [Veri İşlem Dili (TRANSACTION)]
  
 ```
 ---
-
-
-
-## Transaction
-```sh
-
-```
----
-
-## Relation
-```sh
-
-```
----
-
-## Storage Procudure
-```sh
-
-```
----
-
-## NF
-```sh
-
-```
----
-
-
-
-## View
-```sh
-
-```
----
-
-
-
-
-## Trigger
-```sh
-
-```
----
-
-
-## Mssql
-```sh 
-```
-

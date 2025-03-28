@@ -711,7 +711,7 @@ select (stu.studentVizeNotes*0.4+stu.studentFinalNotes*0.6) as result from [Scri
 -- UNIONALL (datatype, script, table, PK)
 use ScriptDb;
 if not exists (select * from sysobjects where name='notes' and xtype='U')
-    CREATE TABLE teacher (
+    CREATE TABLE student (
 	StudentId INT PRIMARY KEY IDENTITY NOT NULL,
 	studentName varchar(50) NOT NULL,
 	studentSurname varchar(50) NOT NULL,
