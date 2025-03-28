@@ -698,12 +698,200 @@ JOIN Suppliers  as sup ON pro.SupplierID= sup.SupplierID;
 SELECT * from Orders;     -- OrderID(PK), CustomerID(FK), EmployeeID(FK)
 SELECT * FROM Customers;  -- CustomerID
 
+-- --------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------
+-- ***GROUP BY(GRUPLAMA)***
+-- GROUP BY (Belli kolon için gruplama yapmak içindir):
+-- SORU-1) Her her bir müşterinin (CustomerID) kaç tane sipariş verdiğini listeyeniz ?
+SELECT * FROM Orders;
+SELECT * FROM Customers;
+
+-- 1.YOL
+SELECT ord.CustomerID, COUNT(*) AS 'Her müşteri Siparişi'
+FROM Orders as ord
+GROUP BY ord.CustomerID;
+-- Her bir müşteriyi gruplayarak o müşteri ait siparişlerinin sayısını verdi
+
+-- 2.YOL
+SELECT ord.CustomerID, COUNT(ord.OrderID) AS 'Her müşteri Siparişi'
+FROM Orders as ord
+GROUP BY ord.CustomerID;
+-- Her bir müşteriyi gruplayarak o müşteri ait siparişlerinin sayısını verdi
 
 
-----------------------------------------------------------------------------------------------------------------------
--- Hayali Sutun
-select *  from student;
-select (stu.studentVizeNotes*0.4+stu.studentFinalNotes*0.6) as result from [ScriptDb].[dbo].[student] as stu;
+-- SORU-2) Her her bir çalışanın (EmployeeID) kaç tane sipariş verdiğini listeyeniz ?
+SELECT * FROM Orders;
+SELECT * FROM Employees;
+
+-- 1.YOL
+SELECT ord.EmployeeID, COUNT(*) AS 'Her müşteri Siparişi'
+FROM Orders as ord
+GROUP BY ord.EmployeeID;
+-- Her bir çalışanın (EmployeeID) gruplayarak o müşteri ait siparişlerinin sayısını verdi
+
+-- 2.YOL
+SELECT ord.EmployeeID, COUNT(ord.OrderID) AS 'Her müşteri Siparişi'
+FROM Orders as ord
+GROUP BY ord.EmployeeID;
+-- Her bir çalışanın (EmployeeID) gruplayarak o müşteri ait siparişlerinin sayısını verdi.
+
+
+-- SORU-1) Her bir ürünün toplam kaç kez sipariş verdiğini ve toplam satış miktarının toplamı (@uantify) listeleyen SQL Sorgusunu yazınız ?
+SELECT * FROM [Order Details];
+SELECT * FROM Products;
+
+SELECT * FROM [Order Details] as ordetail ORDER BY ordetail.ProductID;
+
+SELECT ordetail.ProductID,  COUNT(*) as 'Sipariş Sayisi', SUM(ordetail.Quantity) 'Toplam'
+FROM [Order Details] as ordetail
+GROUP BY ordetail.ProductID
+ORDER BY ordetail.ProductID ASC
+
+
+-- SORU-1) Her bir ürünün toplam kaç kez sipariş verdiğini ve toplam satış miktar toplamının ortalaması (@uantify) listeleyen SQL Sorgusunu yazınız ?
+SELECT ordetail.ProductID,  COUNT(*) as 'Sipariş Sayisi', AVG(ordetail.Quantity) 'Toplam'
+FROM [Order Details] as ordetail
+GROUP BY ordetail.ProductID
+ORDER BY ordetail.ProductID ASC
+
+-- Soru: Her kategoriye (CategoryName) ait toplam kaç ürün olduğunu bulun.
+-- Tablo: Products, Categories
+SELECT c.CategoryName, COUNT(p.ProductID) AS UrunSayisi
+FROM Products p
+JOIN Categories c ON p.CategoryID = c.CategoryID
+GROUP BY c.CategoryName;
+
+
+-- Soru: Her müşterinin siparişlerinin toplam tutarını hesaplayın.
+-- Tablo: Orders, [Order Details]
+SELECT o.CustomerID, SUM(od.UnitPrice * od.Quantity) AS ToplamTutar
+FROM Orders o
+JOIN [Order Details] od ON o.OrderID = od.OrderID
+GROUP BY o.CustomerID;
+
+
+-- 📘 MSSQL GROUP BY – Northwind Örnekleri ve Çözümleri
+
+-- 🔹 SORU 1: Her ülkeye göre müşteri sayısını listeleyin.  
+-- Tablo: Customers
+SELECT Country, COUNT(CustomerID) AS MusteriSayisi
+FROM Customers
+GROUP BY Country;
+
+-- ✅ Çözüm Açıklaması:**  
+-- Her ülke için kaç farklı müşteri bulunduğu listelenir.
+
+
+--🔹 SORU 2: Her çalışanın toplam kaç sipariş aldığı bilgisi.  
+-- Tablo: Orders
+SELECT EmployeeID, COUNT(OrderID) AS ToplamSiparis
+FROM Orders
+GROUP BY EmployeeID;
+
+-- ✅ Çözüm Açıklaması:
+--Orders tablosundaki EmployeeID’ye göre gruplanarak, her çalışanın toplam sipariş sayısı bulunur.
+
+
+-- 🔹 SORU 3: Her ürünün toplam satış miktarı ve ortalama birim fiyatı nedir?  
+--Tablo: [Order Details]
+
+SELECT ProductID, SUM(Quantity) AS ToplamSatisAdedi, AVG(UnitPrice) AS OrtalamaFiyat
+FROM [Order Details]
+GROUP BY ProductID;
+
+-- ✅ Çözüm Açıklaması:  
+-- Ürünlere göre gruplayarak toplam kaç adet satıldığını ve ortalama birim fiyatını gösterir.
+
+
+--🔹 SORU 4: Her kategorideki ürün sayısını listeleyin.  
+-- Tablo: Products, Categories
+SELECT c.CategoryName, COUNT(p.ProductID) AS UrunSayisi
+FROM Products p
+JOIN Categories c ON p.CategoryID = c.CategoryID
+GROUP BY c.CategoryName;
+
+-- ✅ **Çözüm Açıklaması:** 
+-- Kategori adına göre gruplayarak, her kategoride kaç ürün bulunduğu hesaplanır.
+
+
+--🔹 SORU 5: Her tedarikçinin (Supplier) sağladığı toplam ürün sayısı.  
+--Tablo:** Products, Suppliers
+SELECT s.CompanyName, COUNT(p.ProductID) AS UrunSayisi
+FROM Products p
+JOIN Suppliers s ON p.SupplierID = s.SupplierID
+GROUP BY s.CompanyName;
+
+-- ✅ Çözüm Açıklaması: 
+--Tedarikçi adına göre gruplama yapılarak, her birinin sağladığı ürün sayısı bulunur.
+
+
+--🔹 SORU 6: Sipariş yılına göre toplam sipariş sayısını listeleyin.  
+-- Tablo: Orders
+SELECT YEAR(OrderDate) AS SiparisYili, COUNT(OrderID) AS SiparisSayisi
+FROM Orders
+GROUP BY YEAR(OrderDate);
+
+--✅ Çözüm Açıklaması: 
+--Sipariş tarihinden yıl bilgisi alınarak gruplama yapılır ve her yıl kaç sipariş olduğu bulunur.
+
+
+-- 🔹 SORU 7: Her müşterinin toplam sipariş tutarını bulun.  
+-- Tablo: Orders, [Order Details]
+-- SORGU
+SELECT o.CustomerID, SUM(od.UnitPrice * od.Quantity) AS ToplamTutar
+FROM Orders o
+JOIN [Order Details] od ON o.OrderID = od.OrderID
+GROUP BY o.CustomerID;
+--✅ Çözüm Açıklaması:
+--Sipariş ve detayları birleştirilerek müşteri bazında siparişlerin toplam tutarı hesaplanır.
+
+
+-- SORU 8: Ortalama fiyatı 20’den yüksek olan ürünleri ve ortalama fiyatlarını listeleyin.  
+-- Tablo: [Order Details]  
+-- (Burada `HAVING` ile birlikte `GROUP BY` kullanımı örneklenmiştir.)
+SELECT ProductID, AVG(UnitPrice) AS OrtalamaFiyat
+FROM [Order Details]
+GROUP BY ProductID
+HAVING AVG(UnitPrice) > 20;
+
+--✅ Çözüm Açıklaması:  
+-- Yalnızca ortalama fiyatı 20’den fazla olan ürünler filtrelenir.
+ 
+
+
+-- --------------------------------------------------------------------------------------------------
+-- --------------------------------------------------------------------------------------------------
+-- ***HAVING (Filtreleme)***
+-- HAVING (Filtreleme) (Sum, Avg, Count, Min, Max):
+-- SORU-1: Her bir kategorideki ürün sayılarını bulunuz ?
+SELECT * FROM nortwind.dbo.Products;
+SELECT * FROM nortwind.dbo.Categories;
+
+SELECT cat.CategoryName, COUNT(pro.ProductID) AS 'Ürün Sayısı'
+FROM Products as pro
+JOIN Categories as cat ON pro.CategoryID= cat.CategoryID
+GROUP BY cat.CategoryName;
+
+-- SORU-1: Her bir kategorideki ürün sayılarını bulunuz ? Yalnızca ama yalnız 10'dan fazla ürünleri bulan SQL Sorgusunu yazınız 
+SELECT cat.CategoryName, COUNT(pro.ProductID) AS 'Ürün Sayısı'
+FROM Products as pro
+JOIN Categories as cat ON pro.CategoryID= cat.CategoryID
+GROUP BY cat.CategoryName
+HAVING COUNT(pro.ProductID)>10;
+
+
+-- SORU-2: Her bir müşterinin toplam siparişini bulunuz ve Bu siparişlerden 5000'den fazla olan siparişleri gösteriniz ?
+SELECT * FROM Customers;
+SELECT * FROM Orders;
+SELECT * FROM [Order Details] ;
+
+SELECT ord.CustomerID, SUM(ordetail.UnitPrice*ordetail.Quantity) AS 'Toplam Tutar'
+FROM Orders as ord
+JOIN [Order Details] as ordetail ON ord.OrderID= ordetail.OrderID
+GROUP BY ord.CustomerID
+HAVING SUM(ordetail.UnitPrice*ordetail.Quantity)>5000;
+
+-- 
 
 
 --------------------------------------------------------------------------------------------------
@@ -737,6 +925,12 @@ values
 select * from student
 union
 select * from teacher
+
+----------------------------------------------------------------------------------------------------------------------
+-- Hayali Sutun
+select *  from student;
+select (stu.studentVizeNotes*0.4+stu.studentFinalNotes*0.6) as result from [ScriptDb].[dbo].[student] as stu;
+
 
 --------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------
@@ -811,20 +1005,11 @@ SELECT pro.ProductName, AVG(pro.UnitPrice) AS price
 FROM Products as pro
 GROUP BY pro.ProductName
 HAVING AVG(pro.UnitPrice) > 30;
--- --------------------------------------------------------------------------------------------------
--- --------------------------------------------------------------------------------------------------
--- ***GROUP BY(GRUPLAMA)***
--- GROUP BY (Belli kolon için gruplama yapmak içindir):
 
-
--- ***HAVING (Filtreleme)***
--- HAVING (Filtreleme) (Sum, Avg, Count, Min, Max):
 
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
 -- ***STRING***
-
-
 -- /*~~~~ STRING ~~~~*/
 SELECT * FROM Categories;
 
