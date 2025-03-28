@@ -106,8 +106,6 @@ ORDER BY cate.CategoryID DESC, cate.CategoryName ASC;
 -- ----------------------------------------
 -- ***TOP***
 -- TOP (Değerleri sağlayan verileri göster) bir nevi filtreleme işlemidir.
-
-
 -- SORU-2) nortwind veritabanından `Categories` tablosundaki `CategoryID`'sine göre küçükten büyüğe  doğru sıralayıp,
 -- şartı sağlayan 6 tane verileri gösteriniz ?
 -- 1.YOL
@@ -856,8 +854,43 @@ HAVING AVG(UnitPrice) > 20;
 
 --✅ Çözüm Açıklaması:  
 -- Yalnızca ortalama fiyatı 20’den fazla olan ürünler filtrelenir.
- 
 
+
+ -- GROP BY (Tablo içindeki Belli Kolon ÜZerinden Gruplama)
+ /*
+ Bir kolonumuzdaki kaç kere tekrar yaptığını, minumum değerini bulmak ,maksimum değerini bulma (aggregate function) değerler üzerinde işlem yapabilmemizi sağlar
+ group by: Kolonun gruplama yapabilmemize olanak sağlar.
+ Aggregate: count, max, min, sum, avg
+ select kolon_adiXYZ ,aggregate_function from tablo_adi where şart group by kolon_adiXYZ;
+ */
+
+ use nortwind;
+ SELECT * FROM employees
+
+ -- Group By Örnek-1
+ -- Aşağıdaki örnek, "Customers" tablosundaki müşterileri şehirlerine göre gruplar ve her bir şehirde kaç müşteri olduğunu sayar:
+ SELECT City, COUNT(*) AS CustomerCount
+ FROM Customers
+ GROUP BY City;
+ --Bu sorgu, "Customers" tablosundaki verileri "City" (şehir) sütununa göre gruplar ve her bir grup için o şehirde kaç müşteri olduğunu sayar. Sonuçlar, şehir başına bir satırda görünecektir.
+
+
+ -- Group By Örnek-2
+ --Tablodaki verileri belirli bir sütuna göre gruplamak ve bu gruplar üzerinde toplu işlemler yapmak için GROUP BY ifadesi kullanılır.
+ --Örneğin, bir "Orders" (Siparişler) tablosundaki siparişleri müşteri numaralarına göre gruplamak ve her müşterinin kaç siparişi olduğunu bulmak isteyebilirsiniz.
+ --Aşağıdaki örnek, "Orders" tablosundaki siparişleri müşteri numaralarına göre gruplar ve her bir müşterinin kaç siparişi olduğunu sayar:
+ SELECT CustomerID, COUNT(*) AS OrderCount
+ FROM Orders
+ GROUP BY CustomerID;
+ --Bu sorgu, "Orders" tablosundaki verileri "CustomerID" (Müşteri Numarası) sütununa göre gruplar ve her bir müşteri için kaç tane sipariş olduğunu sayar. Sonuçlar, müşteri numarası başına bir satırda görünecektir.
+
+
+ -- Group By Örnek-3
+ -- Örneğin, bir "employees" (çalışanlar) tablosunda çalışanların bölümlere göre maaş ortalamalarını bulmak istediğinizi varsayalım:
+ SELECT department, AVG(salary) AS avg_salary
+ FROM employees
+ GROUP BY department;
+ --Bu sorgu, "employees" tablosundaki verileri "department" sütununa göre gruplar ve her bir bölüm için ortalama maaşı hesaplar. Sonuçlar, bölüm başına bir satırda görünecektir.
 
 -- --------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
@@ -891,8 +924,33 @@ JOIN [Order Details] as ordetail ON ord.OrderID= ordetail.OrderID
 GROUP BY ord.CustomerID
 HAVING SUM(ordetail.UnitPrice*ordetail.Quantity)>5000;
 
--- 
+------------------------------------------------------------------------------------------------------------------------
+-- HAVING ( Group By ile oluşturduğumuz  Belli Kolon Üzerindeki Filtrelemedir)
+-- Having Örnek-1
+-- Örnek olarak, bir müşteri siparişleri tablosunda, her müşterinin toplam sipariş miktarını bulalım ve sadece toplam sipariş miktarı 1000'den büyük olan müşterileri listeleyelim:
+SELECT customer_id, SUM(order_amount) AS total_order_amount
+FROM orders
+GROUP BY customer_id
+HAVING SUM(order_amount) > 1000;
+-- Bu sorgu, siparişler tablosundaki her müşterinin toplam sipariş miktarını hesaplar, ardından bu miktarı 1000'den büyük olan müşterileri listeler.
 
+
+-- Having Örnek-2
+-- Örnek olarak, bir işletmenin çalışanlarının departmanlarına göre ortalama maaşlarını hesaplayalım ve sadece ortalama maaşı belirli bir değerden yüksek olan departmanları listeleyelim:
+SELECT department, AVG(salary) AS avg_salary
+FROM employees
+GROUP BY department
+HAVING AVG(salary) > 50000;
+-- Bu sorgu, employees tablosundaki verileri departmanlara göre gruplar, her bir grup için ortalama maaşı hesaplar, ardından ortalama maaşı 50000'den büyük olan grupları seçer ve sonuç olarak bu grupların departmanlarını ve ortalama maaşlarını gösterir.
+
+
+-- GROP BY AND HAVING
+select * from Products
+
+SELECT pro.ProductName, AVG(pro.UnitPrice) AS price
+FROM Products as pro
+GROUP BY pro.ProductName
+HAVING AVG(pro.UnitPrice) > 30;
 
 --------------------------------------------------------------------------------------------------
 -- UNION : aynı sutun sayısına sahip tabloları alt alta görmek istediğimizde kullanıyoruz.
@@ -931,83 +989,7 @@ select * from teacher
 select *  from student;
 select (stu.studentVizeNotes*0.4+stu.studentFinalNotes*0.6) as result from [ScriptDb].[dbo].[student] as stu;
 
-
---------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------------------------
--- GROP BY (Tablo içindeki Belli Kolon ÜZerinden Gruplama)
-/*
-Bir kolonumuzdaki kaç kere tekrar yaptığını, minumum değerini bulmak ,maksimum değerini bulma (aggregate function) değerler üzerinde işlem yapabilmemizi sağlar.
-
-group by: Kolonun gruplama yapabilmemize olanak sağlar.
-
-Aggregate: count, max, min, sum, avg
-
-select kolon_adiXYZ ,aggregate_function from tablo_adi where şart group by kolon_adiXYZ;
-
-*/
-
-use nortwind;
-SELECT * FROM employees
-
--- Group By Örnek-1
--- Aşağıdaki örnek, "Customers" tablosundaki müşterileri şehirlerine göre gruplar ve her bir şehirde kaç müşteri olduğunu sayar:
-SELECT City, COUNT(*) AS CustomerCount
-FROM Customers
-GROUP BY City;
---Bu sorgu, "Customers" tablosundaki verileri "City" (şehir) sütununa göre gruplar ve her bir grup için o şehirde kaç müşteri olduğunu sayar. Sonuçlar, şehir başına bir satırda görünecektir.
-
-
--- Group By Örnek-2
---Tablodaki verileri belirli bir sütuna göre gruplamak ve bu gruplar üzerinde toplu işlemler yapmak için GROUP BY ifadesi kullanılır.
---Örneğin, bir "Orders" (Siparişler) tablosundaki siparişleri müşteri numaralarına göre gruplamak ve her müşterinin kaç siparişi olduğunu bulmak isteyebilirsiniz.
---Aşağıdaki örnek, "Orders" tablosundaki siparişleri müşteri numaralarına göre gruplar ve her bir müşterinin kaç siparişi olduğunu sayar:
-SELECT CustomerID, COUNT(*) AS OrderCount
-FROM Orders
-GROUP BY CustomerID;
---Bu sorgu, "Orders" tablosundaki verileri "CustomerID" (Müşteri Numarası) sütununa göre gruplar ve her bir müşteri için kaç tane sipariş olduğunu sayar. Sonuçlar, müşteri numarası başına bir satırda görünecektir.
-
-
--- Group By Örnek-3
--- Örneğin, bir "employees" (çalışanlar) tablosunda çalışanların bölümlere göre maaş ortalamalarını bulmak istediğinizi varsayalım:
-SELECT department, AVG(salary) AS avg_salary
-FROM employees
-GROUP BY department;
---Bu sorgu, "employees" tablosundaki verileri "department" sütununa göre gruplar ve her bir bölüm için ortalama maaşı hesaplar. Sonuçlar, bölüm başına bir satırda görünecektir.
-
-
-
-
-------------------------------------------------------------------------------------------------------------------------
--- HAVING ( Group By ile oluşturduğumuz  Belli Kolon Üzerindeki Filtrelemedir)
--- Having Örnek-1
--- Örnek olarak, bir müşteri siparişleri tablosunda, her müşterinin toplam sipariş miktarını bulalım ve sadece toplam sipariş miktarı 1000'den büyük olan müşterileri listeleyelim:
-SELECT customer_id, SUM(order_amount) AS total_order_amount
-FROM orders
-GROUP BY customer_id
-HAVING SUM(order_amount) > 1000;
--- Bu sorgu, siparişler tablosundaki her müşterinin toplam sipariş miktarını hesaplar, ardından bu miktarı 1000'den büyük olan müşterileri listeler.
-
-
--- Having Örnek-2
--- Örnek olarak, bir işletmenin çalışanlarının departmanlarına göre ortalama maaşlarını hesaplayalım ve sadece ortalama maaşı belirli bir değerden yüksek olan departmanları listeleyelim:
-SELECT department, AVG(salary) AS avg_salary
-FROM employees
-GROUP BY department
-HAVING AVG(salary) > 50000;
--- Bu sorgu, employees tablosundaki verileri departmanlara göre gruplar, her bir grup için ortalama maaşı hesaplar, ardından ortalama maaşı 50000'den büyük olan grupları seçer ve sonuç olarak bu grupların departmanlarını ve ortalama maaşlarını gösterir.
-
-
--- GROP BY AND HAVING
-select * from Products
-
-SELECT pro.ProductName, AVG(pro.UnitPrice) AS price
-FROM Products as pro
-GROUP BY pro.ProductName
-HAVING AVG(pro.UnitPrice) > 30;
-
-
--- --------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------
 -- ***STRING***
 -- /*~~~~ STRING ~~~~*/
